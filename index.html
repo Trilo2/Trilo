@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trilo</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>🏊🚴🏃 Trilo</h1>
+    <p class="subtitle">Analyse tes performances triathlon</p>
+
+    <div class="card">
+
+      <h2>Natation</h2>
+      <input id="swimDist" type="number" placeholder="Distance (m)">
+      <input id="swimTime" type="text" placeholder="Temps en min:sec (ex: 4:30)">
+
+      <h2>Vélo</h2>
+      <input id="bikeDist" type="number" placeholder="Distance (km)">
+      <input id="bikeTime" type="text" placeholder="Temps en min:sec (ex: 45:30)">
+
+      <h2>Course</h2>
+      <input id="runDist" type="number" placeholder="Distance (km)">
+      <input id="runTime" type="text" placeholder="Temps en min:sec (ex: 20:15)">
+
+      <p class="help">
+        Utilise le format minutes:secondes → exemple : 4:30
+      </p>
+
+      <button onclick="analyser()">Analyser</button>
+
+      <button class="reset" onclick="resetData()">
+        Réinitialiser
+      </button>
+
+    </div>
+
+    <div class="result">
+
+      <h2 id="score">Aucun score</h2>
+
+      <p id="message">
+        Entre tes performances.
+      </p>
+
+    </div>
+
+    <canvas id="chart"></canvas>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
