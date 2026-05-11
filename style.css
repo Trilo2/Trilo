@@ -1,13 +1,12 @@
 body {
   margin: 0;
-  padding: 0;
   font-family: Arial, sans-serif;
   background: #f4f7fb;
   color: #222;
 }
 
 .container {
-  max-width: 700px;
+  max-width: 720px;
   margin: 40px auto;
   padding: 20px;
 }
@@ -15,7 +14,7 @@ body {
 h1 {
   text-align: center;
   font-size: 42px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .subtitle {
@@ -24,15 +23,18 @@ h1 {
   margin-bottom: 30px;
 }
 
-.card {
+.card,
+.result,
+.chart-box {
   background: white;
-  padding: 25px;
+  padding: 24px;
   border-radius: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  margin-bottom: 24px;
 }
 
 h2 {
-  margin-top: 25px;
+  margin-top: 22px;
 }
 
 input {
@@ -45,17 +47,22 @@ input {
   box-sizing: border-box;
 }
 
+.help {
+  color: #666;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
 button {
   width: 100%;
   padding: 16px;
-  margin-top: 20px;
+  margin-top: 18px;
   border: none;
   border-radius: 12px;
   background: #2563eb;
   color: white;
   font-size: 18px;
   cursor: pointer;
-  transition: 0.2s;
 }
 
 button:hover {
@@ -70,17 +77,8 @@ button:hover {
   background: #dc2626;
 }
 
-.result {
-  background: white;
-  margin-top: 25px;
-  padding: 25px;
-  border-radius: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
 #score {
   text-align: center;
-  margin-bottom: 20px;
 }
 
 #message {
@@ -89,8 +87,5 @@ button:hover {
 }
 
 canvas {
-  margin-top: 30px;
-  background: white;
-  padding: 20px;
-  border-radius: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  width: 100%;
+}
