@@ -20,6 +20,10 @@ function convertirTempsEnMinutes(temps) {
   return minutes + secondes / 60;
 }
 
+function choisirConseilAleatoire(liste) {
+  return liste[Math.floor(Math.random() * liste.length)];
+}
+
 function analyser() {
   const swimDist = Number(document.getElementById("swimDist").value);
   const swimTime = convertirTempsEnMinutes(document.getElementById("swimTime").value);
@@ -143,16 +147,42 @@ function analyser() {
     stats += "- " + p.sport + " : " + p.score.toFixed(2) + "\n";
   });
 
+  const conseilsNatation = [
+    "🏊 Conseil : travaille ta respiration bilatérale.",
+    "🏊 Conseil : améliore ta technique de glisse.",
+    "🏊 Conseil : concentre-toi sur la régularité de tes mouvements.",
+    "🏊 Conseil : fais des séries longues pour développer ton endurance.",
+    "🏊 Conseil : garde une nage propre même quand tu fatigues."
+  ];
+
+  const conseilsVelo = [
+    "🚴 Conseil : travaille ta cadence de pédalage.",
+    "🚴 Conseil : essaie de garder une vitesse plus régulière.",
+    "🚴 Conseil : ajoute du travail en endurance.",
+    "🚴 Conseil : améliore ton positionnement sur le vélo.",
+    "🚴 Conseil : évite les gros à-coups et cherche un effort stable."
+  ];
+
+  const conseilsCourse = [
+    "🏃 Conseil : travaille ton endurance fondamentale.",
+    "🏃 Conseil : stabilise ton allure au lieu de partir trop vite.",
+    "🏃 Conseil : ajoute quelques séances fractionnées.",
+    "🏃 Conseil : améliore ta récupération entre les séances.",
+    "🏃 Conseil : garde une foulée régulière et relâchée."
+  ];
+
   let conseil = "";
+
   if (sportFaible.sport === "natation") {
-    conseil = "🏊 Conseil : travaille ta technique, ta respiration et ta régularité.";
+    conseil = choisirConseilAleatoire(conseilsNatation);
   } else if (sportFaible.sport === "vélo") {
-    conseil = "🚴 Conseil : travaille ta cadence et évite les gros à-coups.";
+    conseil = choisirConseilAleatoire(conseilsVelo);
   } else {
-    conseil = "🏃 Conseil : travaille ton allure et ton endurance progressivement.";
+    conseil = choisirConseilAleatoire(conseilsCourse);
   }
 
   document.getElementById("score").innerText = level;
+
   document.getElementById("message").innerText =
     intro +
     "\n\nScore global : " + globalScore.toFixed(2) +
