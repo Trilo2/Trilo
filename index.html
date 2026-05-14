@@ -19,14 +19,16 @@
 
   <meta name="author" content="Trilo">
 
+  <!-- DESIGN + PWA -->
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+
 </head>
 
 <body>
 
   <main class="app">
 
-    <!-- HERO -->
     <header class="hero">
 
       <div class="sport-icons">
@@ -43,17 +45,13 @@
 
     </header>
 
-    <!-- PANEL -->
     <section class="panel">
 
-      <!-- NATATION -->
       <div class="sport-block swim-block">
 
         <div class="sport-head">
           <div class="sport-badge">🏊</div>
-
           <h2>Natation</h2>
-
           <span class="sport-line"></span>
         </div>
 
@@ -83,14 +81,11 @@
 
       <div class="divider"></div>
 
-      <!-- VELO -->
       <div class="sport-block bike-block">
 
         <div class="sport-head">
           <div class="sport-badge">🚴</div>
-
           <h2>Vélo</h2>
-
           <span class="sport-line"></span>
         </div>
 
@@ -120,14 +115,11 @@
 
       <div class="divider"></div>
 
-      <!-- COURSE -->
       <div class="sport-block run-block">
 
         <div class="sport-head">
           <div class="sport-badge">🏃</div>
-
           <h2>Course à pied</h2>
-
           <span class="sport-line"></span>
         </div>
 
@@ -155,13 +147,11 @@
 
       </div>
 
-      <!-- HELP -->
       <p class="help">
         Format des temps : minutes:secondes
         (exemple : 4:30)
       </p>
 
-      <!-- ACTIONS -->
       <div class="actions">
 
         <button id="analyzeBtn" class="analyse-btn">
@@ -176,7 +166,6 @@
 
     </section>
 
-    <!-- FEATURES -->
     <section class="features">
 
       <div class="feature">
@@ -184,10 +173,7 @@
 
         <div>
           <h3>Analyse complète</h3>
-
-          <p>
-            Évalue tes 3 disciplines et découvre ton niveau global.
-          </p>
+          <p>Évalue tes 3 disciplines et découvre ton niveau global.</p>
         </div>
       </div>
 
@@ -196,10 +182,7 @@
 
         <div>
           <h3>Suivi de progression</h3>
-
-          <p>
-            Visualise ton évolution au fil de tes entraînements.
-          </p>
+          <p>Visualise ton évolution au fil de tes entraînements.</p>
         </div>
       </div>
 
@@ -208,21 +191,15 @@
 
         <div>
           <h3>Conseils personnalisés</h3>
-
-          <p>
-            Reçois des conseils adaptés à tes points faibles.
-          </p>
+          <p>Reçois des conseils adaptés à tes points faibles.</p>
         </div>
       </div>
 
     </section>
 
-    <!-- RESULTATS -->
     <section class="result">
 
-      <h2 id="score">
-        Aucun score
-      </h2>
+      <h2 id="score">Aucun score</h2>
 
       <p id="message">
         Entre tes performances puis clique sur Analyser.
@@ -230,17 +207,13 @@
 
     </section>
 
-    <!-- GRAPHIQUE -->
     <section class="chart-box">
       <canvas id="chart"></canvas>
     </section>
 
   </main>
 
-  <!-- CHART -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- JS -->
   <script src="script.js"></script>
 
 </body>
