@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- GOOGLE SEARCH CONSOLE -->
+  <!-- GOOGLE -->
   <meta name="google-site-verification" content="2Tc-lpNGjSuQqXXgRU2zOZKj_HeOI3KQjKoU" />
 
   <!-- SEO -->
@@ -15,13 +15,15 @@
     content="Trilo analyse tes performances en natation, vélo et course à pied avec graphiques et conseils personnalisés.">
 
   <meta name="keywords"
-    content="triathlon, natation, vélo, course à pied, performance triathlon, analyse sport, entraînement triathlon">
+    content="triathlon, natation, vélo, course à pied, performance triathlon, entraînement triathlon">
 
   <meta name="author" content="Trilo">
 
-  <!-- DESIGN + PWA -->
-  <link rel="stylesheet" href="style.css">
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -29,13 +31,14 @@
 
   <main class="app">
 
+    <!-- HERO -->
     <header class="hero">
 
-      <div class="sport-icons">
-        <span class="swim-icon">🏊</span>
-        <span class="bike-icon">🚴</span>
-        <span class="run-icon">🏃</span>
-      </div>
+      <!-- LOGO -->
+      <img
+        class="logo-trilo"
+        src="logo-trilo.png"
+        alt="Logo Trilo">
 
       <h1>Trilo</h1>
 
@@ -45,34 +48,62 @@
 
     </header>
 
+    <!-- PANEL -->
     <section class="panel">
 
+      <!-- NATATION -->
       <div class="sport-block swim-block">
 
         <div class="sport-head">
-          <div class="sport-badge">🏊</div>
+
+          <div class="sport-badge">
+            🏊
+          </div>
+
           <h2>Natation</h2>
+
           <span class="sport-line"></span>
+
         </div>
 
         <div class="input-grid">
 
           <div class="field">
-            <label>Distance en mètres</label>
+
+            <label>
+              Distance en mètres
+            </label>
 
             <div class="input-wrap">
-              <input id="swimDist" type="number" placeholder="Ex : 200">
+
+              <input
+                id="swimDist"
+                type="number"
+                placeholder="Ex : 200">
+
               <span>m</span>
+
             </div>
+
           </div>
 
           <div class="field">
-            <label>Temps</label>
+
+            <label>
+              Temps
+            </label>
 
             <div class="input-wrap">
-              <input id="swimTime" type="text" placeholder="Ex : 4:30">
+
+              <input
+                id="swimTime"
+                type="text"
+                placeholder="Ex : 4:30">
+
               <span>mm:ss</span>
+
             </div>
+
           </div>
 
         </div>
@@ -81,32 +112,59 @@
 
       <div class="divider"></div>
 
+      <!-- VELO -->
       <div class="sport-block bike-block">
 
         <div class="sport-head">
-          <div class="sport-badge">🚴</div>
+
+          <div class="sport-badge">
+            🚴
+          </div>
+
           <h2>Vélo</h2>
+
           <span class="sport-line"></span>
+
         </div>
 
         <div class="input-grid">
 
           <div class="field">
-            <label>Distance en kilomètres</label>
+
+            <label>
+              Distance en kilomètres
+            </label>
 
             <div class="input-wrap">
-              <input id="bikeDist" type="number" placeholder="Ex : 5">
+
+              <input
+                id="bikeDist"
+                type="number"
+                placeholder="Ex : 5">
+
               <span>km</span>
+
             </div>
+
           </div>
 
           <div class="field">
-            <label>Temps</label>
+
+            <label>
+              Temps
+            </label>
 
             <div class="input-wrap">
-              <input id="bikeTime" type="text" placeholder="Ex : 12:30">
+
+              <input
+                id="bikeTime"
+                type="text"
+                placeholder="Ex : 12:30">
+
               <span>mm:ss</span>
+
             </div>
+
           </div>
 
         </div>
@@ -115,91 +173,163 @@
 
       <div class="divider"></div>
 
+      <!-- COURSE -->
       <div class="sport-block run-block">
 
         <div class="sport-head">
-          <div class="sport-badge">🏃</div>
+
+          <div class="sport-badge">
+            🏃
+          </div>
+
           <h2>Course à pied</h2>
+
           <span class="sport-line"></span>
+
         </div>
 
         <div class="input-grid">
 
           <div class="field">
-            <label>Distance en kilomètres</label>
+
+            <label>
+              Distance en kilomètres
+            </label>
 
             <div class="input-wrap">
-              <input id="runDist" type="number" placeholder="Ex : 1">
+
+              <input
+                id="runDist"
+                type="number"
+                placeholder="Ex : 1">
+
               <span>km</span>
+
             </div>
+
           </div>
 
           <div class="field">
-            <label>Temps</label>
+
+            <label>
+              Temps
+            </label>
 
             <div class="input-wrap">
-              <input id="runTime" type="text" placeholder="Ex : 4:00">
+
+              <input
+                id="runTime"
+                type="text"
+                placeholder="Ex : 4:00">
+
               <span>mm:ss</span>
+
             </div>
+
           </div>
 
         </div>
 
       </div>
 
+      <!-- HELP -->
       <p class="help">
-        Format des temps : minutes:secondes
+        Format des temps :
+        minutes:secondes
         (exemple : 4:30)
       </p>
 
+      <!-- ACTIONS -->
       <div class="actions">
 
-        <button id="analyzeBtn" class="analyse-btn">
+        <button
+          id="analyzeBtn"
+          class="analyse-btn">
+
           📊 Analyser mes performances
+
         </button>
 
-        <button id="resetBtn" class="reset-btn">
+        <button
+          id="resetBtn"
+          class="reset-btn">
+
           🗑 Réinitialiser l’historique
+
         </button>
 
       </div>
 
     </section>
 
+    <!-- FEATURES -->
     <section class="features">
 
       <div class="feature">
+
         <span>🛡️</span>
 
         <div>
-          <h3>Analyse complète</h3>
-          <p>Évalue tes 3 disciplines et découvre ton niveau global.</p>
+
+          <h3>
+            Analyse complète
+          </h3>
+
+          <p>
+            Évalue tes 3 disciplines
+            et découvre ton niveau global.
+          </p>
+
         </div>
+
       </div>
 
       <div class="feature">
+
         <span>📈</span>
 
         <div>
-          <h3>Suivi de progression</h3>
-          <p>Visualise ton évolution au fil de tes entraînements.</p>
+
+          <h3>
+            Suivi de progression
+          </h3>
+
+          <p>
+            Visualise ton évolution
+            au fil des entraînements.
+          </p>
+
         </div>
+
       </div>
 
       <div class="feature">
+
         <span>🎯</span>
 
         <div>
-          <h3>Conseils personnalisés</h3>
-          <p>Reçois des conseils adaptés à tes points faibles.</p>
+
+          <h3>
+            Conseils personnalisés
+          </h3>
+
+          <p>
+            Reçois des conseils adaptés
+            à tes points faibles.
+          </p>
+
         </div>
+
       </div>
 
     </section>
 
+    <!-- RESULTATS -->
     <section class="result">
 
-      <h2 id="score">Aucun score</h2>
+      <h2 id="score">
+        Aucun score
+      </h2>
 
       <p id="message">
         Entre tes performances puis clique sur Analyser.
@@ -207,13 +337,19 @@
 
     </section>
 
+    <!-- CHART -->
     <section class="chart-box">
+
       <canvas id="chart"></canvas>
+
     </section>
 
   </main>
 
+  <!-- CHART -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- JS -->
   <script src="script.js"></script>
 
 </body>
