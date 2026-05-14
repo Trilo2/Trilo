@@ -38,35 +38,16 @@ body::before {
   margin-bottom: 35px;
 }
 
-.sport-icons {
-  display: flex;
-  justify-content: center;
-  gap: 18px;
-  margin-bottom: 18px;
-}
-
-.sport-icons span {
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  font-size: 28px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
-  box-shadow: 0 0 25px rgba(56,189,248,0.22);
-}
-
-.swim-icon {
-  box-shadow: 0 0 30px rgba(14,165,233,0.55) !important;
-}
-
-.bike-icon {
-  box-shadow: 0 0 30px rgba(249,115,22,0.45) !important;
-}
-
-.run-icon {
-  box-shadow: 0 0 30px rgba(34,197,94,0.45) !important;
+.logo-trilo {
+  width: 170px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 36px;
+  display: block;
+  margin: 0 auto 22px;
+  box-shadow:
+    0 0 35px rgba(56, 189, 248, 0.65),
+    0 0 70px rgba(37, 99, 235, 0.35);
 }
 
 h1 {
@@ -79,7 +60,7 @@ h1 {
     0 0 60px rgba(37,99,235,0.35);
 }
 
-.hero p {
+.subtitle {
   margin: 12px 0 0;
   font-size: 20px;
   color: #cbd5e1;
@@ -102,10 +83,6 @@ h1 {
   padding: 34px;
 }
 
-.sport-block {
-  position: relative;
-}
-
 .sport-head {
   display: flex;
   align-items: center;
@@ -122,6 +99,7 @@ h1 {
   font-size: 26px;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.12);
+  flex-shrink: 0;
 }
 
 .sport-head h2 {
@@ -129,6 +107,7 @@ h1 {
   font-size: 28px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 .sport-line {
@@ -167,6 +146,7 @@ h1 {
   border-radius: 18px;
   overflow: hidden;
   transition: 0.2s;
+  min-height: 58px;
 }
 
 .input-wrap:focus-within {
@@ -189,10 +169,12 @@ h1 {
 }
 
 .input-wrap span {
+  min-width: 70px;
   padding: 0 16px;
   color: #94a3b8;
   font-size: 13px;
   border-left: 1px solid rgba(148,163,184,0.18);
+  text-align: center;
 }
 
 .divider {
@@ -297,21 +279,7 @@ canvas {
   width: 100%;
 }
 
-@media (max-width: 800px) {
-  .input-grid,
-  .actions,
-  .features {
-    grid-template-columns: 1fr;
-  }
-
-  .panel {
-    padding: 24px;
-  }
-
-  .sport-head h2 {
-    font-size: 23px;
-  }
-}@media (min-width: 1000px) {
+@media (min-width: 1000px) {
   .app {
     max-width: 950px;
     padding-top: 60px;
@@ -328,18 +296,26 @@ canvas {
     min-height: 58px;
     font-size: 28px;
   }
+}
 
-  .input-grid {
-    grid-template-columns: 1fr 1fr;
-    align-items: end;
+@media (max-width: 800px) {
+  .input-grid,
+  .actions,
+  .features {
+    grid-template-columns: 1fr;
   }
 
-  .input-wrap {
-    min-height: 58px;
+  .panel {
+    padding: 24px;
   }
 
-  .input-wrap span {
-    min-width: 70px;
-    text-align: center;
+  .sport-head h2 {
+    font-size: 23px;
+  }
+
+  .logo-trilo {
+    width: 135px;
+    height: 135px;
+    border-radius: 30px;
   }
 }
