@@ -401,3 +401,59 @@ canvas {
     font-size: 32px;
   }
 }
+.premium-zone {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin: 30px 0;
+}
+
+.premium-section {
+  background: rgba(7, 18, 34, 0.82);
+  border: 1px solid rgba(250, 204, 21, 0.28);
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow:
+    0 0 35px rgba(250, 204, 21, 0.12),
+    inset 0 1px 1px rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+}
+
+.premium-section-head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.premium-section-head span {
+  font-size: 32px;
+}
+
+.premium-section h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+}
+
+.premium-section p {
+  margin: 0;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.leaderboard,
+.comparison {
+  background: rgba(2, 6, 23, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 18px;
+  padding: 18px;
+  color: #e2e8f0;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+@media (max-width: 800px) {
+  .premium-zone {
+    grid-template-columns: 1fr;
+  }
+}
