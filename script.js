@@ -1,20 +1,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-
 import {
   getFirestore,
   collection,
-  addDoc,
-  getDocs,
-  query,
-  orderBy,
-  limit
+  addDoc
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -38,12 +32,9 @@ let currentUser = null;
 
 function convertirTempsEnMinutes(temps) {
   if (!temps) return 0;
-
   temps = temps.trim().replace("'", ":");
 
-  if (!temps.includes(":")) {
-    return Number(temps);
-  }
+  if (!temps.includes(":")) return Number(temps);
 
   const parties = temps.split(":");
   const minutes = Number(parties[0]);
@@ -54,18 +45,22 @@ function convertirTempsEnMinutes(temps) {
   return minutes + secondes / 60;
 }
 
-function choisirConseilAleatoire(liste) {
+function choisirConseil(liste) {
   return liste[Math.floor(Math.random() * liste.length)];
 }
 
 async function sauvegarderScoreCloud(score) {
   if (!currentUser) return;
 
-  await addDoc(collection(db, "scores"), {
-    email: currentUser.email,
-    score: score,
-    date: new Date()
-  });
+  try {
+    await addDoc(collection(db, "scores"), {
+      email: currentUser.email,
+      score: score,
+      date: new Date()
+    });
+  } catch (error) {
+    console.log("Erreur Firestore :", error.message);
+  }
 }
 
 async function analyser() {
@@ -91,7 +86,7 @@ async function analyser() {
     const score = (speed / refSwim) * 10;
     total += score;
     count++;
-    performances.push({ sport: "natation", score: score });
+    performances.push({ sport: "natation", score });
   }
 
   if (bikeDist > 0 && bikeTime > 0) {
@@ -99,7 +94,7 @@ async function analyser() {
     const score = (speed / refBike) * 10;
     total += score;
     count++;
-    performances.push({ sport: "vélo", score: score });
+    performances.push({ sport: "vélo", score });
   }
 
   if (runDist > 0 && runTime > 0) {
@@ -107,7 +102,7 @@ async function analyser() {
     const score = (speed / refRun) * 10;
     total += score;
     count++;
-    performances.push({ sport: "course", score: score });
+    performances.push({ sport: "course", score });
   }
 
   if (count === 0) {
@@ -118,45 +113,7 @@ async function analyser() {
   const globalScore = total / count;
   const previousData = JSON.parse(localStorage.getItem("triloData")) || [];
 
-  let evolution = "🚀 Première séance enregistrée.";
-  let objectif = "🎯 Enregistre une deuxième séance pour comparer.";
-  let fatigue = "";
-
-  if (previousData.length > 0) {
-    const lastScore = previousData[previousData.length - 1];
-
-    if (globalScore > lastScore) {
-      evolution = "📈 Tu progresses par rapport à ta dernière séance.";
-    } else if (globalScore < lastScore) {
-      evolution = "⚠️ Tu baisses un peu. Vérifie ta récupération.";
-    } else {
-      evolution = "😐 Tu es stable.";
-    }
-
-    let target;
-
-    if (globalScore < 6) {
-      target = globalScore * 1.10;
-    } else if (globalScore < 10) {
-      target = globalScore * 1.07;
-    } else {
-      target = globalScore * 1.03;
-    }
-
-    objectif = "🎯 Objectif prochaine séance : " + target.toFixed(2);
-  }
-
-  if (previousData.length >= 2) {
-    const last = previousData[previousData.length - 1];
-    const before = previousData[previousData.length - 2];
-
-    if (globalScore < last && last < before) {
-      fatigue = "⚠️ Alerte fatigue : baisse sur plusieurs séances. Repose-toi.";
-    }
-  }
-
   const today = new Date().toLocaleDateString("fr-FR");
-
   labels.push(today);
   data.push(globalScore);
 
@@ -183,63 +140,61 @@ async function analyser() {
     intro = "Niveau compétitif.";
   }
 
+  let evolution = "🚀 Première séance enregistrée.";
+
+  if (previousData.length > 0) {
+    const lastScore = previousData[previousData.length - 1];
+
+    if (globalScore > lastScore) {
+      evolution = "📈 Tu progresses par rapport à ta dernière séance.";
+    } else if (globalScore < lastScore) {
+      evolution = "⚠️ Tu baisses un peu. Vérifie ta récupération.";
+    } else {
+      evolution = "😐 Tu es stable.";
+    }
+  }
+
   performances.sort((a, b) => a.score - b.score);
 
   const sportFaible = performances[0];
   const sportFort = performances[performances.length - 1];
 
   let stats = "📊 Scores par sport :\n";
-
   performances.forEach((p) => {
     stats += "- " + p.sport + " : " + p.score.toFixed(2) + "\n";
   });
 
   const conseilsNatation = [
-    "🏊 Conseil : travaille ta respiration bilatérale.",
-    "🏊 Conseil : améliore ta technique de glisse.",
-    "🏊 Conseil : concentre-toi sur la régularité de tes mouvements.",
-    "🏊 Conseil : fais des séries longues pour développer ton endurance.",
-    "🏊 Conseil : garde une nage propre même quand tu fatigues."
+    "🏊 Conseil : travaille ta respiration.",
+    "🏊 Conseil : améliore ta glisse.",
+    "🏊 Conseil : garde une nage régulière."
   ];
 
   const conseilsVelo = [
-    "🚴 Conseil : travaille ta cadence de pédalage.",
-    "🚴 Conseil : essaie de garder une vitesse plus régulière.",
-    "🚴 Conseil : ajoute du travail en endurance.",
-    "🚴 Conseil : améliore ton positionnement sur le vélo.",
-    "🚴 Conseil : évite les gros à-coups et cherche un effort stable."
+    "🚴 Conseil : travaille ta cadence.",
+    "🚴 Conseil : garde une vitesse régulière.",
+    "🚴 Conseil : améliore ton endurance."
   ];
 
   const conseilsCourse = [
-    "🏃 Conseil : travaille ton endurance fondamentale.",
-    "🏃 Conseil : stabilise ton allure au lieu de partir trop vite.",
-    "🏃 Conseil : ajoute quelques séances fractionnées.",
-    "🏃 Conseil : améliore ta récupération entre les séances.",
-    "🏃 Conseil : garde une foulée régulière et relâchée."
+    "🏃 Conseil : stabilise ton allure.",
+    "🏃 Conseil : travaille ton endurance.",
+    "🏃 Conseil : pense à bien récupérer."
   ];
 
   let conseil = "";
 
   if (sportFaible.sport === "natation") {
-    conseil = choisirConseilAleatoire(conseilsNatation);
+    conseil = choisirConseil(conseilsNatation);
   } else if (sportFaible.sport === "vélo") {
-    conseil = choisirConseilAleatoire(conseilsVelo);
+    conseil = choisirConseil(conseilsVelo);
   } else {
-    conseil = choisirConseilAleatoire(conseilsCourse);
+    conseil = choisirConseil(conseilsCourse);
   }
 
-  let cloudText = "";
-
-  if (currentUser) {
-    cloudText = "\n\n☁️ Score sauvegardé dans ton compte Trilo.";
-    try {
-      await sauvegarderScoreCloud(globalScore);
-    } catch (error) {
-      cloudText = "\n\n⚠️ Erreur sauvegarde cloud : " + error.message;
-    }
-  } else {
-    cloudText = "\n\n🔐 Connecte-toi pour sauvegarder ta progression.";
-  }
+  let cloudText = currentUser
+    ? "\n\n☁️ Score sauvegardé dans ton compte."
+    : "\n\n🔐 Connecte-toi pour sauvegarder ta progression.";
 
   document.getElementById("score").innerText = level;
 
@@ -250,22 +205,18 @@ async function analyser() {
     "\n⚠️ Point faible : " + sportFaible.sport +
     "\n\n" + stats +
     "\n" + evolution +
-    "\n\n" + objectif +
-    "\n\n" + fatigue +
     "\n\n" + conseil +
     cloudText;
 
   drawChart();
+  await sauvegarderScoreCloud(globalScore);
 }
 
 function drawChart() {
   const canvas = document.getElementById("chart");
-
   if (!canvas) return;
 
-  if (chart) {
-    chart.destroy();
-  }
+  if (chart) chart.destroy();
 
   chart = new Chart(canvas, {
     type: "line",
@@ -290,9 +241,7 @@ function drawChart() {
 }
 
 function resetData() {
-  const ok = confirm("Supprimer tout l'historique Trilo ?");
-
-  if (!ok) return;
+  if (!confirm("Supprimer tout l'historique Trilo ?")) return;
 
   labels = [];
   data = [];
@@ -310,82 +259,32 @@ function signup() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  if (!email || !password) {
-    alert("Entre un email et un mot de passe.");
-    return;
-  }
-
   createUserWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      alert("Compte créé ✅");
-    })
-    .catch((error) => {
-      alert("Erreur : " + error.message);
-    });
+    .then(() => alert("Compte créé ✅"))
+    .catch((error) => alert("Erreur : " + error.message));
 }
 
 function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  if (!email || !password) {
-    alert("Entre ton email et ton mot de passe.");
-    return;
-  }
-
   signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      alert("Connexion réussie ✅");
-    })
-    .catch((error) => {
-      alert("Erreur : " + error.message);
-    });
-}
-
-async function afficherClassement() {
-  try {
-    const q = query(collection(db, "scores"), orderBy("score", "desc"), limit(5));
-    const querySnapshot = await getDocs(q);
-
-    let classement = "🏆 Top scores Trilo :\n";
-
-    querySnapshot.forEach((doc) => {
-      const s = doc.data();
-      classement += "- " + s.email + " : " + Number(s.score).toFixed(2) + "\n";
-    });
-
-    console.log(classement);
-  } catch (error) {
-    console.log("Classement indisponible :", error.message);
-  }
+    .then(() => alert("Connexion réussie ✅"))
+    .catch((error) => alert("Erreur : " + error.message));
 }
 
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
-
-  if (user) {
-    console.log("Connecté :", user.email);
-  } else {
-    console.log("Non connecté");
-  }
 });
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("analyzeBtn").addEventListener("click", analyser);
   document.getElementById("resetBtn").addEventListener("click", resetData);
 
-  const signupBtn = document.getElementById("signupBtn");
-  const loginBtn = document.getElementById("loginBtn");
+  document.getElementById("signupBtn").addEventListener("click", signup);
+  document.getElementById("loginBtn").addEventListener("click", login);
+
   const premiumBtn = document.querySelector(".premium-btn");
-
-  if (signupBtn) {
-    signupBtn.addEventListener("click", signup);
-  }
-
-  if (loginBtn) {
-    loginBtn.addEventListener("click", login);
-  }
-
   if (premiumBtn) {
     premiumBtn.addEventListener("click", () => {
       alert("🚀 Trilo Premium arrive bientôt !");
@@ -393,5 +292,4 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   drawChart();
-  afficherClassement();
 });
