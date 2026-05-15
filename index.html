@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,32 +8,45 @@
   <meta name="google-site-verification" content="2Tc-lpNGjSuQqXXgRU2zOZKj_HeOI3KQjKoU" />
 
   <title>Trilo - Analyse tes performances triathlon</title>
-  <meta name="description" content="Trilo analyse tes performances en natation, vélo et course à pied avec graphiques et conseils personnalisés.">
+
+  <meta name="description" content="Trilo analyse tes performances en natation, vélo et course à pied avec graphiques, conseils personnalisés et suivi de progression.">
+  <meta name="keywords" content="triathlon, natation, vélo, course à pied, performance triathlon, entraînement triathlon">
+  <meta name="author" content="Trilo">
 
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
   <main class="app">
 
     <header class="hero">
       <img class="logo-trilo" src="logo-trilo.png" alt="Logo Trilo">
+
       <h1>TRILO</h1>
-      <p class="subtitle">Analyse. Progresse. Domine.</p>
+
+      <p class="subtitle">
+        Analyse. Progresse. Domine.
+      </p>
     </header>
 
     <section class="login-card">
       <h2>Connexion</h2>
 
       <div class="login-grid">
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Mot de passe">
+        <input id="email" type="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Mot de passe">
       </div>
 
       <div class="login-actions">
-        <button id="signupBtn" type="button">Créer un compte</button>
-        <button id="loginBtn" type="button">Se connecter</button>
+        <button id="signupBtn" type="button">
+          Créer un compte
+        </button>
+
+        <button id="loginBtn" type="button">
+          Se connecter
+        </button>
       </div>
     </section>
 
@@ -47,7 +61,7 @@
 
         <div class="input-grid">
           <div class="field">
-            <label>Distance en mètres</label>
+            <label for="swimDist">Distance en mètres</label>
             <div class="input-wrap">
               <input id="swimDist" type="number" placeholder="Ex : 200">
               <span>m</span>
@@ -55,7 +69,7 @@
           </div>
 
           <div class="field">
-            <label>Temps</label>
+            <label for="swimTime">Temps</label>
             <div class="input-wrap">
               <input id="swimTime" type="text" placeholder="Ex : 4:30">
               <span>mm:ss</span>
@@ -75,7 +89,7 @@
 
         <div class="input-grid">
           <div class="field">
-            <label>Distance en kilomètres</label>
+            <label for="bikeDist">Distance en kilomètres</label>
             <div class="input-wrap">
               <input id="bikeDist" type="number" placeholder="Ex : 5">
               <span>km</span>
@@ -83,7 +97,7 @@
           </div>
 
           <div class="field">
-            <label>Temps</label>
+            <label for="bikeTime">Temps</label>
             <div class="input-wrap">
               <input id="bikeTime" type="text" placeholder="Ex : 12:30">
               <span>mm:ss</span>
@@ -103,7 +117,7 @@
 
         <div class="input-grid">
           <div class="field">
-            <label>Distance en kilomètres</label>
+            <label for="runDist">Distance en kilomètres</label>
             <div class="input-wrap">
               <input id="runDist" type="number" placeholder="Ex : 1">
               <span>km</span>
@@ -111,7 +125,7 @@
           </div>
 
           <div class="field">
-            <label>Temps</label>
+            <label for="runTime">Temps</label>
             <div class="input-wrap">
               <input id="runTime" type="text" placeholder="Ex : 4:00">
               <span>mm:ss</span>
@@ -120,7 +134,9 @@
         </div>
       </div>
 
-      <p class="help">Format : minutes:secondes (exemple : 4:30)</p>
+      <p class="help">
+        Format : minutes:secondes — exemple : 4:30
+      </p>
 
       <div class="actions">
         <button id="analyzeBtn" class="analyse-btn" type="button">
@@ -135,6 +151,7 @@
     </section>
 
     <section class="features">
+
       <div class="feature">
         <span>📈</span>
         <div>
@@ -158,6 +175,7 @@
           <p>Compare-toi aux autres utilisateurs de Trilo.</p>
         </div>
       </div>
+
     </section>
 
     <section class="premium-card">
@@ -165,7 +183,9 @@
 
       <h2>Trilo Premium</h2>
 
-      <p>Débloque les fonctionnalités avancées et progresse plus vite.</p>
+      <p>
+        Débloque les fonctionnalités avancées et progresse plus vite.
+      </p>
 
       <div class="premium-features">
         <div class="premium-feature">✅ Historique illimité</div>
@@ -183,7 +203,10 @@
 
     <section class="result">
       <h2 id="score">Aucun score</h2>
-      <p id="message">Entre tes performances puis clique sur analyser.</p>
+
+      <p id="message">
+        Entre tes performances puis clique sur analyser.
+      </p>
     </section>
 
     <section class="chart-box">
@@ -194,5 +217,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module" src="script.js"></script>
+
 </body>
+
 </html>
