@@ -246,3 +246,8 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("resetBtn").addEventListener("click", resetData);
   drawChart();
 });
+const premiumBtn = document.querySelector(".premium-btn");
+
+premiumBtn.addEventListener("click", () => {
+  alert("🚀 Trilo Premium arrive bientôt !");
+});
