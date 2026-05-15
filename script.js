@@ -114,7 +114,6 @@ async function verifierPremium(user) {
   const snap = await getDoc(userRef);
 
   isPremium = snap.exists() && snap.data().premium === true;
-
   afficherEtatPremium();
 }
 
@@ -230,6 +229,41 @@ function obtenirEvolution(score) {
   }
 
   return { evolution, objectif, fatigue };
+}
+
+function genererAnalyseIA(globalScore, sportFaible, sportFort, progression) {
+  let analyse = "🤖 Analyse IA Trilo\n\n";
+
+  if (globalScore < 6) {
+    analyse += "Ton niveau actuel montre que tu es encore en construction. L’objectif n’est pas d’aller vite partout, mais d’être régulier.\n\n";
+  } else if (globalScore < 9) {
+    analyse += "Tu progresses bien. Tu as déjà une base correcte, mais tu dois maintenant travailler la discipline la plus faible.\n\n";
+  } else if (globalScore < 12) {
+    analyse += "Ton niveau est solide. Pour continuer à progresser, il faut améliorer les détails : rythme, régularité et récupération.\n\n";
+  } else {
+    analyse += "Très bon niveau. Maintenant, les petits gains deviennent importants : précision, récupération et gestion d’effort.\n\n";
+  }
+
+  analyse += "💪 Point fort : " + sportFort.sport + "\n";
+  analyse += "⚠️ Priorité d’entraînement : " + sportFaible.sport + "\n\n";
+
+  if (sportFaible.sport === "natation") {
+    analyse += "Plan conseillé : 2 séances natation cette semaine. Une séance technique respiration/glisse, puis une séance endurance avec séries longues.\n\n";
+  } else if (sportFaible.sport === "vélo") {
+    analyse += "Plan conseillé : 2 sorties vélo cette semaine. Une sortie endurance facile, puis une sortie cadence régulière sans gros à-coups.\n\n";
+  } else {
+    analyse += "Plan conseillé : 2 séances course cette semaine. Une séance endurance fondamentale, puis une séance allure régulière ou fractionné léger.\n\n";
+  }
+
+  if (progression.fatigue) {
+    analyse += "⚠️ Attention : ta progression montre un risque de fatigue. Prévois au moins une vraie journée de repos.\n\n";
+  } else {
+    analyse += "✅ Pas d’alerte fatigue forte détectée. Continue progressivement sans augmenter trop vite.\n\n";
+  }
+
+  analyse += "🎯 Objectif IA : améliore surtout ton point faible avant de chercher à tout augmenter en même temps.";
+
+  return analyse;
 }
 
 async function sauvegarderScoreCloud(score, performances) {
@@ -387,6 +421,16 @@ async function analyser() {
     "\n\n" + conseil +
     cloudText;
 
+  const aiBox = el("aiAnalysis");
+
+  if (aiBox) {
+    if (isPremium) {
+      aiBox.innerText = genererAnalyseIA(globalScore, sportFaible, sportFort, progression);
+    } else {
+      aiBox.innerText = "🔒 Coach IA réservé aux utilisateurs Trilo Premium.";
+    }
+  }
+
   drawChart();
 
   if (isPremium) {
@@ -434,6 +478,11 @@ function resetData() {
 
   el("score").innerText = "Aucun score";
   el("message").innerText = "Historique supprimé.";
+
+  const aiBox = el("aiAnalysis");
+  if (aiBox) {
+    aiBox.innerText = "Fais une analyse pour recevoir ton coaching personnalisé.";
+  }
 
   drawChart();
 }
