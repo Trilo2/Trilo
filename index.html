@@ -5,13 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="google-site-verification" content="2Tc-lpNGjSuQqXXgRU2zOZKj_HeOI3KQjKoU" />
-
   <title>Trilo - Analyse tes performances triathlon</title>
 
-  <meta name="description" content="Trilo analyse tes performances en natation, vélo et course à pied avec graphiques, conseils personnalisés et suivi de progression.">
-  <meta name="keywords" content="triathlon, natation, vélo, course à pied, performance triathlon, entraînement triathlon">
-  <meta name="author" content="Trilo">
+  <meta name="description"
+    content="Trilo analyse tes performances triathlon avec IA, classement mondial et suivi de progression.">
 
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
@@ -22,6 +19,7 @@
   <main class="app">
 
     <header class="hero">
+
       <img class="logo-trilo" src="logo-trilo.png" alt="Logo Trilo">
 
       <h1>TRILO</h1>
@@ -29,17 +27,23 @@
       <p class="subtitle">
         Analyse. Progresse. Domine.
       </p>
+
     </header>
 
     <section class="login-card">
+
       <h2>Connexion</h2>
 
       <div class="login-grid">
+
         <input id="email" type="email" placeholder="Email">
+
         <input id="password" type="password" placeholder="Mot de passe">
+
       </div>
 
       <div class="login-actions">
+
         <button id="signupBtn" type="button">
           Créer un compte
         </button>
@@ -47,12 +51,15 @@
         <button id="loginBtn" type="button">
           Se connecter
         </button>
+
       </div>
+
     </section>
 
     <section class="panel">
 
       <div class="sport-block swim-block">
+
         <div class="sport-head">
           <div class="sport-badge">🏊</div>
           <h2>NATATION</h2>
@@ -60,27 +67,47 @@
         </div>
 
         <div class="input-grid">
+
           <div class="field">
-            <label for="swimDist">Distance en mètres</label>
+
+            <label for="swimDist">
+              Distance en mètres
+            </label>
+
             <div class="input-wrap">
+
               <input id="swimDist" type="number" placeholder="Ex : 200">
+
               <span>m</span>
+
             </div>
+
           </div>
 
           <div class="field">
-            <label for="swimTime">Temps</label>
+
+            <label for="swimTime">
+              Temps
+            </label>
+
             <div class="input-wrap">
+
               <input id="swimTime" type="text" placeholder="Ex : 4:30">
+
               <span>mm:ss</span>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
 
       <div class="divider"></div>
 
       <div class="sport-block bike-block">
+
         <div class="sport-head">
           <div class="sport-badge">🚴</div>
           <h2>VÉLO</h2>
@@ -88,27 +115,47 @@
         </div>
 
         <div class="input-grid">
+
           <div class="field">
-            <label for="bikeDist">Distance en kilomètres</label>
+
+            <label for="bikeDist">
+              Distance en kilomètres
+            </label>
+
             <div class="input-wrap">
+
               <input id="bikeDist" type="number" placeholder="Ex : 5">
+
               <span>km</span>
+
             </div>
+
           </div>
 
           <div class="field">
-            <label for="bikeTime">Temps</label>
+
+            <label for="bikeTime">
+              Temps
+            </label>
+
             <div class="input-wrap">
+
               <input id="bikeTime" type="text" placeholder="Ex : 12:30">
+
               <span>mm:ss</span>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
 
       <div class="divider"></div>
 
       <div class="sport-block run-block">
+
         <div class="sport-head">
           <div class="sport-badge">🏃</div>
           <h2>COURSE</h2>
@@ -116,22 +163,41 @@
         </div>
 
         <div class="input-grid">
+
           <div class="field">
-            <label for="runDist">Distance en kilomètres</label>
+
+            <label for="runDist">
+              Distance en kilomètres
+            </label>
+
             <div class="input-wrap">
+
               <input id="runDist" type="number" placeholder="Ex : 1">
+
               <span>km</span>
+
             </div>
+
           </div>
 
           <div class="field">
-            <label for="runTime">Temps</label>
+
+            <label for="runTime">
+              Temps
+            </label>
+
             <div class="input-wrap">
+
               <input id="runTime" type="text" placeholder="Ex : 4:00">
+
               <span>mm:ss</span>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
 
       <p class="help">
@@ -139,6 +205,7 @@
       </p>
 
       <div class="actions">
+
         <button id="analyzeBtn" class="analyse-btn" type="button">
           📊 Analyser mes performances
         </button>
@@ -146,6 +213,7 @@
         <button id="resetBtn" class="reset-btn" type="button">
           🗑 Réinitialiser l’historique
         </button>
+
       </div>
 
     </section>
@@ -153,102 +221,171 @@
     <section class="features">
 
       <div class="feature">
+
         <span>📈</span>
+
         <div>
           <h3>Suivi de progression</h3>
           <p>Analyse ton évolution jour après jour.</p>
         </div>
+
       </div>
 
       <div class="feature">
+
         <span>🧠</span>
+
         <div>
           <h3>Analyse intelligente</h3>
           <p>Découvre tes points forts et tes faiblesses.</p>
         </div>
+
       </div>
 
       <div class="feature">
+
         <span>🔒</span>
+
         <div>
           <h3>Fonctionnalités Premium</h3>
-          <p>Débloque le classement mondial et la comparaison utilisateurs.</p>
+          <p>Débloque le classement mondial et les analyses avancées.</p>
         </div>
+
       </div>
 
     </section>
 
     <section class="premium-card">
-      <span class="premium-badge">PREMIUM</span>
+
+      <span class="premium-badge">
+        PREMIUM
+      </span>
 
       <h2>Trilo Premium</h2>
 
       <p>
-        Débloque les analyses avancées, le classement mondial
-        et la comparaison avec les autres utilisateurs.
+        Débloque les analyses avancées,
+        le classement mondial
+        et la comparaison utilisateurs.
       </p>
 
       <div class="premium-features">
-        <div class="premium-feature">✅ Historique illimité</div>
-        <div class="premium-feature">✅ Analyse IA avancée</div>
-        <div class="premium-feature">✅ Classement mondial</div>
-        <div class="premium-feature">✅ Comparaison utilisateurs</div>
-        <div class="premium-feature">✅ Statistiques détaillées</div>
-        <div class="premium-feature">✅ Objectifs personnalisés</div>
+
+        <div class="premium-feature">
+          ✅ Historique illimité
+        </div>
+
+        <div class="premium-feature">
+          ✅ Analyse IA avancée
+        </div>
+
+        <div class="premium-feature">
+          ✅ Classement mondial
+        </div>
+
+        <div class="premium-feature">
+          ✅ Comparaison utilisateurs
+        </div>
+
+        <div class="premium-feature">
+          ✅ Statistiques détaillées
+        </div>
+
+        <div class="premium-feature">
+          ✅ Objectifs personnalisés
+        </div>
+
       </div>
 
       <button class="premium-btn" type="button">
         🚀 Passer à Premium
       </button>
+
     </section>
 
     <section class="premium-zone">
 
       <div class="premium-section">
+
         <div class="premium-section-head">
+
           <span>🏆</span>
+
           <div>
             <h2>Classement mondial</h2>
             <p>Top utilisateurs Trilo selon leur meilleur score.</p>
           </div>
+
         </div>
 
         <div id="leaderboard" class="leaderboard">
-          Connecte-toi et analyse une séance pour voir le classement.
+          Connecte-toi pour accéder au classement.
         </div>
+
       </div>
 
       <div class="premium-section">
+
         <div class="premium-section-head">
+
           <span>⚔️</span>
+
           <div>
             <h2>Comparaison utilisateurs</h2>
             <p>Compare ton niveau avec les autres sportifs.</p>
           </div>
+
         </div>
 
         <div id="comparison" class="comparison">
-          Aucune comparaison disponible pour le moment.
+          Connecte-toi pour comparer tes performances.
         </div>
+
       </div>
 
     </section>
 
     <section class="result">
-      <h2 id="score">Aucun score</h2>
+
+      <h2 id="score">
+        Aucun score
+      </h2>
 
       <p id="message">
         Entre tes performances puis clique sur analyser.
       </p>
+
+    </section>
+
+    <section class="ai-coach">
+
+      <div class="ai-head">
+
+        <span>🤖</span>
+
+        <div>
+          <h2>Coach IA Trilo</h2>
+          <p>Analyse intelligente de ton entraînement.</p>
+        </div>
+
+      </div>
+
+      <div id="aiAnalysis" class="ai-analysis">
+        Fais une analyse pour recevoir ton coaching personnalisé.
+      </div>
+
     </section>
 
     <section class="chart-box">
+
       <canvas id="chart"></canvas>
+
     </section>
 
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script type="module" src="script.js"></script>
 
 </body>
