@@ -457,3 +457,46 @@ canvas {
     grid-template-columns: 1fr;
   }
 }
+.badges-card {
+  background: rgba(7, 18, 34, 0.82);
+  border: 1px solid rgba(250, 204, 21, 0.28);
+  border-radius: 28px;
+  padding: 28px;
+  margin: 30px 0;
+  box-shadow: 0 0 35px rgba(250, 204, 21, 0.12);
+}
+
+.badges-head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.badges-head span {
+  font-size: 32px;
+}
+
+.badges-head h2 {
+  margin: 0 0 8px;
+}
+
+.badges-head p {
+  margin: 0;
+  color: #cbd5e1;
+}
+
+.badges-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.badge-item {
+  background: linear-gradient(90deg, #facc15, #f59e0b);
+  color: #111827;
+  padding: 12px 16px;
+  border-radius: 999px;
+  font-weight: bold;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.25);
+}
