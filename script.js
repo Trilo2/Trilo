@@ -45,11 +45,11 @@ const db = getFirestore(app);
    VARIABLES
 ========================= */
 
-let chart = null;
-
 let currentUser = null;
 
 let isPremium = false;
+
+let chart = null;
 
 let labels =
   JSON.parse(localStorage.getItem("triloLabels")) || [];
@@ -83,34 +83,6 @@ function convertirTempsEnMinutes(temps) {
 
   return minutes + secondes / 60;
 }
-
-function conseilAleatoire(liste) {
-  return liste[
-    Math.floor(Math.random() * liste.length)
-  ];
-}
-
-/* =========================
-   CONSEILS
-========================= */
-
-const conseilsNatation = [
-  "🏊 Travaille ta respiration.",
-  "🏊 Améliore ta glisse.",
-  "🏊 Fais des séries longues."
-];
-
-const conseilsVelo = [
-  "🚴 Travaille ta cadence.",
-  "🚴 Stabilise ton allure.",
-  "🚴 Développe ton endurance."
-];
-
-const conseilsCourse = [
-  "🏃 Ajoute du fractionné.",
-  "🏃 Travaille l’endurance.",
-  "🏃 Stabilise ton rythme."
-];
 
 /* =========================
    AUTH
@@ -160,6 +132,11 @@ async function signup() {
   const password =
     el("password").value;
 
+  if (!email || !password) {
+    alert("Entre un email et un mot de passe.");
+    return;
+  }
+
   try {
 
     const result =
@@ -187,6 +164,11 @@ async function login() {
   const password =
     el("password").value;
 
+  if (!email || !password) {
+    alert("Entre ton email et ton mot de passe.");
+    return;
+  }
+
   try {
 
     await signInWithEmailAndPassword(
@@ -211,7 +193,7 @@ onAuthStateChanged(auth, async (user) => {
 
     await verifierPremium(user);
 
-    await chargerClassement();
+    chargerClassement();
 
   } else {
 
@@ -254,6 +236,7 @@ function calculerScores() {
   const refRun = 12;
 
   let total = 0;
+
   let count = 0;
 
   let performances = [];
@@ -312,7 +295,9 @@ function calculerScores() {
     });
   }
 
-  if (count === 0) return null;
+  if (count === 0) {
+    return null;
+  }
 
   return {
     globalScore: total / count,
@@ -321,66 +306,15 @@ function calculerScores() {
 }
 
 /* =========================
-   NIVEAU
-========================= */
-
-function obtenirNiveau(score) {
-
-  if (score < 6) {
-    return ["Niveau 1 😐", "Débutant"];
-  }
-
-  if (score < 9) {
-    return ["Niveau 2 👍", "En progression"];
-  }
-
-  if (score < 12) {
-    return ["Niveau 3 🔥", "Bon niveau"];
-  }
-
-  if (score < 15) {
-    return ["Niveau 4 💪", "Très bon"];
-  }
-
-  return ["Niveau 5 🏆", "Elite"];
-}
-
-/* =========================
    BADGES
 ========================= */
 
-function genererBadges(
-  globalScore,
-  performances
-) {
+function genererBadges(globalScore) {
 
   let badges = [];
 
-  const natation =
-    performances.find(
-      p => p.sport === "natation"
-    );
-
-  const velo =
-    performances.find(
-      p => p.sport === "vélo"
-    );
-
-  const course =
-    performances.find(
-      p => p.sport === "course"
-    );
-
-  if (natation && natation.score >= 10) {
-    badges.push("🏊 Spécialiste natation");
-  }
-
-  if (velo && velo.score >= 10) {
-    badges.push("🚴 Puissance vélo");
-  }
-
-  if (course && course.score >= 10) {
-    badges.push("🏃 Rapide en course");
+  if (globalScore >= 8) {
+    badges.push("🔥 Bon départ");
   }
 
   if (globalScore >= 10) {
@@ -391,12 +325,8 @@ function genererBadges(
     badges.push("🏆 Elite Trilo");
   }
 
-  if (performances.length === 3) {
-    badges.push("🔱 Triathlète complet");
-  }
-
   if (badges.length === 0) {
-    badges.push("🌱 Premier badge");
+    badges.push("🌱 Premier pas");
   }
 
   return badges;
@@ -416,9 +346,11 @@ function afficherBadges(badges) {
     const div =
       document.createElement("div");
 
-    div.className = "badge-item";
+    div.className =
+      "badge-item";
 
-    div.innerText = badge;
+    div.innerText =
+      badge;
 
     badgesList.appendChild(div);
   });
@@ -428,42 +360,21 @@ function afficherBadges(badges) {
    IA
 ========================= */
 
-function genererAnalyseIA(
-  globalScore,
-  sportFaible,
-  sportFort
-) {
+function genererAnalyseIA(score) {
 
-  let texte =
-    "🤖 Analyse IA Trilo\n\n";
-
-  texte +=
-    "💪 Point fort : " +
-    sportFort.sport +
-    "\n";
-
-  texte +=
-    "⚠️ Point faible : " +
-    sportFaible.sport +
-    "\n\n";
-
-  if (globalScore < 6) {
-
-    texte +=
-      "Tu construis encore ta base.";
-
-  } else if (globalScore < 10) {
-
-    texte +=
-      "Tu progresses bien.";
-
-  } else {
-
-    texte +=
-      "Très bon niveau détecté.";
+  if (!isPremium) {
+    return "🔒 Coach IA réservé au Premium.";
   }
 
-  return texte;
+  if (score < 6) {
+    return "🤖 Tu construis encore ta base.";
+  }
+
+  if (score < 10) {
+    return "🤖 Tu progresses bien.";
+  }
+
+  return "🤖 Excellent niveau détecté.";
 }
 
 /* =========================
@@ -498,17 +409,25 @@ function mettreAJourDashboard(
       best.sport;
   }
 
-  el("bestScore").innerText =
-    bestScore.toFixed(2);
+  if (el("bestScore")) {
+    el("bestScore").innerText =
+      bestScore.toFixed(2);
+  }
 
-  el("averageScore").innerText =
-    average.toFixed(2);
+  if (el("averageScore")) {
+    el("averageScore").innerText =
+      average.toFixed(2);
+  }
 
-  el("sessionCount").innerText =
-    sessions;
+  if (el("sessionCount")) {
+    el("sessionCount").innerText =
+      sessions;
+  }
 
-  el("bestSport").innerText =
-    dominantSport;
+  if (el("bestSport")) {
+    el("bestSport").innerText =
+      dominantSport;
+  }
 }
 
 /* =========================
@@ -585,7 +504,8 @@ async function chargerClassement() {
       rank++;
     });
 
-    leaderboard.innerText = text;
+    leaderboard.innerText =
+      text;
 
   } catch (error) {
 
@@ -644,8 +564,9 @@ async function chargerComparaison(
       / scores.length;
 
     const above =
-      scores.filter(s => s > monScore)
-      .length;
+      scores.filter(
+        s => s > monScore
+      ).length;
 
     const rank =
       above + 1;
@@ -662,9 +583,8 @@ async function chargerComparaison(
 
       "\nRang : #" +
       rank;
-  }
 
-  catch (error) {
+  } catch (error) {
 
     comparison.innerText =
       "Erreur comparaison.";
@@ -672,7 +592,7 @@ async function chargerComparaison(
 }
 
 /* =========================
-   CHART
+   GRAPH
 ========================= */
 
 function drawChart() {
@@ -722,6 +642,7 @@ function resetData() {
   if (!ok) return;
 
   labels = [];
+
   data = [];
 
   localStorage.removeItem(
@@ -765,32 +686,6 @@ async function analyser() {
   const performances =
     resultat.performances;
 
-  performances.sort(
-    (a, b) => a.score - b.score
-  );
-
-  const sportFaible =
-    performances[0];
-
-  const sportFort =
-    performances[
-      performances.length - 1
-    ];
-
-  const [
-    level,
-    intro
-  ] =
-    obtenirNiveau(globalScore);
-
-  const badges =
-    genererBadges(
-      globalScore,
-      performances
-    );
-
-  afficherBadges(badges);
-
   const today =
     new Date()
     .toLocaleDateString("fr-FR");
@@ -809,78 +704,31 @@ async function analyser() {
     JSON.stringify(data)
   );
 
-  let conseil = "";
+  const badges =
+    genererBadges(globalScore);
 
-  if (
-    sportFaible.sport === "natation"
-  ) {
-    conseil =
-      conseilAleatoire(
-        conseilsNatation
-      );
-  }
+  afficherBadges(badges);
 
-  else if (
-    sportFaible.sport === "vélo"
-  ) {
-    conseil =
-      conseilAleatoire(
-        conseilsVelo
-      );
-  }
-
-  else {
-
-    conseil =
-      conseilAleatoire(
-        conseilsCourse
-      );
-  }
+  mettreAJourDashboard(
+    globalScore,
+    performances
+  );
 
   el("score").innerText =
-    level;
+    "Score : " +
+    globalScore.toFixed(2);
 
   el("message").innerText =
-
-    intro +
-
-    "\n\nScore global : " +
-    globalScore.toFixed(2) +
-
-    "\n\n💪 Point fort : " +
-    sportFort.sport +
-
-    "\n⚠️ Point faible : " +
-    sportFaible.sport +
-
-    "\n\n" +
-    conseil;
+    "Analyse terminée.";
 
   const aiBox =
     el("aiAnalysis");
 
   if (aiBox) {
 
-    if (isPremium) {
-
-      aiBox.innerText =
-        genererAnalyseIA(
-          globalScore,
-          sportFaible,
-          sportFort
-        );
-
-    } else {
-
-      aiBox.innerText =
-        "🔒 Coach IA réservé au Premium.";
-    }
+    aiBox.innerText =
+      genererAnalyseIA(globalScore);
   }
-
-  mettreAJourDashboard(
-    globalScore,
-    performances
-  );
 
   await sauvegarderScoreCloud(
     globalScore,
@@ -907,18 +755,6 @@ document.addEventListener(
   "DOMContentLoaded",
   () => {
 
-    el("analyzeBtn")
-      .addEventListener(
-        "click",
-        analyser
-      );
-
-    el("resetBtn")
-      .addEventListener(
-        "click",
-        resetData
-      );
-
     el("signupBtn")
       .addEventListener(
         "click",
@@ -931,24 +767,17 @@ document.addEventListener(
         login
       );
 
-    const premiumBtn =
-      document.querySelector(
-        ".premium-btn"
+    el("analyzeBtn")
+      .addEventListener(
+        "click",
+        analyser
       );
 
-    if (premiumBtn) {
-
-      premiumBtn
-        .addEventListener(
-          "click",
-          () => {
-
-            alert(
-              "🚀 Trilo Premium arrive bientôt."
-            );
-          }
-        );
-    }
+    el("resetBtn")
+      .addEventListener(
+        "click",
+        resetData
+      );
 
     drawChart();
   }
