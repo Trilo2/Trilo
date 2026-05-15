@@ -8,7 +8,7 @@
   <title>Trilo - Analyse tes performances triathlon</title>
 
   <meta name="description"
-    content="Trilo analyse tes performances triathlon avec IA, badges, classement mondial et suivi de progression.">
+    content="Trilo analyse tes performances triathlon avec IA, badges, dashboard avancé et classement mondial.">
 
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
@@ -17,6 +17,8 @@
 <body>
 
   <main class="app">
+
+    <!-- HERO -->
 
     <header class="hero">
 
@@ -29,6 +31,8 @@
       </p>
 
     </header>
+
+    <!-- LOGIN -->
 
     <section class="login-card">
 
@@ -56,7 +60,11 @@
 
     </section>
 
+    <!-- ANALYSE -->
+
     <section class="panel">
+
+      <!-- NATATION -->
 
       <div class="sport-block swim-block">
 
@@ -106,6 +114,8 @@
 
       <div class="divider"></div>
 
+      <!-- VELO -->
+
       <div class="sport-block bike-block">
 
         <div class="sport-head">
@@ -153,6 +163,8 @@
       </div>
 
       <div class="divider"></div>
+
+      <!-- COURSE -->
 
       <div class="sport-block run-block">
 
@@ -218,6 +230,8 @@
 
     </section>
 
+    <!-- FEATURES -->
+
     <section class="features">
 
       <div class="feature">
@@ -255,6 +269,8 @@
 
     </section>
 
+    <!-- PREMIUM -->
+
     <section class="premium-card">
 
       <span class="premium-badge">
@@ -266,7 +282,8 @@
       <p>
         Débloque les analyses avancées,
         le classement mondial,
-        le Coach IA et les statistiques avancées.
+        le Coach IA,
+        les badges et le dashboard avancé.
       </p>
 
       <div class="premium-features">
@@ -288,11 +305,7 @@
         </div>
 
         <div class="premium-feature">
-          ✅ Statistiques détaillées
-        </div>
-
-        <div class="premium-feature">
-          ✅ Objectifs personnalisés
+          ✅ Dashboard avancé
         </div>
 
         <div class="premium-feature">
@@ -306,6 +319,8 @@
       </button>
 
     </section>
+
+    <!-- CLASSEMENT -->
 
     <section class="premium-zone">
 
@@ -349,6 +364,8 @@
 
     </section>
 
+    <!-- RESULTATS -->
+
     <section class="result">
 
       <h2 id="score">
@@ -360,6 +377,8 @@
       </p>
 
     </section>
+
+    <!-- IA -->
 
     <section class="ai-coach">
 
@@ -380,6 +399,8 @@
 
     </section>
 
+    <!-- BADGES -->
+
     <section class="badges-card">
 
       <div class="badges-head">
@@ -398,6 +419,49 @@
       </div>
 
     </section>
+
+    <!-- DASHBOARD -->
+
+    <section class="dashboard-card">
+
+      <div class="dashboard-head">
+
+        <span>📊</span>
+
+        <div>
+          <h2>Dashboard avancé</h2>
+          <p>Analyse complète de tes performances Trilo.</p>
+        </div>
+
+      </div>
+
+      <div class="dashboard-grid">
+
+        <div class="dashboard-box">
+          <h3>🏅 Meilleur score</h3>
+          <div id="bestScore">0</div>
+        </div>
+
+        <div class="dashboard-box">
+          <h3>📈 Score moyen</h3>
+          <div id="averageScore">0</div>
+        </div>
+
+        <div class="dashboard-box">
+          <h3>🔥 Nombre de séances</h3>
+          <div id="sessionCount">0</div>
+        </div>
+
+        <div class="dashboard-box">
+          <h3>💪 Sport dominant</h3>
+          <div id="bestSport">Aucun</div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- GRAPHIQUE -->
 
     <section class="chart-box">
 
