@@ -1,6 +1,30 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBTv3F1ukSvaoD340ABx6CLjjQ0pHBs7q8",
+  authDomain: "trilo-88a88.firebaseapp.com",
+  projectId: "trilo-88a88",
+  storageBucket: "trilo-88a88.firebasestorage.app",
+  messagingSenderId: "748450983741",
+  appId: "1:748450983741:web:c2f3f9f0afa042530f9f54",
+  measurementId: "G-GSNS075D5R"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
 let labels = JSON.parse(localStorage.getItem("triloLabels")) || [];
 let data = JSON.parse(localStorage.getItem("triloData")) || [];
 let chart = null;
+let currentUser = null;
 
 function convertirTempsEnMinutes(temps) {
   if (!temps) return 0;
@@ -90,6 +114,7 @@ function analyser() {
     }
 
     let target;
+
     if (globalScore < 6) {
       target = globalScore * 1.10;
     } else if (globalScore < 10) {
@@ -111,6 +136,7 @@ function analyser() {
   }
 
   const today = new Date().toLocaleDateString("fr-FR");
+
   labels.push(today);
   data.push(globalScore);
 
@@ -143,6 +169,7 @@ function analyser() {
   const sportFort = performances[performances.length - 1];
 
   let stats = "📊 Scores par sport :\n";
+
   performances.forEach((p) => {
     stats += "- " + p.sport + " : " + p.score.toFixed(2) + "\n";
   });
@@ -181,6 +208,14 @@ function analyser() {
     conseil = choisirConseilAleatoire(conseilsCourse);
   }
 
+  let userText = "";
+
+  if (currentUser) {
+    userText = "\n\n👤 Connecté : " + currentUser.email;
+  } else {
+    userText = "\n\n🔐 Connecte-toi pour préparer le suivi cloud.";
+  }
+
   document.getElementById("score").innerText = level;
 
   document.getElementById("message").innerText =
@@ -192,16 +227,20 @@ function analyser() {
     "\n" + evolution +
     "\n\n" + objectif +
     "\n\n" + fatigue +
-    "\n\n" + conseil;
+    "\n\n" + conseil +
+    userText;
 
   drawChart();
 }
 
 function drawChart() {
   const canvas = document.getElementById("chart");
+
   if (!canvas) return;
 
-  if (chart) chart.destroy();
+  if (chart) {
+    chart.destroy();
+  }
 
   chart = new Chart(canvas, {
     type: "line",
@@ -227,6 +266,7 @@ function drawChart() {
 
 function resetData() {
   const ok = confirm("Supprimer tout l'historique Trilo ?");
+
   if (!ok) return;
 
   labels = [];
@@ -241,13 +281,83 @@ function resetData() {
   drawChart();
 }
 
+function signup() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    alert("Entre un email et un mot de passe.");
+    return;
+  }
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      alert("Compte créé ✅");
+    })
+    .catch((error) => {
+      alert("Erreur : " + error.message);
+    });
+}
+
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    alert("Entre ton email et ton mot de passe.");
+    return;
+  }
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      alert("Connexion réussie ✅");
+    })
+    .catch((error) => {
+      alert("Erreur : " + error.message);
+    });
+}
+
+function logout() {
+  signOut(auth)
+    .then(() => {
+      alert("Déconnexion réussie.");
+    })
+    .catch((error) => {
+      alert("Erreur : " + error.message);
+    });
+}
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+
+  if (user) {
+    console.log("Utilisateur connecté :", user.email);
+  } else {
+    console.log("Utilisateur déconnecté");
+  }
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("analyzeBtn").addEventListener("click", analyser);
   document.getElementById("resetBtn").addEventListener("click", resetData);
-  drawChart();
-});
-const premiumBtn = document.querySelector(".premium-btn");
 
-premiumBtn.addEventListener("click", () => {
-  alert("🚀 Trilo Premium arrive bientôt !");
+  const signupBtn = document.getElementById("signupBtn");
+  const loginBtn = document.getElementById("loginBtn");
+  const premiumBtn = document.querySelector(".premium-btn");
+
+  if (signupBtn) {
+    signupBtn.addEventListener("click", signup);
+  }
+
+  if (loginBtn) {
+    loginBtn.addEventListener("click", login);
+  }
+
+  if (premiumBtn) {
+    premiumBtn.addEventListener("click", () => {
+      alert("🚀 Trilo Premium arrive bientôt !");
+    });
+  }
+
+  drawChart();
 });
