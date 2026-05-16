@@ -29,7 +29,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyBTv3F1ukSvaoD340ABx6CLjjQ0pHBs7q8",
   authDomain: "trilo-88a88.firebaseapp.com",
   projectId: "trilo-88a88",
-  storageBucket: "trilo-88a88.firebasestorage.app",
+storageBucket: "trilo-88a88.appspot.com",
   messagingSenderId: "748450983741",
   appId: "1:748450983741:web:c2f3f9f0afa042530f9f54",
   measurementId: "G-GSNS075D5R"
