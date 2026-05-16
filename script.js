@@ -673,10 +673,33 @@ onAuthStateChanged(auth, async (user) => {
    INIT BOUTONS
 ========================= */
 
-window.addEventListener("DOMContentLoaded", () => {
-  // Bouton analyser
-  const btnAnalyser = el("btn-analyser");
-  if (btnAnalyser) btnAnalyser.addEventListener("click", analyser);
+document.addEventListener("DOMContentLoaded", () => {
+  const analyzeBtn = document.getElementById("analyzeBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const loginBtn = document.getElementById("loginBtn");
+
+  if (analyzeBtn) {
+    analyzeBtn.onclick = analyser;
+  } else {
+    console.error("Bouton analyzeBtn introuvable");
+  }
+
+  if (resetBtn) {
+    resetBtn.onclick = resetData;
+  }
+
+  if (signupBtn) {
+    signupBtn.onclick = signup;
+  }
+
+  if (loginBtn) {
+    loginBtn.onclick = login;
+  }
+
+  drawChart();
+  afficherEtatPremium();
+});
 
   // Bouton réinitialiser
   const btnReset = el("btn-reset");
