@@ -21,10 +21,6 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-/* =========================
-   FIREBASE
-========================= */
-
 const firebaseConfig = {
   apiKey: "AIzaSyBTv3F1ukSvaoD340ABx6CLjjQ0pHBs7q8",
   authDomain: "trilo-88a88.firebaseapp.com",
@@ -39,20 +35,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* =========================
-   VARIABLES
-========================= */
-
 let currentUser = null;
 let isPremium = false;
 let chart = null;
 
 let labels = JSON.parse(localStorage.getItem("triloLabels")) || [];
 let data = JSON.parse(localStorage.getItem("triloData")) || [];
-
-/* =========================
-   HELPERS
-========================= */
 
 function el(id) {
   return document.getElementById(id);
@@ -69,7 +57,6 @@ function convertirTempsEnMinutes(temps) {
   }
 
   const parts = temps.split(":");
-
   if (parts.length !== 2) return 0;
 
   const minutes = Number(parts[0]);
@@ -84,10 +71,6 @@ function convertirTempsEnMinutes(temps) {
 function conseilAleatoire(liste) {
   return liste[Math.floor(Math.random() * liste.length)];
 }
-
-/* =========================
-   CONSEILS
-========================= */
 
 const conseilsNatation = [
   "🏊 Conseil : travaille ta respiration bilatérale.",
@@ -113,10 +96,6 @@ const conseilsCourse = [
   "🏃 Conseil : garde une foulée relâchée."
 ];
 
-/* =========================
-   AUTH
-========================= */
-
 async function creerProfilUtilisateur(user) {
   const userRef = doc(db, "users", user.uid);
   const snap = await getDoc(userRef);
@@ -141,7 +120,6 @@ async function verifierPremium(user) {
   const snap = await getDoc(userRef);
 
   isPremium = snap.exists() && snap.data().premium === true;
-
   afficherEtatPremium();
 }
 
@@ -180,23 +158,6 @@ async function login() {
   }
 }
 
-onAuthStateChanged(auth, async (user) => {
-  currentUser = user;
-
-  if (user) {
-    await creerProfilUtilisateur(user);
-    await verifierPremium(user);
-    await chargerClassement();
-  } else {
-    isPremium = false;
-    afficherEtatPremium();
-  }
-});
-
-/* =========================
-   PREMIUM
-========================= */
-
 function afficherEtatPremium() {
   const leaderboard = el("leaderboard");
   const comparison = el("comparison");
@@ -217,4 +178,119 @@ function afficherEtatPremium() {
   }
 
   if (leaderboard) leaderboard.innerText = "🏆 Analyse une séance pour charger le classement.";
-  if (comparison) comparison.innerText = "⚔️ Analyse une séance pour comparer ton
+  if (comparison) comparison.innerText = "⚔️ Analyse une séance pour comparer ton score.";
+  if (advancedComparison) advancedComparison.innerText = "🧠 Analyse une séance pour recevoir la comparaison avancée IA.";
+}
+
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+
+  if (user) {
+    await creerProfilUtilisateur(user);
+    await verifierPremium(user);
+    await chargerClassement();
+  } else {
+    isPremium = false;
+    afficherEtatPremium();
+  }
+});
+
+function calculerScores() {
+  const swimDist = Number(el("swimDist").value);
+  const swimTime = convertirTempsEnMinutes(el("swimTime").value);
+
+  const bikeDist = Number(el("bikeDist").value);
+  const bikeTime = convertirTempsEnMinutes(el("bikeTime").value);
+
+  const runDist = Number(el("runDist").value);
+  const runTime = convertirTempsEnMinutes(el("runTime").value);
+
+  const refSwim = 45;
+  const refBike = 22;
+  const refRun = 12;
+
+  let total = 0;
+  let count = 0;
+  let performances = [];
+
+  if (swimDist > 0 && swimTime > 0) {
+    const speed = swimDist / swimTime;
+    const score = (speed / refSwim) * 10;
+
+    total += score;
+    count++;
+
+    performances.push({
+      sport: "natation",
+      score: score,
+      speed: speed
+    });
+  }
+
+  if (bikeDist > 0 && bikeTime > 0) {
+    const speed = bikeDist / (bikeTime / 60);
+    const score = (speed / refBike) * 10;
+
+    total += score;
+    count++;
+
+    performances.push({
+      sport: "vélo",
+      score: score,
+      speed: speed
+    });
+  }
+
+  if (runDist > 0 && runTime > 0) {
+    const speed = runDist / (runTime / 60);
+    const score = (speed / refRun) * 10;
+
+    total += score;
+    count++;
+
+    performances.push({
+      sport: "course",
+      score: score,
+      speed: speed
+    });
+  }
+
+  if (count === 0) return null;
+
+  return {
+    globalScore: total / count,
+    performances: performances
+  };
+}
+
+function obtenirNiveau(score) {
+  if (score < 6) {
+    return {
+      level: "Niveau 1 😐 Débutant",
+      intro: "Tu construis ta base."
+    };
+  }
+
+  if (score < 9) {
+    return {
+      level: "Niveau 2 👍 En progrès",
+      intro: "Bonne progression."
+    };
+  }
+
+  if (score < 12) {
+    return {
+      level: "Niveau 3 🔥 Bon niveau",
+      intro: "Très solide."
+    };
+  }
+
+  if (score < 15) {
+    return {
+      level: "Niveau 4 💪 Très bon",
+      intro: "Excellent rythme."
+    };
+  }
+
+  return {
+   
