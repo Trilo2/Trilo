@@ -673,29 +673,27 @@ onAuthStateChanged(auth, async (user) => {
    INIT BOUTONS
 ========================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+
+ document.addEventListener("DOMContentLoaded", () => {
+  console.log("✅ Trilo JS chargé");
+
   const analyzeBtn = document.getElementById("analyzeBtn");
   const resetBtn = document.getElementById("resetBtn");
   const signupBtn = document.getElementById("signupBtn");
   const loginBtn = document.getElementById("loginBtn");
 
   if (analyzeBtn) {
-    analyzeBtn.onclick = analyser;
+    analyzeBtn.onclick = function () {
+      console.log("✅ Bouton analyser cliqué");
+      analyser();
+    };
   } else {
-    console.error("Bouton analyzeBtn introuvable");
+    console.error("❌ analyzeBtn introuvable");
   }
 
-  if (resetBtn) {
-    resetBtn.onclick = resetData;
-  }
-
-  if (signupBtn) {
-    signupBtn.onclick = signup;
-  }
-
-  if (loginBtn) {
-    loginBtn.onclick = login;
-  }
+  if (resetBtn) resetBtn.onclick = resetData;
+  if (signupBtn) signupBtn.onclick = signup;
+  if (loginBtn) loginBtn.onclick = login;
 
   drawChart();
   afficherEtatPremium();
