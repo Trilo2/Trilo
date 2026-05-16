@@ -2,606 +2,277 @@
 <html lang="fr">
 
 <head>
-
   <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>
-    Trilo - Analyse tes performances de triathlon
-  </title>
+  <title>Trilo - Analyse tes performances de triathlon</title>
 
-  <meta
-    name="description"
-    content="Trilo analyse tes performances triathlon avec IA, badges, dashboard avancé et classement mondial.">
+  <meta name="description"
+    content="Trilo analyse tes performances triathlon avec IA, badges, dashboard avancé, classement mondial et comparaison utilisateurs.">
 
-  <meta
-    name="keywords"
-    content="trilo, triathlon, analyse sportive, coach IA, triathlon app">
+  <meta name="keywords"
+    content="trilo, triathlon, analyse sportive, coach IA, performance triathlon, classement triathlon">
 
-  <meta
-    name="author"
-    content="Trilo">
+  <meta name="author" content="Trilo">
 
-  <link
-    rel="stylesheet"
-    href="style.css">
-
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
   <main class="app">
 
-    <!-- =========================
-         HERO
-    ========================= -->
-
     <header class="hero">
+      <img src="logo-trilo.png" alt="Logo Trilo" class="logo-trilo">
 
-      <img
-        src="logo-trilo.png"
-        alt="Logo Trilo"
-        class="logo-trilo">
-
-      <h1>
-        TRILO
-      </h1>
+      <h1>TRILO</h1>
 
       <p class="subtitle">
         Analyse. Progresse. Domine.
       </p>
-
     </header>
 
-    <!-- =========================
-         AUTH
-    ========================= -->
-
     <section class="login-card">
-
-      <h2>
-        Connexion Trilo
-      </h2>
+      <h2>Connexion Trilo</h2>
 
       <div class="login-grid">
+        <input id="email" type="email" placeholder="Email">
 
-        <input
-          id="email"
-          type="email"
-          placeholder="Email">
-
-        <input
-          id="password"
-          type="password"
-          placeholder="Mot de passe">
-
+        <input id="password" type="password" placeholder="Mot de passe">
       </div>
 
       <div class="login-actions">
-
-        <button
-          id="signupBtn"
-          type="button">
-
+        <button id="signupBtn" type="button">
           Créer un compte
-
         </button>
 
-        <button
-          id="loginBtn"
-          type="button">
-
+        <button id="loginBtn" type="button">
           Connexion
-
         </button>
-
       </div>
-
     </section>
-
-    <!-- =========================
-         ANALYSE TRIATHLON
-    ========================= -->
 
     <section class="panel">
 
-      <!-- NATATION -->
-
       <div class="sport-block">
-
         <div class="sport-head">
-
-          <div class="sport-badge">
-            🏊
-          </div>
-
-          <h2>
-            NATATION
-          </h2>
-
+          <div class="sport-badge">🏊</div>
+          <h2>NATATION</h2>
         </div>
 
         <div class="input-grid">
-
           <div class="field">
-
-            <label>
-              Distance (mètres)
-            </label>
-
-            <input
-              id="swimDist"
-              type="number"
-              placeholder="200">
-
+            <label for="swimDist">Distance en mètres</label>
+            <input id="swimDist" type="number" placeholder="Ex : 200">
           </div>
 
           <div class="field">
-
-            <label>
-              Temps (minutes:secondes)
-            </label>
-
-            <input
-              id="swimTime"
-              type="text"
-              placeholder="4:30">
-
+            <label for="swimTime">Temps minutes:secondes</label>
+            <input id="swimTime" type="text" placeholder="Ex : 4:30">
           </div>
-
         </div>
-
       </div>
 
-      <!-- VELO -->
-
       <div class="sport-block">
-
         <div class="sport-head">
-
-          <div class="sport-badge">
-            🚴
-          </div>
-
-          <h2>
-            VÉLO
-          </h2>
-
+          <div class="sport-badge">🚴</div>
+          <h2>VÉLO</h2>
         </div>
 
         <div class="input-grid">
-
           <div class="field">
-
-            <label>
-              Distance (km)
-            </label>
-
-            <input
-              id="bikeDist"
-              type="number"
-              placeholder="10">
-
+            <label for="bikeDist">Distance en kilomètres</label>
+            <input id="bikeDist" type="number" placeholder="Ex : 10">
           </div>
 
           <div class="field">
-
-            <label>
-              Temps (minutes:secondes)
-            </label>
-
-            <input
-              id="bikeTime"
-              type="text"
-              placeholder="20:00">
-
+            <label for="bikeTime">Temps minutes:secondes</label>
+            <input id="bikeTime" type="text" placeholder="Ex : 20:00">
           </div>
-
         </div>
-
       </div>
 
-      <!-- COURSE -->
-
       <div class="sport-block">
-
         <div class="sport-head">
-
-          <div class="sport-badge">
-            🏃
-          </div>
-
-          <h2>
-            COURSE
-          </h2>
-
+          <div class="sport-badge">🏃</div>
+          <h2>COURSE</h2>
         </div>
 
         <div class="input-grid">
-
           <div class="field">
-
-            <label>
-              Distance (km)
-            </label>
-
-            <input
-              id="runDist"
-              type="number"
-              placeholder="5">
-
+            <label for="runDist">Distance en kilomètres</label>
+            <input id="runDist" type="number" placeholder="Ex : 5">
           </div>
 
           <div class="field">
-
-            <label>
-              Temps (minutes:secondes)
-            </label>
-
-            <input
-              id="runTime"
-              type="text"
-              placeholder="20:00">
-
+            <label for="runTime">Temps minutes:secondes</label>
+            <input id="runTime" type="text" placeholder="Ex : 20:00">
           </div>
-
         </div>
-
       </div>
 
-      <!-- ACTIONS -->
+      <p class="help">
+        Format conseillé : 4:30, 20:00, 1:15:00 non supporté.
+      </p>
 
       <div class="actions">
-
-        <button
-          id="analyzeBtn"
-          type="button">
-
+        <button id="analyzeBtn" type="button">
           📊 Analyser mes performances
-
         </button>
 
-        <button
-          id="resetBtn"
-          type="button">
-
+        <button id="resetBtn" type="button">
           🗑 Réinitialiser
-
         </button>
-
       </div>
 
     </section>
 
-    <!-- =========================
-         RESULTATS
-    ========================= -->
-
     <section class="result">
-
-      <h2 id="score">
-        Aucun score
-      </h2>
+      <h2 id="score">Aucun score</h2>
 
       <p id="message">
         Entre tes performances puis clique sur analyser.
       </p>
-
     </section>
-
-    <!-- =========================
-         IA
-    ========================= -->
 
     <section class="ai-coach">
-
       <div class="ai-head">
-
-        <span>
-          🤖
-        </span>
+        <span>🤖</span>
 
         <div>
-
-          <h2>
-            Coach IA Trilo
-          </h2>
-
-          <p>
-            Analyse intelligente de tes performances.
-          </p>
-
+          <h2>Coach IA Trilo</h2>
+          <p>Analyse intelligente de tes performances.</p>
         </div>
-
       </div>
 
-      <div
-        id="aiAnalysis"
-        class="ai-analysis">
-
+      <div id="aiAnalysis" class="ai-analysis">
         Fais une analyse pour recevoir ton coaching IA.
-
       </div>
-
     </section>
-
-    <!-- =========================
-         BADGES
-    ========================= -->
 
     <section class="badges-card">
-
       <div class="badges-head">
-
-        <span>
-          🏅
-        </span>
+        <span>🏅</span>
 
         <div>
-
-          <h2>
-            Badges Trilo
-          </h2>
-
-          <p>
-            Débloque des badges selon tes performances.
-          </p>
-
+          <h2>Badges Trilo</h2>
+          <p>Débloque des badges selon tes performances.</p>
         </div>
-
       </div>
 
-      <div
-        id="badgesList"
-        class="badges-list">
-
+      <div id="badgesList" class="badges-list">
         Fais une analyse pour débloquer tes premiers badges.
-
       </div>
-
     </section>
 
-    <!-- =========================
-         DASHBOARD
-    ========================= -->
-
     <section class="dashboard-card">
-
       <div class="dashboard-head">
-
-        <span>
-          📊
-        </span>
+        <span>📊</span>
 
         <div>
-
-          <h2>
-            Dashboard avancé
-          </h2>
-
-          <p>
-            Analyse détaillée de ta progression.
-          </p>
-
+          <h2>Dashboard avancé</h2>
+          <p>Analyse complète de tes performances Trilo.</p>
         </div>
-
       </div>
 
       <div class="dashboard-grid">
 
         <div class="dashboard-box">
-
-          <h3>
-            🏅 Meilleur score
-          </h3>
-
-          <div id="bestScore">
-            0
-          </div>
-
+          <h3>🏅 Meilleur score</h3>
+          <div id="bestScore">0</div>
         </div>
 
         <div class="dashboard-box">
-
-          <h3>
-            📈 Score moyen
-          </h3>
-
-          <div id="averageScore">
-            0
-          </div>
-
+          <h3>📈 Score moyen</h3>
+          <div id="averageScore">0</div>
         </div>
 
         <div class="dashboard-box">
-
-          <h3>
-            🔥 Nombre de séances
-          </h3>
-
-          <div id="sessionCount">
-            0
-          </div>
-
+          <h3>🔥 Nombre de séances</h3>
+          <div id="sessionCount">0</div>
         </div>
 
         <div class="dashboard-box">
-
-          <h3>
-            💪 Sport dominant
-          </h3>
-
-          <div id="bestSport">
-            Aucun
-          </div>
-
+          <h3>💪 Sport dominant</h3>
+          <div id="bestSport">Aucun</div>
         </div>
 
       </div>
-
     </section>
-
-    <!-- =========================
-         PREMIUM
-    ========================= -->
 
     <section class="premium-card">
+      <span class="premium-badge">PREMIUM</span>
 
-      <span class="premium-badge">
-        PREMIUM
-      </span>
-
-      <h2>
-        Trilo Premium
-      </h2>
+      <h2>Trilo Premium</h2>
 
       <p>
-        Débloque le Coach IA,
-        le classement mondial,
-        la comparaison utilisateurs,
-        l’analyse avancée IA
-        et les statistiques avancées.
+        Débloque le Coach IA, le classement mondial, la comparaison utilisateurs,
+        l’analyse avancée IA et les statistiques avancées.
       </p>
 
-      <button
-        class="premium-btn"
-        type="button">
-
+      <button class="premium-btn" type="button">
         🚀 Passer à Premium
-
       </button>
-
     </section>
 
-    <!-- =========================
-         CLASSEMENT MONDIAL
-    ========================= -->
+    <section class="premium-zone">
 
-    <section class="premium-section">
+      <section class="premium-section">
+        <div class="premium-section-head">
+          <span>🏆</span>
 
-      <div class="premium-section-head">
-
-        <span>
-          🏆
-        </span>
-
-        <div>
-
-          <h2>
-            Classement mondial
-          </h2>
-
-          <p>
-            Top utilisateurs Trilo.
-          </p>
-
+          <div>
+            <h2>Classement mondial</h2>
+            <p>Top utilisateurs Trilo.</p>
+          </div>
         </div>
 
-      </div>
+        <div id="leaderboard" class="leaderboard">
+          🔒 Connecte-toi pour accéder au classement.
+        </div>
+      </section>
 
-      <div
-        id="leaderboard"
-        class="leaderboard">
+      <section class="premium-section">
+        <div class="premium-section-head">
+          <span>⚔️</span>
 
-        🔒 Connecte-toi pour accéder au classement.
-
-      </div>
-
-    </section>
-
-    <!-- =========================
-         COMPARAISON UTILISATEURS
-    ========================= -->
-
-    <section class="premium-section">
-
-      <div class="premium-section-head">
-
-        <span>
-          ⚔️
-        </span>
-
-        <div>
-
-          <h2>
-            Comparaison utilisateurs
-          </h2>
-
-          <p>
-            Compare tes performances avec les autres sportifs.
-          </p>
-
+          <div>
+            <h2>Comparaison utilisateurs</h2>
+            <p>Compare tes performances avec les autres sportifs.</p>
+          </div>
         </div>
 
-      </div>
+        <div id="comparison" class="comparison">
+          🔒 Connecte-toi pour comparer tes performances.
+        </div>
+      </section>
 
-      <div
-        id="comparison"
-        class="comparison">
+      <section class="premium-section">
+        <div class="premium-section-head">
+          <span>🧠</span>
 
-        🔒 Connecte-toi pour comparer tes performances.
-
-      </div>
-
-    </section>
-
-    <!-- =========================
-         COMPARAISON IA AVANCÉE
-    ========================= -->
-
-    <section class="premium-section">
-
-      <div class="premium-section-head">
-
-        <span>
-          🧠
-        </span>
-
-        <div>
-
-          <h2>
-            Comparaison avancée IA
-          </h2>
-
-          <p>
-            Analyse intelligente de ton niveau face aux autres utilisateurs Trilo.
-          </p>
-
+          <div>
+            <h2>Comparaison avancée IA</h2>
+            <p>Analyse intelligente de ton niveau face aux autres utilisateurs Trilo.</p>
+          </div>
         </div>
 
-      </div>
-
-      <div
-        id="advancedComparison"
-        class="comparison">
-
-        🔒 Premium requis pour débloquer l’analyse avancée.
-
-      </div>
+        <div id="advancedComparison" class="comparison">
+          🔒 Premium requis pour débloquer l’analyse avancée.
+        </div>
+      </section>
 
     </section>
-
-    <!-- =========================
-         GRAPHIQUE
-    ========================= -->
 
     <section class="chart-box">
-
       <canvas id="chart"></canvas>
-
     </section>
 
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <script
-    type="module"
-    src="script.js">
-  </script>
+  <script type="module" src="script.js"></script>
 
 </body>
 
