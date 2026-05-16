@@ -600,7 +600,13 @@ function genererAnalyseIA(globalScore, sportFaible, sportFort, progression) {
 }
 
 function mettreAJourDashboard(globalScore, performances) {
-  if (!el("bestScore")) {
+if (!isPremium) {
+  safeText("bestScore", "🔒");
+  safeText("averageScore", "🔒");
+  safeText("sessionCount", "🔒");
+  safeText("bestSport", "Premium");
+  return;
+}  if (!el("bestScore")) {
     return;
   }
 
