@@ -706,13 +706,126 @@ function brancherBoutons() {
 }
 
 window.triloAnalyser = analyser;
+async function ajouterAmi() {
 
+  if (!currentUser) {
+    alert("Connecte-toi.");
+    return;
+  }
+
+  if (!isPremium) {
+    alert("Fonction Premium.");
+    return;
+  }
+
+  const input = document.getElementById("friendEmail");
+
+  if (!input) return;
+
+  const friendEmail = input.value.trim();
+
+  if (!friendEmail) {
+    alert("Entre un email.");
+    return;
+  }
+
+  try {
+
+    await addDoc(collection(db, "friends"), {
+
+      owner: currentUser.email,
+      friend: friendEmail,
+      createdAt: serverTimestamp()
+
+    });
+
+    input.value = "";
+
+    chargerAmis();
+
+    alert("Ami ajouté ✅");
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert("Erreur ajout ami.");
+
+  }
+
+}
+
+async function chargerAmis() {
+
+  const box = document.getElementById("friendsList");
+
+  if (!box) return;
+
+  if (!currentUser) {
+    box.innerText =
+      "🔐 Connecte-toi pour utiliser les amis.";
+    return;
+  }
+
+  if (!isPremium) {
+    box.innerText =
+      "🔒 Premium requis pour utiliser les amis.";
+    return;
+  }
+
+  box.innerText = "Chargement des amis...";
+
+  try {
+
+    const snapshot = await getDocs(collection(db, "friends"));
+
+    let html = "";
+
+    snapshot.forEach((docItem) => {
+
+      const item = docItem.data();
+
+      if (item.owner === currentUser.email) {
+
+        html += `
+          <div class="friend-item">
+            👤 ${item.friend}
+          </div>
+        `;
+
+      }
+
+    });
+
+    if (html === "") {
+      html =
+        "Aucun ami ajouté.";
+    }
+
+    box.innerHTML = html;
+
+  } catch (error) {
+
+    console.error(error);
+
+    box.innerText =
+      "Erreur chargement amis.";
+
+  }
+
+}
 document.addEventListener("DOMContentLoaded", function () {
   console.log("✅ Trilo JS chargé");
 
   brancherBoutons();
   drawChart();
-  afficherEtatPremium();
+  afficherEtatPremium();const addFriendBtn = el("addFriendBtn");
+
+if (addFriendBtn) {
+  addFriendBtn.onclick = ajouterAmi;
+}
+
+chargerAmis();
 });
 
 if (document.readyState !== "loading") {
