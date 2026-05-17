@@ -449,3 +449,102 @@ button:hover {
     font-size: 42px;
   }
 }
+.friends-section{
+
+    margin-top:40px;
+
+    background:rgba(8,15,40,0.9);
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    border-radius:30px;
+
+    padding:30px;
+
+}
+
+.friends-add{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-top:25px;
+
+    margin-bottom:25px;
+
+    flex-wrap:wrap;
+
+}
+
+.friends-add input{
+
+    flex:1;
+
+    min-width:220px;
+
+    background:#050b25;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    color:white;
+
+    padding:18px;
+
+    border-radius:16px;
+
+    font-size:16px;
+
+}
+
+.friends-add button{
+
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+
+    border:none;
+
+    color:white;
+
+    padding:18px 28px;
+
+    border-radius:16px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+}
+
+.friends-add button:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.friends-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+.friend-item{
+
+    background:#050b25;
+
+    border:1px solid rgba(255,255,255,0.05);
+
+    border-radius:18px;
+
+    padding:20px;
+
+    color:white;
+
+    font-size:17px;
+
+}
