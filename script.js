@@ -1086,3 +1086,28 @@ if (document.readyState !== "loading") {
 
   afficherEtatPremium();
 }
+async function sauvegarderScoreMondial(score) {
+
+    if (!currentUser) return;
+
+    try {
+
+        await addDoc(collection(db, "classement"), {
+
+            nom: currentUser.email,
+
+            score: Number(score),
+
+            date: Date.now()
+
+        });
+
+        chargerClassementMondial();
+
+    } catch (e) {
+
+        console.log("Erreur classement :", e);
+
+    }
+
+}
