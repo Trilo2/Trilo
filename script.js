@@ -50,7 +50,7 @@ function safeText(id, text) {
   const element = el(id);
   if (element) element.innerText = text;
 }
-
+];
 function convertirTempsEnMinutes(temps) {
   if (!temps) return 0;
 
