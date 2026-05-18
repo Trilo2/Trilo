@@ -54,31 +54,31 @@ function safeText(id, text) {
 function convertirTempsEnMinutes(temps) {
   if (!temps) return 0;
 
-  temps = String(temps).trim().replace("'", ":");
+  const valeur = String(temps).trim().replace(",", ".").replace("'", ":");
 
-  if (!temps.includes(":")) {
-    const minutes = Number(temps);
+  if (!valeur.includes(":")) {
+    const minutes = Number(valeur);
     return isNaN(minutes) ? 0 : minutes;
   }
 
-  const parts = temps.split(":").map(Number);
-
-  if (parts.some(isNaN)) return 0;
+  const parts = valeur.split(":");
 
   if (parts.length === 2) {
-    const minutes = parts[0];
-    const secondes = parts[1];
+    const minutes = Number(parts[0]);
+    const secondes = Number(parts[1]);
 
+    if (isNaN(minutes) || isNaN(secondes)) return 0;
     if (secondes < 0 || secondes >= 60) return 0;
 
     return minutes + secondes / 60;
   }
 
   if (parts.length === 3) {
-    const heures = parts[0];
-    const minutes = parts[1];
-    const secondes = parts[2];
+    const heures = Number(parts[0]);
+    const minutes = Number(parts[1]);
+    const secondes = Number(parts[2]);
 
+    if (isNaN(heures) || isNaN(minutes) || isNaN(secondes)) return 0;
     if (minutes < 0 || minutes >= 60) return 0;
     if (secondes < 0 || secondes >= 60) return 0;
 
@@ -87,25 +87,6 @@ function convertirTempsEnMinutes(temps) {
 
   return 0;
 }
-  if (!temps) return 0;
-
-  temps = String(temps).trim().replace("'", ":");
-
-  if (!temps.includes(":")) {
-    const simple = Number(temps);
-    return isNaN(simple) ? 0 : simple;
-  }
-
-  const parts = temps.split(":");
-  if (parts.length !== 2) return 0;
-
-  const minutes = Number(parts[0]);
-  const secondes = Number(parts[1]);
-
-  if (isNaN(minutes) || isNaN(secondes)) return 0;
-  if (secondes < 0 || secondes >= 60) return 0;
-
-  return minutes + secondes / 60;
 }
 
 function conseilAleatoire(liste) {
