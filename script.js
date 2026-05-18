@@ -57,6 +57,41 @@ function convertirTempsEnMinutes(temps) {
   temps = String(temps).trim().replace("'", ":");
 
   if (!temps.includes(":")) {
+    const minutes = Number(temps);
+    return isNaN(minutes) ? 0 : minutes;
+  }
+
+  const parts = temps.split(":").map(Number);
+
+  if (parts.some(isNaN)) return 0;
+
+  if (parts.length === 2) {
+    const minutes = parts[0];
+    const secondes = parts[1];
+
+    if (secondes < 0 || secondes >= 60) return 0;
+
+    return minutes + secondes / 60;
+  }
+
+  if (parts.length === 3) {
+    const heures = parts[0];
+    const minutes = parts[1];
+    const secondes = parts[2];
+
+    if (minutes < 0 || minutes >= 60) return 0;
+    if (secondes < 0 || secondes >= 60) return 0;
+
+    return heures * 60 + minutes + secondes / 60;
+  }
+
+  return 0;
+}
+  if (!temps) return 0;
+
+  temps = String(temps).trim().replace("'", ":");
+
+  if (!temps.includes(":")) {
     const simple = Number(temps);
     return isNaN(simple) ? 0 : simple;
   }
