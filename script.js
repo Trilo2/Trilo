@@ -21,6 +21,8 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
+/* FIREBASE */
+
 const firebaseConfig = {
   apiKey: "AIzaSyBTv3F1ukSvaoD340ABx6CLjjQ0pHBs7q8",
   authDomain: "trilo-88a88.firebaseapp.com",
@@ -35,12 +37,16 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+/* VARIABLES */
+
 let currentUser = null;
 let isPremium = false;
 let chart = null;
 
 let labels = JSON.parse(localStorage.getItem("triloLabels")) || [];
 let data = JSON.parse(localStorage.getItem("triloData")) || [];
+
+/* OUTILS */
 
 function el(id) {
   return document.getElementById(id);
@@ -50,7 +56,9 @@ function safeText(id, text) {
   const element = el(id);
   if (element) element.innerText = text;
 }
-];
+
+/* TEMPS : accepte 4:30, 20:00, 1:15:00 */
+
 function convertirTempsEnMinutes(temps) {
   if (!temps) return 0;
 
@@ -87,11 +95,12 @@ function convertirTempsEnMinutes(temps) {
 
   return 0;
 }
-}
 
 function conseilAleatoire(liste) {
   return liste[Math.floor(Math.random() * liste.length)];
 }
+
+/* CONSEILS */
 
 const conseilsNatation = [
   "🏊 Conseil : travaille ta respiration bilatérale.",
@@ -116,6 +125,8 @@ const conseilsCourse = [
   "🏃 Conseil : améliore ta récupération.",
   "🏃 Conseil : garde une foulée relâchée."
 ];
+
+/* AUTH */
 
 async function creerProfilUtilisateur(user) {
   if (!user) return;
@@ -143,7 +154,6 @@ async function verifierPremium(user) {
   const snap = await getDoc(userRef);
 
   isPremium = snap.exists() && snap.data().premium === true;
-
   afficherEtatPremium();
 }
 
@@ -182,26 +192,6 @@ async function login() {
   }
 }
 
-function afficherEtatPremium() {
-  if (!currentUser) {
-    safeText("leaderboard", "🔐 Connecte-toi pour accéder au classement.");
-    safeText("comparison", "🔐 Connecte-toi pour comparer tes performances.");
-    safeText("advancedComparison", "🔐 Connecte-toi pour débloquer l’analyse avancée IA.");
-    return;
-  }
-
-  if (!isPremium) {
-    safeText("leaderboard", "🔒 Fonction Premium : débloque le classement mondial.");
-    safeText("comparison", "🔒 Fonction Premium : débloque la comparaison utilisateurs.");
-    safeText("advancedComparison", "🔒 Premium requis pour débloquer l’analyse avancée IA.");
-    return;
-  }
-
-  safeText("leaderboard", "🏆 Analyse une séance pour charger le classement mondial.");
-  safeText("comparison", "⚔️ Analyse une séance pour comparer ton score.");
-  safeText("advancedComparison", "🧠 Analyse une séance pour recevoir l’analyse avancée IA.");
-}
-
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
 
@@ -209,11 +199,39 @@ onAuthStateChanged(auth, async (user) => {
     await creerProfilUtilisateur(user);
     await verifierPremium(user);
     await chargerClassement();
+    await chargerAmis();
   } else {
     isPremium = false;
     afficherEtatPremium();
   }
 });
+
+/* PREMIUM */
+
+function afficherEtatPremium() {
+  if (!currentUser) {
+    safeText("leaderboard", "🔐 Connecte-toi pour accéder au classement.");
+    safeText("comparison", "🔐 Connecte-toi pour comparer tes performances.");
+    safeText("advancedComparison", "🔐 Connecte-toi pour débloquer l’analyse avancée IA.");
+    safeText("friendsList", "🔐 Connecte-toi pour utiliser les amis.");
+    return;
+  }
+
+  if (!isPremium) {
+    safeText("leaderboard", "🔒 Fonction Premium : classement mondial.");
+    safeText("comparison", "🔒 Fonction Premium : comparaison utilisateurs.");
+    safeText("advancedComparison", "🔒 Premium requis pour l’analyse avancée IA.");
+    safeText("friendsList", "🔒 Premium requis pour utiliser les amis.");
+    return;
+  }
+
+  safeText("leaderboard", "🏆 Analyse une séance pour charger le classement.");
+  safeText("comparison", "⚔️ Analyse une séance pour comparer ton score.");
+  safeText("advancedComparison", "🧠 Analyse une séance pour recevoir l’analyse avancée IA.");
+  safeText("friendsList", "Chargement des amis...");
+}
+
+/* CALCUL SCORE */
 
 function calculerScores() {
   const swimDist = Number(el("swimDist")?.value);
@@ -310,6 +328,8 @@ function obtenirEvolution(score) {
   return { evolution, objectif, recuperation, fatigue };
 }
 
+/* BADGES */
+
 function genererBadges(globalScore, performances, progression) {
   let badges = [];
 
@@ -345,6 +365,8 @@ function afficherBadges(badges) {
   });
 }
 
+/* IA */
+
 function genererAnalyseIA(globalScore, sportFaible, sportFort, progression) {
   if (!isPremium) return "🔒 Coach IA réservé aux utilisateurs Trilo Premium.";
 
@@ -355,14 +377,14 @@ function genererAnalyseIA(globalScore, sportFaible, sportFort, progression) {
   texte += "⚠️ Point faible : " + sportFaible.sport + "\n\n";
 
   if (globalScore < 6) texte += "Tu es en construction. Priorité : régularité, technique et endurance.\n\n";
-  else if (globalScore < 9) texte += "Tu progresses bien. Travaille ton point faible pour équilibrer ton profil.\n\n";
-  else if (globalScore < 12) texte += "Très bon niveau. Cherche plus de constance et de précision.\n\n";
-  else if (globalScore < 15) texte += "Excellent rythme. Surveille surtout la récupération.\n\n";
-  else texte += "Niveau Elite détecté. Optimise maintenant les détails.\n\n";
+  else if (globalScore < 9) texte += "Tu progresses bien. Travaille ton point faible.\n\n";
+  else if (globalScore < 12) texte += "Très bon niveau. Cherche plus de constance.\n\n";
+  else if (globalScore < 15) texte += "Excellent rythme. Surveille la récupération.\n\n";
+  else texte += "Niveau Elite détecté. Optimise les détails.\n\n";
 
-  if (sportFaible.sport === "natation") texte += "Plan IA : 2 séances natation cette semaine : technique + endurance.\n";
-  else if (sportFaible.sport === "vélo") texte += "Plan IA : 2 sorties vélo cette semaine : endurance + cadence régulière.\n";
-  else texte += "Plan IA : 2 séances course cette semaine : endurance + allure stable.\n";
+  if (sportFaible.sport === "natation") texte += "Plan : 2 séances natation, technique + endurance.\n";
+  else if (sportFaible.sport === "vélo") texte += "Plan : 2 sorties vélo, endurance + cadence.\n";
+  else texte += "Plan : 2 séances course, endurance + allure stable.\n";
 
   texte += "\n" + progression.recuperation;
 
@@ -370,6 +392,8 @@ function genererAnalyseIA(globalScore, sportFaible, sportFort, progression) {
 
   return texte;
 }
+
+/* DASHBOARD */
 
 function mettreAJourDashboard(globalScore, performances) {
   if (!isPremium) {
@@ -379,8 +403,6 @@ function mettreAJourDashboard(globalScore, performances) {
     safeText("bestSport", "Premium");
     return;
   }
-
-  if (!el("bestScore")) return;
 
   const sessions = data.length;
   const bestScore = Math.max(...data);
@@ -399,11 +421,10 @@ function mettreAJourDashboard(globalScore, performances) {
   safeText("bestSport", bestSport);
 }
 
+/* FIRESTORE */
+
 async function sauvegarderScoreCloud(score, performances, badges) {
-  if (!currentUser) {
-    console.log("Utilisateur non connecté : score non sauvegardé.");
-    return;
-  }
+  if (!currentUser) return;
 
   try {
     await addDoc(collection(db, "scores"), {
@@ -414,12 +435,12 @@ async function sauvegarderScoreCloud(score, performances, badges) {
       badges,
       createdAt: serverTimestamp()
     });
-
-    console.log("✅ Score sauvegardé.");
   } catch (error) {
-    console.error("❌ Erreur sauvegarde Firestore :", error);
+    console.error("Erreur sauvegarde score :", error);
   }
 }
+
+/* CLASSEMENT */
 
 async function chargerClassement() {
   const box = el("leaderboard");
@@ -438,12 +459,7 @@ async function chargerClassement() {
   box.innerText = "Chargement du classement mondial...";
 
   try {
-    const q = query(
-      collection(db, "scores"),
-      orderBy("score", "desc"),
-      limit(10)
-    );
-
+    const q = query(collection(db, "scores"), orderBy("score", "desc"), limit(10));
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
@@ -456,19 +472,18 @@ async function chargerClassement() {
 
     snapshot.forEach((docItem) => {
       const item = docItem.data();
-      const email = item.email || "Utilisateur";
-      const score = Number(item.score || 0).toFixed(2);
-
-      texte += "#" + rang + " — " + email + " : " + score + "\n";
+      texte += "#" + rang + " — " + (item.email || "Utilisateur") + " : " + Number(item.score || 0).toFixed(2) + "\n";
       rang++;
     });
 
     box.innerText = texte;
   } catch (error) {
-    console.error("❌ Erreur classement :", error);
+    console.error(error);
     box.innerText = "Erreur chargement classement.";
   }
 }
+
+/* COMPARAISON */
 
 async function chargerComparaison(monScore) {
   const box = el("comparison");
@@ -483,8 +498,6 @@ async function chargerComparaison(monScore) {
     box.innerText = "🔒 Fonction Premium : débloque la comparaison utilisateurs.";
     return;
   }
-
-  box.innerText = "Chargement de la comparaison...";
 
   try {
     const snapshot = await getDocs(collection(db, "scores"));
@@ -502,7 +515,7 @@ async function chargerComparaison(monScore) {
 
     const best = Math.max(...scores);
     const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-    const rank = scores.filter((s) => s > monScore).length + 1;
+    const rank = scores.filter(s => s > monScore).length + 1;
 
     box.innerText =
       "Ton score : " + monScore.toFixed(2) +
@@ -510,10 +523,12 @@ async function chargerComparaison(monScore) {
       "\nMoyenne utilisateurs : " + avg.toFixed(2) +
       "\nTon rang approximatif : #" + rank + " sur " + scores.length;
   } catch (error) {
-    console.error("❌ Erreur comparaison :", error);
-    box.innerText = "Erreur chargement comparaison.";
+    console.error(error);
+    box.innerText = "Erreur comparaison.";
   }
 }
+
+/* COMPARAISON IA */
 
 async function chargerComparaisonAvancee(monScore, sportFort, sportFaible) {
   const box = el("advancedComparison");
@@ -529,8 +544,6 @@ async function chargerComparaisonAvancee(monScore, sportFort, sportFaible) {
     return;
   }
 
-  box.innerText = "Chargement de l’analyse avancée IA...";
-
   try {
     const snapshot = await getDocs(collection(db, "scores"));
     let scores = [];
@@ -545,13 +558,12 @@ async function chargerComparaisonAvancee(monScore, sportFort, sportFaible) {
       return;
     }
 
-    const betterThan = scores.filter((s) => s < monScore).length;
+    const betterThan = scores.filter(s => s < monScore).length;
     const percent = Math.round((betterThan / scores.length) * 100);
     const best = Math.max(...scores);
     const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
 
     let niveau = "Débutant";
-
     if (monScore >= avg) niveau = "Intermédiaire";
     if (monScore >= avg * 1.2) niveau = "Avancé";
     if (monScore >= best * 0.9) niveau = "Elite";
@@ -561,22 +573,94 @@ async function chargerComparaisonAvancee(monScore, sportFort, sportFaible) {
       "Tu dépasses environ " + percent + "% des utilisateurs Trilo.\n" +
       "Ton niveau estimé : " + niveau + ".\n" +
       "Ton point fort dominant : " + sportFort.sport + ".\n" +
-      "Ton axe prioritaire : " + sportFaible.sport + ".\n\n" +
-      "Conseil IA : améliore d’abord ton point faible avant d’augmenter l’intensité globale.";
+      "Ton axe prioritaire : " + sportFaible.sport + ".";
   } catch (error) {
-    console.error("❌ Erreur analyse IA avancée :", error);
-    box.innerText = "Erreur analyse avancée IA.";
+    console.error(error);
+    box.innerText = "Erreur analyse IA avancée.";
   }
 }
+
+/* AMIS */
+
+async function ajouterAmi() {
+  if (!currentUser) {
+    alert("Connecte-toi.");
+    return;
+  }
+
+  if (!isPremium) {
+    alert("Fonction Premium.");
+    return;
+  }
+
+  const input = el("friendEmail");
+  if (!input) return;
+
+  const friendEmail = input.value.trim();
+
+  if (!friendEmail) {
+    alert("Entre un email.");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "friends"), {
+      owner: currentUser.email,
+      friend: friendEmail,
+      createdAt: serverTimestamp()
+    });
+
+    input.value = "";
+    await chargerAmis();
+    alert("Ami ajouté ✅");
+  } catch (error) {
+    console.error(error);
+    alert("Erreur ajout ami.");
+  }
+}
+
+async function chargerAmis() {
+  const box = el("friendsList");
+  if (!box) return;
+
+  if (!currentUser) {
+    box.innerText = "🔐 Connecte-toi pour utiliser les amis.";
+    return;
+  }
+
+  if (!isPremium) {
+    box.innerText = "🔒 Premium requis pour utiliser les amis.";
+    return;
+  }
+
+  box.innerText = "Chargement des amis...";
+
+  try {
+    const snapshot = await getDocs(collection(db, "friends"));
+    let html = "";
+
+    snapshot.forEach((docItem) => {
+      const item = docItem.data();
+
+      if (item.owner === currentUser.email) {
+        html += `<div class="friend-item">👤 ${item.friend}</div>`;
+      }
+    });
+
+    box.innerHTML = html || "Aucun ami ajouté.";
+  } catch (error) {
+    console.error(error);
+    box.innerText = "Erreur chargement amis.";
+  }
+}
+
+/* GRAPHIQUE */
 
 function drawChart() {
   const canvas = el("chart");
   if (!canvas) return;
 
-  if (typeof Chart === "undefined") {
-    console.error("Chart.js n’est pas chargé.");
-    return;
-  }
+  if (typeof Chart === "undefined") return;
 
   if (chart) chart.destroy();
 
@@ -600,6 +684,8 @@ function drawChart() {
   });
 }
 
+/* RESET */
+
 function resetData() {
   if (!confirm("Supprimer l’historique Trilo ?")) return;
 
@@ -622,9 +708,9 @@ function resetData() {
   drawChart();
 }
 
-async function analyser() {
-  console.log("✅ Fonction analyser lancée");
+/* ANALYSE */
 
+async function analyser() {
   const resultat = calculerScores();
 
   if (!resultat) {
@@ -644,7 +730,6 @@ async function analyser() {
   const progression = obtenirEvolution(globalScore);
 
   let conseil = "";
-
   if (sportFaible.sport === "natation") conseil = conseilAleatoire(conseilsNatation);
   else if (sportFaible.sport === "vélo") conseil = conseilAleatoire(conseilsVelo);
   else conseil = conseilAleatoire(conseilsCourse);
@@ -661,7 +746,6 @@ async function analyser() {
   mettreAJourDashboard(globalScore, performances);
 
   let stats = "📊 Scores par sport :\n";
-
   performances.forEach((p) => {
     stats += "- " + p.sport + " : " + p.score.toFixed(2) + "\n";
   });
@@ -671,16 +755,16 @@ async function analyser() {
   safeText(
     "message",
     niveau.intro +
-      "\n\nScore global : " + globalScore.toFixed(2) +
-      "\n\n💪 Point fort : " + sportFort.sport +
-      "\n⚠️ Point faible : " + sportFaible.sport +
-      "\n\n" + stats +
-      "\n" + progression.evolution +
-      "\n\n" + progression.objectif +
-      "\n\n" + progression.recuperation +
-      "\n\n" + progression.fatigue +
-      "\n\n" + conseil +
-      (currentUser ? "\n\n☁️ Score sauvegardé." : "\n\n🔐 Connecte-toi pour sauvegarder.")
+    "\n\nScore global : " + globalScore.toFixed(2) +
+    "\n\n💪 Point fort : " + sportFort.sport +
+    "\n⚠️ Point faible : " + sportFaible.sport +
+    "\n\n" + stats +
+    "\n" + progression.evolution +
+    "\n\n" + progression.objectif +
+    "\n\n" + progression.recuperation +
+    "\n\n" + progression.fatigue +
+    "\n\n" + conseil +
+    (currentUser ? "\n\n☁️ Score sauvegardé." : "\n\n🔐 Connecte-toi pour sauvegarder.")
   );
 
   safeText("aiAnalysis", genererAnalyseIA(globalScore, sportFaible, sportFort, progression));
@@ -693,155 +777,33 @@ async function analyser() {
   drawChart();
 }
 
+/* BOUTONS */
+
 function brancherBoutons() {
   const analyzeBtn = el("analyzeBtn");
   const resetBtn = el("resetBtn");
   const signupBtn = el("signupBtn");
   const loginBtn = el("loginBtn");
+  const addFriendBtn = el("addFriendBtn");
 
-  if (analyzeBtn) {
-    analyzeBtn.onclick = function () {
-      console.log("✅ Bouton analyser cliqué");
-      analyser();
-    };
-  } else {
-    console.error("analyzeBtn introuvable");
-  }
-
+  if (analyzeBtn) analyzeBtn.onclick = analyser;
   if (resetBtn) resetBtn.onclick = resetData;
   if (signupBtn) signupBtn.onclick = signup;
   if (loginBtn) loginBtn.onclick = login;
+  if (addFriendBtn) addFriendBtn.onclick = ajouterAmi;
 
   const premiumBtn = document.querySelector(".premium-btn");
-
   if (premiumBtn) {
-    premiumBtn.onclick = function () {
+    premiumBtn.onclick = () => {
       alert("🚀 Trilo Premium arrive bientôt. Paiement bientôt disponible.");
     };
   }
 }
 
-window.triloAnalyser = analyser;
-async function ajouterAmi() {
-
-  if (!currentUser) {
-    alert("Connecte-toi.");
-    return;
-  }
-
-  if (!isPremium) {
-    alert("Fonction Premium.");
-    return;
-  }
-
-  const input = document.getElementById("friendEmail");
-
-  if (!input) return;
-
-  const friendEmail = input.value.trim();
-
-  if (!friendEmail) {
-    alert("Entre un email.");
-    return;
-  }
-
-  try {
-
-    await addDoc(collection(db, "friends"), {
-
-      owner: currentUser.email,
-      friend: friendEmail,
-      createdAt: serverTimestamp()
-
-    });
-
-    input.value = "";
-
-    chargerAmis();
-
-    alert("Ami ajouté ✅");
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert("Erreur ajout ami.");
-
-  }
-
-}
-
-async function chargerAmis() {
-
-  const box = document.getElementById("friendsList");
-
-  if (!box) return;
-
-  if (!currentUser) {
-    box.innerText =
-      "🔐 Connecte-toi pour utiliser les amis.";
-    return;
-  }
-
-  if (!isPremium) {
-    box.innerText =
-      "🔒 Premium requis pour utiliser les amis.";
-    return;
-  }
-
-  box.innerText = "Chargement des amis...";
-
-  try {
-
-    const snapshot = await getDocs(collection(db, "friends"));
-
-    let html = "";
-
-    snapshot.forEach((docItem) => {
-
-      const item = docItem.data();
-
-      if (item.owner === currentUser.email) {
-
-        html += `
-          <div class="friend-item">
-            👤 ${item.friend}
-          </div>
-        `;
-
-      }
-
-    });
-
-    if (html === "") {
-      html =
-        "Aucun ami ajouté.";
-    }
-
-    box.innerHTML = html;
-
-  } catch (error) {
-
-    console.error(error);
-
-    box.innerText =
-      "Erreur chargement amis.";
-
-  }
-
-}
-document.addEventListener("DOMContentLoaded", function () {
-  console.log("✅ Trilo JS chargé");
-
+document.addEventListener("DOMContentLoaded", () => {
   brancherBoutons();
   drawChart();
-  afficherEtatPremium();const addFriendBtn = el("addFriendBtn");
-
-if (addFriendBtn) {
-  addFriendBtn.onclick = ajouterAmi;
-}
-
-chargerAmis();
+  afficherEtatPremium();
 });
 
 if (document.readyState !== "loading") {
