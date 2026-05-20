@@ -1,12 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
   getFirestore,
   collection,
@@ -19,795 +18,677 @@ import {
   doc,
   setDoc,
   getDoc
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-/* FIREBASE */
+/* =========================
+   FIREBASE CONFIG
+========================= */
 
 const firebaseConfig = {
   apiKey: "AIzaSyBTv3F1ukSvaoD340ABx6CLjjQ0pHBs7q8",
   authDomain: "trilo-88a88.firebaseapp.com",
   projectId: "trilo-88a88",
   storageBucket: "trilo-88a88.appspot.com",
-  messagingSenderId: "748450983741",
-  appId: "1:748450983741:web:c2f3f9f0afa042530f9f54",
-  measurementId: "G-GSNS075D5R"
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:abcdef"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* VARIABLES */
+/* =========================
+   VARIABLES GLOBALES
+========================= */
 
 let currentUser = null;
 let isPremium = false;
 let chart = null;
+let sessions = JSON.parse(localStorage.getItem("triloSessions")) || [];
 
-let labels = JSON.parse(localStorage.getItem("triloLabels")) || [];
-let data = JSON.parse(localStorage.getItem("triloData")) || [];
-
-/* OUTILS */
+/* =========================
+   HELPER
+========================= */
 
 function el(id) {
   return document.getElementById(id);
 }
 
-function safeText(id, text) {
-  const element = el(id);
-  if (element) element.innerText = text;
-}
-
-/* TEMPS : accepte 4:30, 20:00, 1:15:00 */
-
 function convertirTempsEnMinutes(temps) {
-  if (!temps) return 0;
-
-  const valeur = String(temps).trim().replace(",", ".").replace("'", ":");
-
-  if (!valeur.includes(":")) {
-    const minutes = Number(valeur);
-    return isNaN(minutes) ? 0 : minutes;
-  }
-
-  const parts = valeur.split(":");
-
-  if (parts.length === 2) {
-    const minutes = Number(parts[0]);
-    const secondes = Number(parts[1]);
-
-    if (isNaN(minutes) || isNaN(secondes)) return 0;
-    if (secondes < 0 || secondes >= 60) return 0;
-
-    return minutes + secondes / 60;
-  }
-
-  if (parts.length === 3) {
-    const heures = Number(parts[0]);
-    const minutes = Number(parts[1]);
-    const secondes = Number(parts[2]);
-
-    if (isNaN(heures) || isNaN(minutes) || isNaN(secondes)) return 0;
-    if (minutes < 0 || minutes >= 60) return 0;
-    if (secondes < 0 || secondes >= 60) return 0;
-
-    return heures * 60 + minutes + secondes / 60;
-  }
-
-  return 0;
+  if (!temps || typeof temps !== "string") return 0;
+  const parts = temps.trim().split(":");
+  if (parts.length !== 2) return 0;
+  const minutes = Number(parts[0]);
+  const secondes = Number(parts[1]);
+  if (isNaN(minutes) || isNaN(secondes)) return 0;
+  return minutes + secondes / 60;
 }
 
-function conseilAleatoire(liste) {
+function randElement(liste) {
   return liste[Math.floor(Math.random() * liste.length)];
 }
 
-/* CONSEILS */
+/* =========================
+   CONSEILS
+========================= */
 
 const conseilsNatation = [
-  "🏊 Conseil : travaille ta respiration bilatérale.",
-  "🏊 Conseil : améliore ta glisse dans l’eau.",
-  "🏊 Conseil : garde une nage régulière.",
-  "🏊 Conseil : fais des séries longues.",
-  "🏊 Conseil : évite de partir trop vite."
+  "🏊 Travaille ta respiration bilatérale pour équilibrer ta nage.",
+  "🏊 Allonge ton coup de bras pour améliorer ta glisse.",
+  "🏊 Concentre-toi sur la rotation des hanches pour plus de puissance.",
+  "🏊 Pratique des séries de kick pour renforcer tes jambes.",
+  "🏊 Améliore ta sortie d'eau pour gagner du temps en transition."
 ];
 
 const conseilsVelo = [
-  "🚴 Conseil : travaille ta cadence.",
-  "🚴 Conseil : garde une vitesse régulière.",
-  "🚴 Conseil : améliore ton endurance.",
-  "🚴 Conseil : évite les gros à-coups.",
-  "🚴 Conseil : travaille ta position."
+  "🚴 Maintiens une cadence entre 80 et 100 rpm pour préserver tes jambes.",
+  "🚴 Adopte une position aérodynamique pour réduire la résistance.",
+  "🚴 Hydrate-toi toutes les 15-20 minutes sur le vélo.",
+  "🚴 Travaille les relances après les virages et les montées.",
+  "🚴 Mange sur le vélo pour avoir de l'énergie pour la course."
 ];
 
 const conseilsCourse = [
-  "🏃 Conseil : travaille ton endurance fondamentale.",
-  "🏃 Conseil : stabilise ton allure.",
-  "🏃 Conseil : ajoute du fractionné léger.",
-  "🏃 Conseil : améliore ta récupération.",
-  "🏃 Conseil : garde une foulée relâchée."
+  "🏃 Garde une foulée relâchée et économique.",
+  "🏃 Vise une cadence d'environ 180 pas par minute.",
+  "🏃 Contrôle ta respiration dès le départ pour ne pas partir trop vite.",
+  "🏃 Ne pars pas trop vite — gère ton effort sur la durée.",
+  "🏃 Maintiens une bonne posture : buste droit, bras décontractés."
 ];
 
-/* AUTH */
+/* =========================
+   BADGES
+========================= */
 
-async function creerProfilUtilisateur(user) {
-  if (!user) return;
-
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
-
-  if (!snap.exists()) {
-    await setDoc(userRef, {
-      email: user.email,
-      premium: false,
-      createdAt: serverTimestamp()
-    });
+const BADGES = [
+  {
+    id: "first_session",
+    label: "🎯 Première séance",
+    desc: "Analyse ta première performance",
+    check: (s) => s.length >= 1
+  },
+  {
+    id: "swimmer",
+    label: "🏊 Nageur",
+    desc: "Nage plus de 1000m",
+    check: (s) => s.some(x => x.swimDist >= 1000)
+  },
+  {
+    id: "cyclist",
+    label: "🚴 Cycliste",
+    desc: "Roule plus de 20km",
+    check: (s) => s.some(x => x.bikeDist >= 20)
+  },
+  {
+    id: "runner",
+    label: "🏃 Coureur",
+    desc: "Cours plus de 5km",
+    check: (s) => s.some(x => x.runDist >= 5)
+  },
+  {
+    id: "triathlete",
+    label: "🏅 Triathlète",
+    desc: "Complète les 3 disciplines en une séance",
+    check: (s) => s.some(x => x.swimDist > 0 && x.bikeDist > 0 && x.runDist > 0)
+  },
+  {
+    id: "consistent",
+    label: "🔥 Régulier",
+    desc: "5 séances analysées",
+    check: (s) => s.length >= 5
+  },
+  {
+    id: "beast",
+    label: "💪 Bête de course",
+    desc: "Score supérieur à 12",
+    check: (s) => s.some(x => x.globalScore >= 12)
+  },
+  {
+    id: "elite",
+    label: "🥇 Élite",
+    desc: "Score supérieur à 15",
+    check: (s) => s.some(x => x.globalScore >= 15)
+  },
+  {
+    id: "veteran",
+    label: "🎖️ Vétéran",
+    desc: "10 séances analysées",
+    check: (s) => s.length >= 10
   }
-}
+];
 
-async function verifierPremium(user) {
-  if (!user) {
-    isPremium = false;
-    afficherEtatPremium();
+function afficherBadges() {
+  const zone = el("badgesList");
+  if (!zone) return;
+  const obtenus = BADGES.filter(b => b.check(sessions));
+  if (obtenus.length === 0) {
+    zone.innerHTML = "Fais une analyse pour débloquer tes premiers badges.";
     return;
   }
-
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
-
-  isPremium = snap.exists() && snap.data().premium === true;
-  afficherEtatPremium();
+  zone.innerHTML = obtenus.map(b => `
+    <div class="badge-item">
+      <strong>${b.label}</strong>
+      <span>${b.desc}</span>
+    </div>
+  `).join("");
 }
 
-async function signup() {
-  const email = el("email")?.value;
-  const password = el("password")?.value;
-
-  if (!email || !password) {
-    alert("Entre un email et un mot de passe.");
-    return;
-  }
-
-  try {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    await creerProfilUtilisateur(result.user);
-    alert("Compte créé ✅");
-  } catch (error) {
-    alert("Erreur : " + error.message);
-  }
-}
-
-async function login() {
-  const email = el("email")?.value;
-  const password = el("password")?.value;
-
-  if (!email || !password) {
-    alert("Entre ton email et ton mot de passe.");
-    return;
-  }
-
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    alert("Connexion réussie ✅");
-  } catch (error) {
-    alert("Erreur : " + error.message);
-  }
-}
-
-onAuthStateChanged(auth, async (user) => {
-  currentUser = user;
-
-  if (user) {
-    await creerProfilUtilisateur(user);
-    await verifierPremium(user);
-    await chargerClassement();
-    await chargerAmis();
-  } else {
-    isPremium = false;
-    afficherEtatPremium();
-  }
-});
-
-/* PREMIUM */
-
-function afficherEtatPremium() {
-  if (!currentUser) {
-    safeText("leaderboard", "🔐 Connecte-toi pour accéder au classement.");
-    safeText("comparison", "🔐 Connecte-toi pour comparer tes performances.");
-    safeText("advancedComparison", "🔐 Connecte-toi pour débloquer l’analyse avancée IA.");
-    safeText("friendsList", "🔐 Connecte-toi pour utiliser les amis.");
-    return;
-  }
-
-  if (!isPremium) {
-    safeText("leaderboard", "🔒 Fonction Premium : classement mondial.");
-    safeText("comparison", "🔒 Fonction Premium : comparaison utilisateurs.");
-    safeText("advancedComparison", "🔒 Premium requis pour l’analyse avancée IA.");
-    safeText("friendsList", "🔒 Premium requis pour utiliser les amis.");
-    return;
-  }
-
-  safeText("leaderboard", "🏆 Analyse une séance pour charger le classement.");
-  safeText("comparison", "⚔️ Analyse une séance pour comparer ton score.");
-  safeText("advancedComparison", "🧠 Analyse une séance pour recevoir l’analyse avancée IA.");
-  safeText("friendsList", "Chargement des amis...");
-}
-
-/* CALCUL SCORE */
+/* =========================
+   CALCUL SCORES
+========================= */
 
 function calculerScores() {
-  const swimDist = Number(el("swimDist")?.value);
-  const swimTime = convertirTempsEnMinutes(el("swimTime")?.value);
+  const swimDist = Number(el("swimDist")?.value || 0);
+  const swimTime = convertirTempsEnMinutes(el("swimTime")?.value || "");
+  const bikeDist = Number(el("bikeDist")?.value || 0);
+  const bikeTime = convertirTempsEnMinutes(el("bikeTime")?.value || "");
+  const runDist  = Number(el("runDist")?.value  || 0);
+  const runTime  = convertirTempsEnMinutes(el("runTime")?.value  || "");
 
-  const bikeDist = Number(el("bikeDist")?.value);
-  const bikeTime = convertirTempsEnMinutes(el("bikeTime")?.value);
-
-  const runDist = Number(el("runDist")?.value);
-  const runTime = convertirTempsEnMinutes(el("runTime")?.value);
-
-  const refSwim = 45;
-  const refBike = 22;
-  const refRun = 12;
+  // Références pour un niveau "correct"
+  const refSwim = 45;   // m/min
+  const refBike = 22;   // km/h
+  const refRun  = 12;   // km/h
 
   let total = 0;
   let count = 0;
-  let performances = [];
+  const performances = [];
 
   if (swimDist > 0 && swimTime > 0) {
     const speed = swimDist / swimTime;
-    const score = (speed / refSwim) * 10;
+    const score = Math.min((speed / refSwim) * 10, 20);
     total += score;
     count++;
-    performances.push({ sport: "natation", score });
+    performances.push({ sport: "natation", score, speed, dist: swimDist, time: swimTime });
   }
 
   if (bikeDist > 0 && bikeTime > 0) {
     const speed = bikeDist / (bikeTime / 60);
-    const score = (speed / refBike) * 10;
+    const score = Math.min((speed / refBike) * 10, 20);
     total += score;
     count++;
-    performances.push({ sport: "vélo", score });
+    performances.push({ sport: "vélo", score, speed, dist: bikeDist, time: bikeTime });
   }
 
   if (runDist > 0 && runTime > 0) {
     const speed = runDist / (runTime / 60);
-    const score = (speed / refRun) * 10;
+    const score = Math.min((speed / refRun) * 10, 20);
     total += score;
     count++;
-    performances.push({ sport: "course", score });
+    performances.push({ sport: "course", score, speed, dist: runDist, time: runTime });
   }
 
   if (count === 0) return null;
 
   return {
     globalScore: total / count,
-    performances
+    performances,
+    swimDist, swimTime,
+    bikeDist, bikeTime,
+    runDist,  runTime
   };
 }
 
+/* =========================
+   NIVEAU
+========================= */
+
 function obtenirNiveau(score) {
-  if (score < 6) return { level: "Niveau 1 😐 Débutant", intro: "Tu construis ta base." };
-  if (score < 9) return { level: "Niveau 2 👍 En progrès", intro: "Bonne progression." };
-  if (score < 12) return { level: "Niveau 3 🔥 Bon niveau", intro: "Très solide." };
-  if (score < 15) return { level: "Niveau 4 💪 Très bon", intro: "Excellent rythme." };
-  return { level: "Niveau 5 🏆 Elite", intro: "Niveau compétitif." };
+  if (score < 4)  return { level: "Niveau 1 😐 Débutant",    intro: "Tu construis ta base, continue !" };
+  if (score < 7)  return { level: "Niveau 2 👍 En progrès",  intro: "Bonne progression, tu t'améliores." };
+  if (score < 10) return { level: "Niveau 3 🔥 Bon niveau",  intro: "Très solide, tu es dans une bonne dynamique." };
+  if (score < 13) return { level: "Niveau 4 💪 Très bon",    intro: "Excellent rythme, tu domines." };
+  if (score < 16) return { level: "Niveau 5 🚀 Expert",      intro: "Performance de haut niveau !" };
+  return           { level: "Niveau 6 🏆 Élite",             intro: "Tu es dans l'élite du triathlon !" };
 }
 
-function obtenirEvolution(score) {
-  const previousData = JSON.parse(localStorage.getItem("triloData")) || [];
+/* =========================
+   COACH IA
+========================= */
 
-  let evolution = "🚀 Première séance enregistrée.";
-  let objectif = "🎯 Enregistre une deuxième séance pour comparer.";
-  let recuperation = "🛌 Récupération conseillée : 24h.";
-  let fatigue = "";
+function genererCoachIA(result) {
+  const { globalScore, performances } = result;
+  const { level, intro } = obtenirNiveau(globalScore);
 
-  if (previousData.length > 0) {
-    const lastScore = previousData[previousData.length - 1];
-
-    if (score > lastScore) {
-      evolution = "📈 Tu progresses par rapport à ta dernière séance.";
-    } else if (score < lastScore) {
-      evolution = "⚠️ Tu baisses un peu. Vérifie ta récupération.";
-      recuperation = "🛌 Récupération conseillée : 36h.";
-    } else {
-      evolution = "😐 Tu es stable.";
-    }
-
-    const target = score < 6 ? score * 1.10 : score < 10 ? score * 1.07 : score * 1.03;
-    objectif = "🎯 Objectif prochaine séance : " + target.toFixed(2);
-  }
-
-  if (previousData.length >= 2) {
-    const last = previousData[previousData.length - 1];
-    const before = previousData[previousData.length - 2];
-
-    if (score < last && last < before) {
-      fatigue = "⚠️ Alerte fatigue : baisse sur plusieurs séances. Repose-toi.";
-      recuperation = "🛌 Récupération conseillée : 48h.";
-    }
-  }
-
-  return { evolution, objectif, recuperation, fatigue };
-}
-
-/* BADGES */
-
-function genererBadges(globalScore, performances, progression) {
-  let badges = [];
-
-  const natation = performances.find(p => p.sport === "natation");
-  const velo = performances.find(p => p.sport === "vélo");
-  const course = performances.find(p => p.sport === "course");
-
-  if (natation && natation.score >= 10) badges.push("🏊 Spécialiste natation");
-  if (velo && velo.score >= 10) badges.push("🚴 Puissance vélo");
-  if (course && course.score >= 10) badges.push("🏃 Rapide en course");
-  if (globalScore >= 8) badges.push("🔥 Bon départ");
-  if (globalScore >= 10) badges.push("💪 Score 10+");
-  if (globalScore >= 15) badges.push("🏆 Elite Trilo");
-  if (performances.length === 3) badges.push("🔱 Triathlète complet");
-  if (progression.evolution.includes("progresses")) badges.push("📈 En progression");
-  if (progression.fatigue) badges.push("🧘 Récupération nécessaire");
-  if (badges.length === 0) badges.push("🌱 Premier pas Trilo");
-
-  return badges;
-}
-
-function afficherBadges(badges) {
-  const box = el("badgesList");
-  if (!box) return;
-
-  box.innerHTML = "";
-
-  badges.forEach((badge) => {
-    const div = document.createElement("div");
-    div.className = "badge-item";
-    div.innerText = badge;
-    box.appendChild(div);
+  const conseils = performances.map(p => {
+    if (p.sport === "natation") return randElement(conseilsNatation);
+    if (p.sport === "vélo")    return randElement(conseilsVelo);
+    if (p.sport === "course")  return randElement(conseilsCourse);
+    return "";
   });
+
+  const sorted = [...performances].sort((a, b) => b.score - a.score);
+  const best  = sorted[0];
+  const worst = sorted[sorted.length - 1];
+
+  let html = `<strong>${level}</strong><br>${intro}<br><br>`;
+  html += `<strong>Score global : ${globalScore.toFixed(2)} / 20</strong><br><br>`;
+
+  performances.forEach(p => {
+    const vitesse = p.sport === "natation"
+      ? `${p.speed.toFixed(1)} m/min`
+      : `${p.speed.toFixed(1)} km/h`;
+    html += `${p.sport.charAt(0).toUpperCase() + p.sport.slice(1)} → ${vitesse} — score : ${p.score.toFixed(2)}/20<br>`;
+  });
+
+  html += `<br>`;
+  if (best)  html += `💚 Point fort : <strong>${best.sport}</strong><br>`;
+  if (worst && worst.sport !== best?.sport) html += `⚠️ À travailler : <strong>${worst.sport}</strong><br>`;
+
+  html += `<br><strong>Conseils personnalisés :</strong><br>`;
+  conseils.forEach(c => { html += `${c}<br>`; });
+
+  return html;
 }
 
-/* IA */
+/* =========================
+   DASHBOARD
+========================= */
 
-function genererAnalyseIA(globalScore, sportFaible, sportFort, progression) {
-  if (!isPremium) return "🔒 Coach IA réservé aux utilisateurs Trilo Premium.";
-
-  let texte = "🤖 Coach IA Trilo\n\n";
-
-  texte += "Score analysé : " + globalScore.toFixed(2) + "\n";
-  texte += "💪 Point fort : " + sportFort.sport + "\n";
-  texte += "⚠️ Point faible : " + sportFaible.sport + "\n\n";
-
-  if (globalScore < 6) texte += "Tu es en construction. Priorité : régularité, technique et endurance.\n\n";
-  else if (globalScore < 9) texte += "Tu progresses bien. Travaille ton point faible.\n\n";
-  else if (globalScore < 12) texte += "Très bon niveau. Cherche plus de constance.\n\n";
-  else if (globalScore < 15) texte += "Excellent rythme. Surveille la récupération.\n\n";
-  else texte += "Niveau Elite détecté. Optimise les détails.\n\n";
-
-  if (sportFaible.sport === "natation") texte += "Plan : 2 séances natation, technique + endurance.\n";
-  else if (sportFaible.sport === "vélo") texte += "Plan : 2 sorties vélo, endurance + cadence.\n";
-  else texte += "Plan : 2 séances course, endurance + allure stable.\n";
-
-  texte += "\n" + progression.recuperation;
-
-  if (progression.fatigue) texte += "\n" + progression.fatigue;
-
-  return texte;
-}
-
-/* DASHBOARD */
-
-function mettreAJourDashboard(globalScore, performances) {
-  if (!isPremium) {
-    safeText("bestScore", "🔒");
-    safeText("averageScore", "🔒");
-    safeText("sessionCount", "🔒");
-    safeText("bestSport", "Premium");
+function mettreAJourDashboard() {
+  if (sessions.length === 0) {
+    if (el("bestScore"))    el("bestScore").textContent    = "0";
+    if (el("averageScore")) el("averageScore").textContent = "0";
+    if (el("sessionCount")) el("sessionCount").textContent = "0";
+    if (el("bestSport"))    el("bestSport").textContent    = "Aucun";
     return;
   }
 
-  const sessions = data.length;
-  const bestScore = Math.max(...data);
-  const average = data.reduce((a, b) => a + b, 0) / data.length;
+  const scores = sessions.map(s => s.globalScore);
+  const best   = Math.max(...scores).toFixed(2);
+  const avg    = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
 
-  let bestSport = "Aucun";
+  if (el("bestScore"))    el("bestScore").textContent    = best;
+  if (el("averageScore")) el("averageScore").textContent = avg;
+  if (el("sessionCount")) el("sessionCount").textContent = sessions.length;
 
-  if (performances.length > 0) {
-    const sorted = [...performances].sort((a, b) => b.score - a.score);
-    bestSport = sorted[0].sport;
-  }
-
-  safeText("bestScore", bestScore.toFixed(2));
-  safeText("averageScore", average.toFixed(2));
-  safeText("sessionCount", String(sessions));
-  safeText("bestSport", bestSport);
-}
-
-/* FIRESTORE */
-
-async function sauvegarderScoreCloud(score, performances, badges) {
-  if (!currentUser) return;
-
-  try {
-    await addDoc(collection(db, "scores"), {
-      uid: currentUser.uid,
-      email: currentUser.email,
-      score: Number(score),
-      performances,
-      badges,
-      createdAt: serverTimestamp()
+  // Sport dominant
+  const counts = { natation: 0, "vélo": 0, course: 0 };
+  sessions.forEach(s => {
+    s.performances?.forEach(p => {
+      if (counts[p.sport] !== undefined) counts[p.sport]++;
     });
-  } catch (error) {
-    console.error("Erreur sauvegarde score :", error);
+  });
+  const dominant = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  if (el("bestSport")) {
+    el("bestSport").textContent = (dominant && dominant[1] > 0) ? dominant[0] : "Aucun";
   }
+
+  mettreAJourGraphique();
 }
 
-/* CLASSEMENT */
+/* =========================
+   GRAPHIQUE
+========================= */
 
-async function chargerClassement() {
-  const box = el("leaderboard");
-  if (!box) return;
-
-  if (!currentUser) {
-    box.innerText = "🔐 Connecte-toi pour accéder au classement.";
-    return;
-  }
-
-  if (!isPremium) {
-    box.innerText = "🔒 Fonction Premium : débloque le classement mondial.";
-    return;
-  }
-
-  box.innerText = "Chargement du classement mondial...";
-
-  try {
-    const q = query(collection(db, "scores"), orderBy("score", "desc"), limit(10));
-    const snapshot = await getDocs(q);
-
-    if (snapshot.empty) {
-      box.innerText = "Aucun score enregistré.";
-      return;
-    }
-
-    let texte = "🏆 CLASSEMENT MONDIAL TRILO\n\n";
-    let rang = 1;
-
-    snapshot.forEach((docItem) => {
-      const item = docItem.data();
-      texte += "#" + rang + " — " + (item.email || "Utilisateur") + " : " + Number(item.score || 0).toFixed(2) + "\n";
-      rang++;
-    });
-
-    box.innerText = texte;
-  } catch (error) {
-    console.error(error);
-    box.innerText = "Erreur chargement classement.";
-  }
-}
-
-/* COMPARAISON */
-
-async function chargerComparaison(monScore) {
-  const box = el("comparison");
-  if (!box) return;
-
-  if (!currentUser) {
-    box.innerText = "🔐 Connecte-toi pour comparer tes performances.";
-    return;
-  }
-
-  if (!isPremium) {
-    box.innerText = "🔒 Fonction Premium : débloque la comparaison utilisateurs.";
-    return;
-  }
-
-  try {
-    const snapshot = await getDocs(collection(db, "scores"));
-    let scores = [];
-
-    snapshot.forEach((docItem) => {
-      const item = docItem.data();
-      if (typeof item.score === "number") scores.push(item.score);
-    });
-
-    if (scores.length === 0) {
-      box.innerText = "Pas encore assez de données.";
-      return;
-    }
-
-    const best = Math.max(...scores);
-    const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-    const rank = scores.filter(s => s > monScore).length + 1;
-
-    box.innerText =
-      "Ton score : " + monScore.toFixed(2) +
-      "\nMeilleur score : " + best.toFixed(2) +
-      "\nMoyenne utilisateurs : " + avg.toFixed(2) +
-      "\nTon rang approximatif : #" + rank + " sur " + scores.length;
-  } catch (error) {
-    console.error(error);
-    box.innerText = "Erreur comparaison.";
-  }
-}
-
-/* COMPARAISON IA */
-
-async function chargerComparaisonAvancee(monScore, sportFort, sportFaible) {
-  const box = el("advancedComparison");
-  if (!box) return;
-
-  if (!currentUser) {
-    box.innerText = "🔐 Connecte-toi pour débloquer l’analyse avancée IA.";
-    return;
-  }
-
-  if (!isPremium) {
-    box.innerText = "🔒 Premium requis pour débloquer l’analyse avancée IA.";
-    return;
-  }
-
-  try {
-    const snapshot = await getDocs(collection(db, "scores"));
-    let scores = [];
-
-    snapshot.forEach((docItem) => {
-      const item = docItem.data();
-      if (typeof item.score === "number") scores.push(item.score);
-    });
-
-    if (scores.length === 0) {
-      box.innerText = "Pas encore assez de données pour l’analyse IA.";
-      return;
-    }
-
-    const betterThan = scores.filter(s => s < monScore).length;
-    const percent = Math.round((betterThan / scores.length) * 100);
-    const best = Math.max(...scores);
-    const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-
-    let niveau = "Débutant";
-    if (monScore >= avg) niveau = "Intermédiaire";
-    if (monScore >= avg * 1.2) niveau = "Avancé";
-    if (monScore >= best * 0.9) niveau = "Elite";
-
-    box.innerText =
-      "🧠 Analyse avancée IA\n\n" +
-      "Tu dépasses environ " + percent + "% des utilisateurs Trilo.\n" +
-      "Ton niveau estimé : " + niveau + ".\n" +
-      "Ton point fort dominant : " + sportFort.sport + ".\n" +
-      "Ton axe prioritaire : " + sportFaible.sport + ".";
-  } catch (error) {
-    console.error(error);
-    box.innerText = "Erreur analyse IA avancée.";
-  }
-}
-
-/* AMIS */
-
-async function ajouterAmi() {
-  if (!currentUser) {
-    alert("Connecte-toi.");
-    return;
-  }
-
-  if (!isPremium) {
-    alert("Fonction Premium.");
-    return;
-  }
-
-  const input = el("friendEmail");
-  if (!input) return;
-
-  const friendEmail = input.value.trim();
-
-  if (!friendEmail) {
-    alert("Entre un email.");
-    return;
-  }
-
-  try {
-    await addDoc(collection(db, "friends"), {
-      owner: currentUser.email,
-      friend: friendEmail,
-      createdAt: serverTimestamp()
-    });
-
-    input.value = "";
-    await chargerAmis();
-    alert("Ami ajouté ✅");
-  } catch (error) {
-    console.error(error);
-    alert("Erreur ajout ami.");
-  }
-}
-
-async function chargerAmis() {
-  const box = el("friendsList");
-  if (!box) return;
-
-  if (!currentUser) {
-    box.innerText = "🔐 Connecte-toi pour utiliser les amis.";
-    return;
-  }
-
-  if (!isPremium) {
-    box.innerText = "🔒 Premium requis pour utiliser les amis.";
-    return;
-  }
-
-  box.innerText = "Chargement des amis...";
-
-  try {
-    const snapshot = await getDocs(collection(db, "friends"));
-    let html = "";
-
-    snapshot.forEach((docItem) => {
-      const item = docItem.data();
-
-      if (item.owner === currentUser.email) {
-        html += `<div class="friend-item">👤 ${item.friend}</div>`;
-      }
-    });
-
-    box.innerHTML = html || "Aucun ami ajouté.";
-  } catch (error) {
-    console.error(error);
-    box.innerText = "Erreur chargement amis.";
-  }
-}
-
-/* GRAPHIQUE */
-
-function drawChart() {
+function mettreAJourGraphique() {
   const canvas = el("chart");
-  if (!canvas) return;
+  if (!canvas || typeof Chart === "undefined") return;
 
-  if (typeof Chart === "undefined") return;
+  const ctx = canvas.getContext("2d");
+  const slice = sessions.slice(-10);
+  const labelsChart = slice.map((_, i) => `Séance ${sessions.length - slice.length + i + 1}`);
+  const dataChart   = slice.map(s => parseFloat(s.globalScore.toFixed(2)));
 
   if (chart) chart.destroy();
 
-  chart = new Chart(canvas, {
+  chart = new Chart(ctx, {
     type: "line",
     data: {
-      labels,
+      labels: labelsChart,
       datasets: [{
-        label: "Progression Trilo",
-        data,
-        borderWidth: 3,
-        tension: 0.3
+        label: "Score global",
+        data: dataChart,
+        borderColor: "#00d4ff",
+        backgroundColor: "rgba(0,212,255,0.1)",
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: "#00d4ff",
+        pointRadius: 5
       }]
     },
     options: {
       responsive: true,
+      plugins: { legend: { labels: { color: "#fff" } } },
       scales: {
-        y: { beginAtZero: true }
+        x: { ticks: { color: "#aaa" }, grid: { color: "#333" } },
+        y: { ticks: { color: "#aaa" }, grid: { color: "#333" }, min: 0, max: 20 }
       }
     }
   });
 }
 
-/* RESET */
+/* =========================
+   CLASSEMENT
+========================= */
 
-function resetData() {
-  if (!confirm("Supprimer l’historique Trilo ?")) return;
+async function chargerClassement() {
+  const zone = el("leaderboard");
+  if (!zone) return;
 
-  labels = [];
-  data = [];
-
-  localStorage.removeItem("triloLabels");
-  localStorage.removeItem("triloData");
-
-  safeText("score", "Aucun score");
-  safeText("message", "Historique supprimé.");
-  safeText("badgesList", "Fais une analyse pour débloquer tes premiers badges.");
-  safeText("aiAnalysis", "Fais une analyse pour recevoir ton coaching IA.");
-  safeText("bestScore", "0");
-  safeText("averageScore", "0");
-  safeText("sessionCount", "0");
-  safeText("bestSport", "Aucun");
-
-  afficherEtatPremium();
-  drawChart();
-}
-
-/* ANALYSE */
-
-async function analyser() {
-  const resultat = calculerScores();
-
-  if (!resultat) {
-    alert("Entre au moins un sport correctement.");
+  if (!currentUser) {
+    zone.innerHTML = "🔒 Connecte-toi pour accéder au classement.";
     return;
   }
 
-  const globalScore = resultat.globalScore;
-  const performances = resultat.performances;
+  try {
+    const q    = query(collection(db, "scores"), orderBy("globalScore", "desc"), limit(10));
+    const snap = await getDocs(q);
 
-  performances.sort((a, b) => a.score - b.score);
+    if (snap.empty) {
+      zone.innerHTML = "Aucun score enregistré pour le moment.";
+      return;
+    }
 
-  const sportFaible = performances[0];
-  const sportFort = performances[performances.length - 1];
-
-  const niveau = obtenirNiveau(globalScore);
-  const progression = obtenirEvolution(globalScore);
-
-  let conseil = "";
-  if (sportFaible.sport === "natation") conseil = conseilAleatoire(conseilsNatation);
-  else if (sportFaible.sport === "vélo") conseil = conseilAleatoire(conseilsVelo);
-  else conseil = conseilAleatoire(conseilsCourse);
-
-  labels.push(new Date().toLocaleDateString("fr-FR"));
-  data.push(globalScore);
-
-  localStorage.setItem("triloLabels", JSON.stringify(labels));
-  localStorage.setItem("triloData", JSON.stringify(data));
-
-  const badges = genererBadges(globalScore, performances, progression);
-
-  afficherBadges(badges);
-  mettreAJourDashboard(globalScore, performances);
-
-  let stats = "📊 Scores par sport :\n";
-  performances.forEach((p) => {
-    stats += "- " + p.sport + " : " + p.score.toFixed(2) + "\n";
-  });
-
-  safeText("score", niveau.level);
-
-  safeText(
-    "message",
-    niveau.intro +
-    "\n\nScore global : " + globalScore.toFixed(2) +
-    "\n\n💪 Point fort : " + sportFort.sport +
-    "\n⚠️ Point faible : " + sportFaible.sport +
-    "\n\n" + stats +
-    "\n" + progression.evolution +
-    "\n\n" + progression.objectif +
-    "\n\n" + progression.recuperation +
-    "\n\n" + progression.fatigue +
-    "\n\n" + conseil +
-    (currentUser ? "\n\n☁️ Score sauvegardé." : "\n\n🔐 Connecte-toi pour sauvegarder.")
-  );
-
-  safeText("aiAnalysis", genererAnalyseIA(globalScore, sportFaible, sportFort, progression));
-
-  await sauvegarderScoreCloud(globalScore, performances, badges);
-  await chargerClassement();
-  await chargerComparaison(globalScore);
-  await chargerComparaisonAvancee(globalScore, sportFort, sportFaible);
-
-  drawChart();
-}
-
-/* BOUTONS */
-
-function brancherBoutons() {
-  const analyzeBtn = el("analyzeBtn");
-  const resetBtn = el("resetBtn");
-  const signupBtn = el("signupBtn");
-  const loginBtn = el("loginBtn");
-  const addFriendBtn = el("addFriendBtn");
-
-  if (analyzeBtn) analyzeBtn.onclick = analyser;
-  if (resetBtn) resetBtn.onclick = resetData;
-  if (signupBtn) signupBtn.onclick = signup;
-  if (loginBtn) loginBtn.onclick = login;
-  if (addFriendBtn) addFriendBtn.onclick = ajouterAmi;
-
-  const premiumBtn = document.querySelector(".premium-btn");
-  if (premiumBtn) {
-    premiumBtn.onclick = () => {
-      alert("🚀 Trilo Premium arrive bientôt. Paiement bientôt disponible.");
-    };
+    let html = "<ol class='leaderboard-list'>";
+    let rank = 1;
+    snap.forEach(d => {
+      const data = d.data();
+      const isMe = data.uid === currentUser.uid;
+      html += `<li class="${isMe ? "me" : ""}">
+        ${rank}. <strong>${data.pseudo || data.email || "Anonyme"}</strong>
+        — ${parseFloat(data.globalScore).toFixed(2)} pts
+      </li>`;
+      rank++;
+    });
+    html += "</ol>";
+    zone.innerHTML = html;
+  } catch (e) {
+    console.error("Erreur classement :", e);
+    zone.innerHTML = "Impossible de charger le classement.";
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  brancherBoutons();
-  drawChart();
-  afficherEtatPremium();
+/* =========================
+   COMPARAISON
+========================= */
+
+async function chargerComparaison(monScore) {
+  const zone = el("comparison");
+  if (!zone) return;
+
+  if (!currentUser) {
+    zone.innerHTML = "🔒 Connecte-toi pour comparer tes performances.";
+    return;
+  }
+
+  try {
+    const q    = query(collection(db, "scores"), orderBy("globalScore", "desc"));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      zone.innerHTML = "Pas assez de données pour comparer.";
+      return;
+    }
+
+    const scores = [];
+    snap.forEach(d => scores.push(d.data().globalScore));
+
+    const mieux      = scores.filter(s => s > monScore).length;
+    const total      = scores.length;
+    const percentile = Math.round(((total - mieux) / total) * 100);
+    const moyenne    = (scores.reduce((a, b) => a + b, 0) / total).toFixed(2);
+
+    zone.innerHTML = `
+      <p>Tu es meilleur que <strong>${percentile}%</strong> des utilisateurs Trilo.</p>
+      <p>Score moyen mondial : <strong>${moyenne}</strong></p>
+      <p>Ton score : <strong>${monScore.toFixed(2)}</strong></p>
+    `;
+  } catch (e) {
+    console.error("Erreur comparaison :", e);
+    zone.innerHTML = "Impossible de charger la comparaison.";
+  }
+}
+
+/* =========================
+   COMPARAISON AVANCÉE IA
+========================= */
+
+async function chargerComparaisonAvancee(monScore) {
+  const zone = el("advancedComparison");
+  if (!zone) return;
+
+  if (!currentUser) {
+    zone.innerHTML = "🔒 Connecte-toi pour accéder à l'analyse avancée.";
+    return;
+  }
+
+  if (!isPremium) {
+    zone.innerHTML = "🔒 Premium requis pour débloquer l'analyse avancée.";
+    return;
+  }
+
+  zone.innerHTML = "🧠 Analyse IA en cours...";
+
+  try {
+    const q    = query(collection(db, "scores"), orderBy("globalScore", "desc"));
+    const snap = await getDocs(q);
+    const scores = [];
+    snap.forEach(d => scores.push(d.data().globalScore));
+
+    const avg  = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+    const diff = monScore - avg;
+
+    let texte = "";
+    if (diff > 3)       texte = `🚀 Tu es largement au-dessus de la moyenne (${avg.toFixed(2)}). Tu fais partie des meilleurs sur Trilo !`;
+    else if (diff > 0)  texte = `👍 Tu es au-dessus de la moyenne (${avg.toFixed(2)}). Continue dans cette direction.`;
+    else if (diff > -3) texte = `💪 Légèrement en dessous de la moyenne (${avg.toFixed(2)}). Un entraînement ciblé et tu passes devant.`;
+    else                texte = `🔥 En dessous de la moyenne (${avg.toFixed(2)}), mais c'est le point de départ de tous les champions !`;
+
+    zone.innerHTML = `<p>${texte}</p>`;
+  } catch (e) {
+    zone.innerHTML = "Erreur lors de l'analyse avancée.";
+  }
+}
+
+/* =========================
+   ENREGISTRER SCORE
+========================= */
+
+async function enregistrerScore(result) {
+  if (!currentUser) return;
+  try {
+    await addDoc(collection(db, "scores"), {
+      uid:         currentUser.uid,
+      email:       currentUser.email,
+      globalScore: result.globalScore,
+      performances: result.performances,
+      timestamp:   serverTimestamp()
+    });
+  } catch (e) {
+    console.error("Erreur enregistrement :", e);
+  }
+}
+
+/* =========================
+   ANALYSER
+========================= */
+
+async function analyser() {
+  const result = calculerScores();
+
+  if (!result) {
+    el("score").textContent   = "⚠️ Erreur";
+    el("message").textContent = "Remplis au moins une discipline avec distance ET temps (format MM:SS).";
+    return;
+  }
+
+  const { globalScore, performances } = result;
+  const { level } = obtenirNiveau(globalScore);
+
+  // Résultat principal
+  el("score").textContent = level;
+  el("message").innerHTML = `Score global : <strong>${globalScore.toFixed(2)} / 20</strong>`;
+
+  // Coach IA
+  const zoneCoach = el("aiAnalysis");
+  if (zoneCoach) {
+    if (currentUser) {
+      zoneCoach.innerHTML = genererCoachIA(result);
+    } else {
+      zoneCoach.innerHTML = "🔒 Connecte-toi pour accéder au Coach IA.";
+    }
+  }
+
+  // Sauvegarder en local
+  sessions.push({
+    globalScore,
+    performances,
+    swimDist: result.swimDist,
+    bikeDist: result.bikeDist,
+    runDist:  result.runDist,
+    date:     new Date().toISOString()
+  });
+  localStorage.setItem("triloSessions", JSON.stringify(sessions));
+
+  // Dashboard + badges
+  mettreAJourDashboard();
+  afficherBadges();
+
+  // Firebase
+  if (currentUser) {
+    await enregistrerScore(result);
+    await chargerClassement();
+    await chargerComparaison(globalScore);
+    await chargerComparaisonAvancee(globalScore);
+  }
+}
+
+/* =========================
+   RÉINITIALISER
+========================= */
+
+function reinitialiser() {
+  ["swimDist", "swimTime", "bikeDist", "bikeTime", "runDist", "runTime"].forEach(id => {
+    if (el(id)) el(id).value = "";
+  });
+  el("score").textContent   = "Aucun score";
+  el("message").textContent = "Entre tes performances puis clique sur analyser.";
+  if (el("aiAnalysis")) el("aiAnalysis").innerHTML = "Fais une analyse pour recevoir ton coaching IA.";
+}
+
+/* =========================
+   AUTH
+========================= */
+
+async function creerProfil(user) {
+  const ref  = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) {
+    await setDoc(ref, {
+      email:     user.email,
+      uid:       user.uid,
+      premium:   false,
+      createdAt: serverTimestamp()
+    });
+  }
+}
+
+async function verifierPremium(user) {
+  const ref  = doc(db, "users", user.uid);
+  try {
+    const snap = await getDoc(ref);
+    isPremium  = snap.exists() && snap.data().premium === true;
+  } catch {
+    isPremium = false;
+  }
+}
+
+function afficherEtatAuth() {
+  const loginCard = document.querySelector(".login-card");
+  if (!loginCard) return;
+
+  if (currentUser) {
+    loginCard.innerHTML = `
+      <p style="color:#00d4ff;font-weight:bold;">👤 ${currentUser.email}</p>
+      <button id="logoutBtn" type="button">Se déconnecter</button>
+    `;
+    document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+  } else {
+    loginCard.innerHTML = `
+      <h2>Connexion Trilo</h2>
+      <div class="login-grid">
+        <input id="email" type="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Mot de passe">
+      </div>
+      <div class="login-actions">
+        <button id="signupBtn" type="button">Créer un compte</button>
+        <button id="loginBtn" type="button">Connexion</button>
+      </div>
+    `;
+    document.getElementById("signupBtn")?.addEventListener("click", async () => {
+      const email    = el("email")?.value?.trim();
+      const password = el("password")?.value?.trim();
+      if (!email || !password) return alert("Email et mot de passe requis.");
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await creerProfil(cred.user);
+      } catch (e) {
+        alert("Erreur inscription : " + e.message);
+      }
+    });
+
+    document.getElementById("loginBtn")?.addEventListener("click", async () => {
+      const email    = el("email")?.value?.trim();
+      const password = el("password")?.value?.trim();
+      if (!email || !password) return alert("Email et mot de passe requis.");
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (e) {
+        alert("Erreur connexion : " + e.message);
+      }
+    });
+  }
+}
+
+/* =========================
+   AUTH STATE
+========================= */
+
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+
+  if (user) {
+    await creerProfil(user);
+    await verifierPremium(user);
+    await chargerClassement();
+  } else {
+    isPremium = false;
+    const leaderboard = el("leaderboard");
+    if (leaderboard) leaderboard.innerHTML = "🔒 Connecte-toi pour accéder au classement.";
+    const comparison = el("comparison");
+    if (comparison) comparison.innerHTML = "🔒 Connecte-toi pour comparer tes performances.";
+    const adv = el("advancedComparison");
+    if (adv) adv.innerHTML = "🔒 Premium requis pour débloquer l'analyse avancée.";
+  }
+
+  afficherEtatAuth();
+  mettreAJourDashboard();
+  afficherBadges();
 });
 
-if (document.readyState !== "loading") {
-  brancherBoutons();
-  drawChart();
-  afficherEtatPremium();
-}
+/* =========================
+   INIT
+========================= */
+
+window.addEventListener("DOMContentLoaded", () => {
+  // Analyser
+  el("analyzeBtn")?.addEventListener("click", analyser);
+
+  // Réinitialiser
+  el("resetBtn")?.addEventListener("click", reinitialiser);
+
+  // Premium (placeholder)
+  document.querySelector(".premium-btn")?.addEventListener("click", () => {
+    if (!currentUser) return alert("🔒 Connecte-toi d'abord.");
+    if (isPremium)    return alert("✅ Tu es déjà Premium !");
+    alert("💳 Intègre Stripe ici pour activer le Premium.");
+  });
+
+  // Init
+  mettreAJourDashboard();
+  afficherBadges();
+});
