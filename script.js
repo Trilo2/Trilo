@@ -47,7 +47,7 @@ let chart = null;
 let sessions = JSON.parse(localStorage.getItem("triloSessions")) || [];
 
 /* =========================
-   HELPER
+   HELPERS
 ========================= */
 
 function el(id) {
@@ -57,11 +57,17 @@ function el(id) {
 function convertirTempsEnMinutes(temps) {
   if (!temps || typeof temps !== "string") return 0;
   const parts = temps.trim().split(":");
-  if (parts.length !== 2) return 0;
-  const minutes = Number(parts[0]);
-  const secondes = Number(parts[1]);
-  if (isNaN(minutes) || isNaN(secondes)) return 0;
-  return minutes + secondes / 60;
+  if (parts.length === 2) {
+    const m = Number(parts[0]), s = Number(parts[1]);
+    if (isNaN(m) || isNaN(s)) return 0;
+    return m + s / 60;
+  }
+  if (parts.length === 3) {
+    const h = Number(parts[0]), m = Number(parts[1]), s = Number(parts[2]);
+    if (isNaN(h) || isNaN(m) || isNaN(s)) return 0;
+    return h * 60 + m + s / 60;
+  }
+  return 0;
 }
 
 function randElement(liste) {
@@ -69,92 +75,232 @@ function randElement(liste) {
 }
 
 /* =========================
-   CONSEILS
+   RACES DE RÉFÉRENCE
 ========================= */
 
-const conseilsNatation = [
-  "🏊 Travaille ta respiration bilatérale pour équilibrer ta nage.",
-  "🏊 Allonge ton coup de bras pour améliorer ta glisse.",
-  "🏊 Concentre-toi sur la rotation des hanches pour plus de puissance.",
-  "🏊 Pratique des séries de kick pour renforcer tes jambes.",
-  "🏊 Améliore ta sortie d'eau pour gagner du temps en transition."
-];
+const RACES = {
+  sprint: {
+    label: "Sprint",
+    swim: 750, bike: 20, run: 5,
+    tempsRef: { swim: 15, bike: 40, run: 20 } // minutes
+  },
+  olympique: {
+    label: "Olympique",
+    swim: 1500, bike: 40, run: 10,
+    tempsRef: { swim: 30, bike: 75, run: 45 }
+  },
+  half: {
+    label: "Half Ironman (70.3)",
+    swim: 1900, bike: 90, run: 21.1,
+    tempsRef: { swim: 40, bike: 150, run: 105 }
+  },
+  ironman: {
+    label: "Ironman",
+    swim: 3800, bike: 180, run: 42.2,
+    tempsRef: { swim: 75, bike: 330, run: 240 }
+  }
+};
 
-const conseilsVelo = [
-  "🚴 Maintiens une cadence entre 80 et 100 rpm pour préserver tes jambes.",
-  "🚴 Adopte une position aérodynamique pour réduire la résistance.",
-  "🚴 Hydrate-toi toutes les 15-20 minutes sur le vélo.",
-  "🚴 Travaille les relances après les virages et les montées.",
-  "🚴 Mange sur le vélo pour avoir de l'énergie pour la course."
-];
+function genererModeRace(result) {
+  const { performances } = result;
+  const swimPerf = performances.find(p => p.sport === "natation");
+  const bikePerf = performances.find(p => p.sport === "vélo");
+  const runPerf  = performances.find(p => p.sport === "course");
 
-const conseilsCourse = [
-  "🏃 Garde une foulée relâchée et économique.",
-  "🏃 Vise une cadence d'environ 180 pas par minute.",
-  "🏃 Contrôle ta respiration dès le départ pour ne pas partir trop vite.",
-  "🏃 Ne pars pas trop vite — gère ton effort sur la durée.",
-  "🏃 Maintiens une bonne posture : buste droit, bras décontractés."
-];
+  let html = `<div class="race-section">`;
+  html += `<h3>🏁 Mode Race — Comparaison avec les courses officielles</h3>`;
+
+  Object.values(RACES).forEach(race => {
+    html += `<div class="race-card">`;
+    html += `<strong>${race.label}</strong><br>`;
+
+    // Natation
+    if (swimPerf && swimPerf.speed > 0) {
+      const tempsEstimSwim = Math.round(race.swim / swimPerf.speed);
+      const diff = tempsEstimSwim - race.tempsRef.swim;
+      const emoji = diff <= 0 ? "✅" : diff <= 5 ? "🟡" : "🔴";
+      html += `🏊 Natation (${race.swim}m) : ~${tempsEstimSwim} min ${emoji} (ref: ${race.tempsRef.swim} min)<br>`;
+    }
+
+    // Vélo
+    if (bikePerf && bikePerf.speed > 0) {
+      const tempsEstimBike = Math.round((race.bike / bikePerf.speed) * 60);
+      const diff = tempsEstimBike - race.tempsRef.bike;
+      const emoji = diff <= 0 ? "✅" : diff <= 10 ? "🟡" : "🔴";
+      html += `🚴 Vélo (${race.bike}km) : ~${tempsEstimBike} min ${emoji} (ref: ${race.tempsRef.bike} min)<br>`;
+    }
+
+    // Course
+    if (runPerf && runPerf.speed > 0) {
+      const tempsEstimRun = Math.round((race.run / runPerf.speed) * 60);
+      const diff = tempsEstimRun - race.tempsRef.run;
+      const emoji = diff <= 0 ? "✅" : diff <= 10 ? "🟡" : "🔴";
+      html += `🏃 Course (${race.run}km) : ~${tempsEstimRun} min ${emoji} (ref: ${race.tempsRef.run} min)<br>`;
+    }
+
+    // Temps total estimé
+    let totalMin = 0;
+    if (swimPerf) totalMin += Math.round(race.swim / swimPerf.speed);
+    if (bikePerf) totalMin += Math.round((race.bike / bikePerf.speed) * 60);
+    if (runPerf)  totalMin += Math.round((race.run / runPerf.speed) * 60);
+    totalMin += 5; // transitions
+
+    const h = Math.floor(totalMin / 60);
+    const m = totalMin % 60;
+    html += `⏱️ Temps total estimé : <strong>${h > 0 ? h + "h" : ""}${m}min</strong> (transitions +5min incluses)<br>`;
+
+    html += `</div>`;
+  });
+
+  html += `<p class="race-note">* Estimations basées sur tes vitesses actuelles, hors fatigue cumulée.</p>`;
+  html += `</div>`;
+  return html;
+}
+
+/* =========================
+   TEMPS DE RÉCUPÉRATION
+========================= */
+
+function genererRecuperation(result) {
+  const { globalScore, performances } = result;
+
+  // Calcul de la charge totale (distance × effort)
+  let chargeTotal = 0;
+  performances.forEach(p => {
+    chargeTotal += p.dist * (20 - p.score) / 10;
+  });
+
+  let joursRecup = 1;
+  let conseil = "";
+
+  if (chargeTotal < 5) {
+    joursRecup = 1;
+    conseil = "Séance légère — récupération rapide, tu peux t'entraîner demain.";
+  } else if (chargeTotal < 15) {
+    joursRecup = 2;
+    conseil = "Séance modérée — prends 1 à 2 jours de récupération active (marche, étirements).";
+  } else if (chargeTotal < 30) {
+    joursRecup = 2;
+    conseil = "Séance intense — 2 jours de repos conseillés. Dors bien et hydrate-toi.";
+  } else {
+    joursRecup = 3;
+    conseil = "Séance très intense — 3 jours minimum. Évite tout effort intense, favorise la natation douce.";
+  }
+
+  return `
+    <div class="recup-block">
+      <strong>🛌 Temps de récupération recommandé : ${joursRecup} jour${joursRecup > 1 ? "s" : ""}</strong><br>
+      <span>${conseil}</span>
+    </div>
+  `;
+}
+
+/* =========================
+   PROCHAINE SÉANCE (PREMIUM)
+========================= */
+
+function genererProchaineSéance(result) {
+  const { performances } = result;
+  const sorted = [...performances].sort((a, b) => a.score - b.score);
+  const pointFaible = sorted[0];
+
+  if (!pointFaible) return "";
+
+  const seances = {
+    natation: [
+      "🏊 4×200m en crawl avec 30s de récup entre chaque série",
+      "🏊 10×50m sprints, focus sur la technique de bras",
+      "🏊 1×800m continu à allure modérée pour travailler l'endurance",
+      "🏊 Séance technique : 6×100m avec pull buoy pour isoler les bras"
+    ],
+    "vélo": [
+      "🚴 45 min en endurance à 70% de ta FCmax, cadence 90rpm",
+      "🚴 5×5 min en montée ou résistance élevée avec 3 min de récup",
+      "🚴 Sortie longue de 1h à allure confortable pour construire l'endurance",
+      "🚴 Intervalles : 10×1 min à fond, 1 min de récup active"
+    ],
+    course: [
+      "🏃 30 min de footing lent pour récupérer et maintenir la forme",
+      "🏃 5×1km à allure légèrement au-dessus de ta vitesse moyenne actuelle",
+      "🏃 Fartlek 20 min : alterne 2 min vite / 2 min lent",
+      "🏃 Sortie longue 45-60 min à allure conversationnelle"
+    ]
+  };
+
+  const seance = randElement(seances[pointFaible.sport] || []);
+  return `
+    <div class="next-session-block">
+      <strong>📅 Prochaine séance recommandée</strong><br>
+      <span>Focus sur ton point faible : <strong>${pointFaible.sport}</strong></span><br>
+      <span>${seance}</span>
+    </div>
+  `;
+}
+
+/* =========================
+   CONSEILS GÉNÉRAUX (GRATUIT)
+========================= */
+
+const conseilsGeneraux = {
+  natation: [
+    "🏊 Travaille ta respiration bilatérale.",
+    "🏊 Allonge ton coup de bras pour améliorer la glisse.",
+    "🏊 Concentre-toi sur la rotation des hanches."
+  ],
+  "vélo": [
+    "🚴 Maintiens une cadence régulière entre 80-100 rpm.",
+    "🚴 Hydrate-toi toutes les 15-20 minutes.",
+    "🚴 Adopte une position aérodynamique."
+  ],
+  course: [
+    "🏃 Garde une foulée économique et relâchée.",
+    "🏃 Vise une cadence de 180 pas/min.",
+    "🏃 Gère ton effort dès le départ."
+  ]
+};
+
+/* =========================
+   CONSEILS PERSONNALISÉS (PREMIUM)
+========================= */
+
+const conseilsPersonnalises = {
+  natation: [
+    "🏊 Ton point technique prioritaire : travaille la prise d'eau en début de traction.",
+    "🏊 Intègre des séances de nage avec palmes pour développer ta propulsion.",
+    "🏊 Analyse ta nage en vidéo pour détecter les déséquilibres de ta technique.",
+    "🏊 Pratique le SWOLF (stroke count + temps) pour mesurer ton efficacité.",
+    "🏊 Travaille les virages culbute pour gagner 3-5 secondes par longueur."
+  ],
+  "vélo": [
+    "🚴 Travaille le pédalage en souplesse : fais des sorties mono-jambe 30s/jambe.",
+    "🚴 Intègre du travail en seuil : 2×20 min à 85-90% FCmax.",
+    "🚴 Soigne ta nutrition : 60g de glucides/heure pour les efforts > 1h.",
+    "🚴 Améliore ta position : un fitting vélo peut te faire gagner 5-10% de puissance.",
+    "🚴 Travaille la montée en danseuse pour varier les groupes musculaires."
+  ],
+  course: [
+    "🏃 Intègre du renforcement musculaire (gainage, fentes) 2x/semaine.",
+    "🏃 Travaille ta vitesse avec des séances de strides : 6×80m à 90% de ta vitesse max.",
+    "🏃 Soigne ta récupération : bains froids ou cryothérapie après les séances intenses.",
+    "🏃 Analyse ta foulée : attaque talon ou médio-pied ? Le médio-pied est plus économique.",
+    "🏃 Programme une sortie longue hebdomadaire à 65% FCmax pour construire l'endurance."
+  ]
+};
 
 /* =========================
    BADGES
 ========================= */
 
 const BADGES = [
-  {
-    id: "first_session",
-    label: "🎯 Première séance",
-    desc: "Analyse ta première performance",
-    check: (s) => s.length >= 1
-  },
-  {
-    id: "swimmer",
-    label: "🏊 Nageur",
-    desc: "Nage plus de 1000m",
-    check: (s) => s.some(x => x.swimDist >= 1000)
-  },
-  {
-    id: "cyclist",
-    label: "🚴 Cycliste",
-    desc: "Roule plus de 20km",
-    check: (s) => s.some(x => x.bikeDist >= 20)
-  },
-  {
-    id: "runner",
-    label: "🏃 Coureur",
-    desc: "Cours plus de 5km",
-    check: (s) => s.some(x => x.runDist >= 5)
-  },
-  {
-    id: "triathlete",
-    label: "🏅 Triathlète",
-    desc: "Complète les 3 disciplines en une séance",
-    check: (s) => s.some(x => x.swimDist > 0 && x.bikeDist > 0 && x.runDist > 0)
-  },
-  {
-    id: "consistent",
-    label: "🔥 Régulier",
-    desc: "5 séances analysées",
-    check: (s) => s.length >= 5
-  },
-  {
-    id: "beast",
-    label: "💪 Bête de course",
-    desc: "Score supérieur à 12",
-    check: (s) => s.some(x => x.globalScore >= 12)
-  },
-  {
-    id: "elite",
-    label: "🥇 Élite",
-    desc: "Score supérieur à 15",
-    check: (s) => s.some(x => x.globalScore >= 15)
-  },
-  {
-    id: "veteran",
-    label: "🎖️ Vétéran",
-    desc: "10 séances analysées",
-    check: (s) => s.length >= 10
-  }
+  { id: "first_session", label: "🎯 Première séance", desc: "Analyse ta première performance", check: (s) => s.length >= 1 },
+  { id: "swimmer",       label: "🏊 Nageur",           desc: "Nage plus de 1000m",              check: (s) => s.some(x => x.swimDist >= 1000) },
+  { id: "cyclist",       label: "🚴 Cycliste",         desc: "Roule plus de 20km",              check: (s) => s.some(x => x.bikeDist >= 20) },
+  { id: "runner",        label: "🏃 Coureur",          desc: "Cours plus de 5km",               check: (s) => s.some(x => x.runDist >= 5) },
+  { id: "triathlete",    label: "🏅 Triathlète",       desc: "3 disciplines en une séance",     check: (s) => s.some(x => x.swimDist > 0 && x.bikeDist > 0 && x.runDist > 0) },
+  { id: "consistent",    label: "🔥 Régulier",         desc: "5 séances analysées",             check: (s) => s.length >= 5 },
+  { id: "beast",         label: "💪 Bête de course",   desc: "Score supérieur à 12",            check: (s) => s.some(x => x.globalScore >= 12) },
+  { id: "elite",         label: "🥇 Élite",            desc: "Score supérieur à 15",            check: (s) => s.some(x => x.globalScore >= 15) },
+  { id: "veteran",       label: "🎖️ Vétéran",         desc: "10 séances analysées",            check: (s) => s.length >= 10 }
 ];
 
 function afficherBadges() {
@@ -185,48 +331,34 @@ function calculerScores() {
   const runDist  = Number(el("runDist")?.value  || 0);
   const runTime  = convertirTempsEnMinutes(el("runTime")?.value  || "");
 
-  // Références pour un niveau "correct"
   const refSwim = 45;   // m/min
   const refBike = 22;   // km/h
   const refRun  = 12;   // km/h
 
-  let total = 0;
-  let count = 0;
+  let total = 0, count = 0;
   const performances = [];
 
   if (swimDist > 0 && swimTime > 0) {
     const speed = swimDist / swimTime;
     const score = Math.min((speed / refSwim) * 10, 20);
-    total += score;
-    count++;
+    total += score; count++;
     performances.push({ sport: "natation", score, speed, dist: swimDist, time: swimTime });
   }
-
   if (bikeDist > 0 && bikeTime > 0) {
     const speed = bikeDist / (bikeTime / 60);
     const score = Math.min((speed / refBike) * 10, 20);
-    total += score;
-    count++;
+    total += score; count++;
     performances.push({ sport: "vélo", score, speed, dist: bikeDist, time: bikeTime });
   }
-
   if (runDist > 0 && runTime > 0) {
     const speed = runDist / (runTime / 60);
     const score = Math.min((speed / refRun) * 10, 20);
-    total += score;
-    count++;
+    total += score; count++;
     performances.push({ sport: "course", score, speed, dist: runDist, time: runTime });
   }
 
   if (count === 0) return null;
-
-  return {
-    globalScore: total / count,
-    performances,
-    swimDist, swimTime,
-    bikeDist, bikeTime,
-    runDist,  runTime
-  };
+  return { globalScore: total / count, performances, swimDist, swimTime, bikeDist, bikeTime, runDist, runTime };
 }
 
 /* =========================
@@ -234,49 +366,94 @@ function calculerScores() {
 ========================= */
 
 function obtenirNiveau(score) {
-  if (score < 4)  return { level: "Niveau 1 😐 Débutant",    intro: "Tu construis ta base, continue !" };
-  if (score < 7)  return { level: "Niveau 2 👍 En progrès",  intro: "Bonne progression, tu t'améliores." };
-  if (score < 10) return { level: "Niveau 3 🔥 Bon niveau",  intro: "Très solide, tu es dans une bonne dynamique." };
-  if (score < 13) return { level: "Niveau 4 💪 Très bon",    intro: "Excellent rythme, tu domines." };
-  if (score < 16) return { level: "Niveau 5 🚀 Expert",      intro: "Performance de haut niveau !" };
-  return           { level: "Niveau 6 🏆 Élite",             intro: "Tu es dans l'élite du triathlon !" };
+  if (score < 4)  return { level: "Niveau 1 😐 Débutant",   intro: "Tu construis ta base, continue !" };
+  if (score < 7)  return { level: "Niveau 2 👍 En progrès", intro: "Bonne progression, tu t'améliores." };
+  if (score < 10) return { level: "Niveau 3 🔥 Bon niveau", intro: "Très solide, tu es dans une bonne dynamique." };
+  if (score < 13) return { level: "Niveau 4 💪 Très bon",   intro: "Excellent rythme, tu domines." };
+  if (score < 16) return { level: "Niveau 5 🚀 Expert",     intro: "Performance de haut niveau !" };
+  return           { level: "Niveau 6 🏆 Élite",            intro: "Tu es dans l'élite du triathlon !" };
 }
 
 /* =========================
-   COACH IA
+   COACH IA — VERSION GRATUITE
 ========================= */
 
-function genererCoachIA(result) {
+function genererCoachGratuit(result) {
   const { globalScore, performances } = result;
   const { level, intro } = obtenirNiveau(globalScore);
 
-  const conseils = performances.map(p => {
-    if (p.sport === "natation") return randElement(conseilsNatation);
-    if (p.sport === "vélo")    return randElement(conseilsVelo);
-    if (p.sport === "course")  return randElement(conseilsCourse);
-    return "";
-  });
-
   const sorted = [...performances].sort((a, b) => b.score - a.score);
-  const best  = sorted[0];
-  const worst = sorted[sorted.length - 1];
+  const meilleur = sorted[0];
 
   let html = `<strong>${level}</strong><br>${intro}<br><br>`;
   html += `<strong>Score global : ${globalScore.toFixed(2)} / 20</strong><br><br>`;
 
+  // Sport dominant (gratuit)
+  if (meilleur) {
+    html += `💚 Sport dominant : <strong>${meilleur.sport}</strong><br><br>`;
+  }
+
+  // Conseils généraux simples (gratuit)
+  html += `<strong>Conseils généraux :</strong><br>`;
   performances.forEach(p => {
-    const vitesse = p.sport === "natation"
-      ? `${p.speed.toFixed(1)} m/min`
-      : `${p.speed.toFixed(1)} km/h`;
-    html += `${p.sport.charAt(0).toUpperCase() + p.sport.slice(1)} → ${vitesse} — score : ${p.score.toFixed(2)}/20<br>`;
+    const conseil = randElement(conseilsGeneraux[p.sport] || []);
+    if (conseil) html += `${conseil}<br>`;
   });
 
-  html += `<br>`;
-  if (best)  html += `💚 Point fort : <strong>${best.sport}</strong><br>`;
-  if (worst && worst.sport !== best?.sport) html += `⚠️ À travailler : <strong>${worst.sport}</strong><br>`;
+  // Temps de récupération (gratuit)
+  html += `<br>` + genererRecuperation(result);
 
-  html += `<br><strong>Conseils personnalisés :</strong><br>`;
-  conseils.forEach(c => { html += `${c}<br>`; });
+  html += `<br><div class="premium-teaser">🔒 <strong>Premium</strong> : vitesses détaillées, conseils personnalisés, prochaine séance et Mode Race</div>`;
+
+  return html;
+}
+
+/* =========================
+   COACH IA — VERSION PREMIUM
+========================= */
+
+function genererCoachPremium(result) {
+  const { globalScore, performances } = result;
+  const { level, intro } = obtenirNiveau(globalScore);
+
+  const sorted = [...performances].sort((a, b) => b.score - a.score);
+  const meilleur = sorted[0];
+  const pointFaible = sorted[sorted.length - 1];
+
+  let html = `<strong>${level}</strong><br>${intro}<br><br>`;
+  html += `<strong>Score global : ${globalScore.toFixed(2)} / 20</strong><br><br>`;
+
+  // Vitesses détaillées (premium)
+  html += `<strong>📊 Détail des performances :</strong><br>`;
+  performances.forEach(p => {
+    const vitesse = p.sport === "natation"
+      ? `${p.speed.toFixed(1)} m/min (${(p.speed * 60 / 1000).toFixed(2)} km/h)`
+      : `${p.speed.toFixed(1)} km/h`;
+    html += `${p.sport.charAt(0).toUpperCase() + p.sport.slice(1)} : ${vitesse} — score : <strong>${p.score.toFixed(2)}/20</strong><br>`;
+  });
+
+  // Sport dominant et point faible (premium)
+  html += `<br>`;
+  if (meilleur) html += `💚 Point fort : <strong>${meilleur.sport}</strong><br>`;
+  if (pointFaible && pointFaible.sport !== meilleur?.sport) {
+    html += `⚠️ À travailler en priorité : <strong>${pointFaible.sport}</strong><br>`;
+  }
+
+  // Temps de récupération (premium)
+  html += `<br>` + genererRecuperation(result);
+
+  // Conseils personnalisés (premium)
+  html += `<br><strong>🎯 Conseils personnalisés :</strong><br>`;
+  performances.forEach(p => {
+    const conseil = randElement(conseilsPersonnalises[p.sport] || []);
+    if (conseil) html += `${conseil}<br>`;
+  });
+
+  // Prochaine séance (premium)
+  html += `<br>` + genererProchaineSéance(result);
+
+  // Mode Race (premium)
+  html += `<br>` + genererModeRace(result);
 
   return html;
 }
@@ -295,24 +472,15 @@ function mettreAJourDashboard() {
   }
 
   const scores = sessions.map(s => s.globalScore);
-  const best   = Math.max(...scores).toFixed(2);
-  const avg    = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
-
-  if (el("bestScore"))    el("bestScore").textContent    = best;
-  if (el("averageScore")) el("averageScore").textContent = avg;
+  if (el("bestScore"))    el("bestScore").textContent    = Math.max(...scores).toFixed(2);
+  if (el("averageScore")) el("averageScore").textContent = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
   if (el("sessionCount")) el("sessionCount").textContent = sessions.length;
 
   // Sport dominant
   const counts = { natation: 0, "vélo": 0, course: 0 };
-  sessions.forEach(s => {
-    s.performances?.forEach(p => {
-      if (counts[p.sport] !== undefined) counts[p.sport]++;
-    });
-  });
+  sessions.forEach(s => s.performances?.forEach(p => { if (counts[p.sport] !== undefined) counts[p.sport]++; }));
   const dominant = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-  if (el("bestSport")) {
-    el("bestSport").textContent = (dominant && dominant[1] > 0) ? dominant[0] : "Aucun";
-  }
+  if (el("bestSport")) el("bestSport").textContent = (dominant && dominant[1] > 0) ? dominant[0] : "Aucun";
 
   mettreAJourGraphique();
 }
@@ -324,14 +492,12 @@ function mettreAJourDashboard() {
 function mettreAJourGraphique() {
   const canvas = el("chart");
   if (!canvas || typeof Chart === "undefined") return;
-
   const ctx = canvas.getContext("2d");
   const slice = sessions.slice(-10);
-  const labelsChart = slice.map((_, i) => `Séance ${sessions.length - slice.length + i + 1}`);
-  const dataChart   = slice.map(s => parseFloat(s.globalScore.toFixed(2)));
+  const labelsChart = slice.map((_, i) => `S${sessions.length - slice.length + i + 1}`);
+  const dataChart = slice.map(s => parseFloat(s.globalScore.toFixed(2)));
 
   if (chart) chart.destroy();
-
   chart = new Chart(ctx, {
     type: "line",
     data: {
@@ -366,36 +532,24 @@ function mettreAJourGraphique() {
 async function chargerClassement() {
   const zone = el("leaderboard");
   if (!zone) return;
-
-  if (!currentUser) {
-    zone.innerHTML = "🔒 Connecte-toi pour accéder au classement.";
-    return;
-  }
+  if (!currentUser) { zone.innerHTML = "🔒 Connecte-toi pour accéder au classement."; return; }
 
   try {
-    const q    = query(collection(db, "scores"), orderBy("globalScore", "desc"), limit(10));
+    const q = query(collection(db, "scores"), orderBy("globalScore", "desc"), limit(10));
     const snap = await getDocs(q);
-
-    if (snap.empty) {
-      zone.innerHTML = "Aucun score enregistré pour le moment.";
-      return;
-    }
+    if (snap.empty) { zone.innerHTML = "Aucun score enregistré pour le moment."; return; }
 
     let html = "<ol class='leaderboard-list'>";
     let rank = 1;
     snap.forEach(d => {
       const data = d.data();
       const isMe = data.uid === currentUser.uid;
-      html += `<li class="${isMe ? "me" : ""}">
-        ${rank}. <strong>${data.pseudo || data.email || "Anonyme"}</strong>
-        — ${parseFloat(data.globalScore).toFixed(2)} pts
-      </li>`;
+      html += `<li class="${isMe ? "me" : ""}">${rank}. <strong>${data.pseudo || data.email || "Anonyme"}</strong> — ${parseFloat(data.globalScore).toFixed(2)} pts</li>`;
       rank++;
     });
     html += "</ol>";
     zone.innerHTML = html;
   } catch (e) {
-    console.error("Erreur classement :", e);
     zone.innerHTML = "Impossible de charger le classement.";
   }
 }
@@ -407,36 +561,20 @@ async function chargerClassement() {
 async function chargerComparaison(monScore) {
   const zone = el("comparison");
   if (!zone) return;
-
-  if (!currentUser) {
-    zone.innerHTML = "🔒 Connecte-toi pour comparer tes performances.";
-    return;
-  }
+  if (!currentUser) { zone.innerHTML = "🔒 Connecte-toi pour comparer tes performances."; return; }
 
   try {
-    const q    = query(collection(db, "scores"), orderBy("globalScore", "desc"));
-    const snap = await getDocs(q);
-
-    if (snap.empty) {
-      zone.innerHTML = "Pas assez de données pour comparer.";
-      return;
-    }
-
+    const snap = await getDocs(query(collection(db, "scores"), orderBy("globalScore", "desc")));
+    if (snap.empty) { zone.innerHTML = "Pas assez de données."; return; }
     const scores = [];
     snap.forEach(d => scores.push(d.data().globalScore));
-
-    const mieux      = scores.filter(s => s > monScore).length;
-    const total      = scores.length;
-    const percentile = Math.round(((total - mieux) / total) * 100);
-    const moyenne    = (scores.reduce((a, b) => a + b, 0) / total).toFixed(2);
-
+    const percentile = Math.round(((scores.length - scores.filter(s => s > monScore).length) / scores.length) * 100);
+    const moyenne = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
     zone.innerHTML = `
       <p>Tu es meilleur que <strong>${percentile}%</strong> des utilisateurs Trilo.</p>
-      <p>Score moyen mondial : <strong>${moyenne}</strong></p>
-      <p>Ton score : <strong>${monScore.toFixed(2)}</strong></p>
+      <p>Score moyen mondial : <strong>${moyenne}</strong> | Ton score : <strong>${monScore.toFixed(2)}</strong></p>
     `;
   } catch (e) {
-    console.error("Erreur comparaison :", e);
     zone.innerHTML = "Impossible de charger la comparaison.";
   }
 }
@@ -448,34 +586,23 @@ async function chargerComparaison(monScore) {
 async function chargerComparaisonAvancee(monScore) {
   const zone = el("advancedComparison");
   if (!zone) return;
+  if (!currentUser) { zone.innerHTML = "🔒 Connecte-toi pour accéder à l'analyse avancée."; return; }
+  if (!isPremium)   { zone.innerHTML = "🔒 Premium requis pour débloquer l'analyse avancée."; return; }
 
-  if (!currentUser) {
-    zone.innerHTML = "🔒 Connecte-toi pour accéder à l'analyse avancée.";
-    return;
-  }
-
-  if (!isPremium) {
-    zone.innerHTML = "🔒 Premium requis pour débloquer l'analyse avancée.";
-    return;
-  }
-
-  zone.innerHTML = "🧠 Analyse IA en cours...";
-
+  zone.innerHTML = "🧠 Analyse en cours...";
   try {
-    const q    = query(collection(db, "scores"), orderBy("globalScore", "desc"));
-    const snap = await getDocs(q);
+    const snap = await getDocs(query(collection(db, "scores"), orderBy("globalScore", "desc")));
     const scores = [];
     snap.forEach(d => scores.push(d.data().globalScore));
-
-    const avg  = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+    const avg = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
     const diff = monScore - avg;
-
-    let texte = "";
-    if (diff > 3)       texte = `🚀 Tu es largement au-dessus de la moyenne (${avg.toFixed(2)}). Tu fais partie des meilleurs sur Trilo !`;
-    else if (diff > 0)  texte = `👍 Tu es au-dessus de la moyenne (${avg.toFixed(2)}). Continue dans cette direction.`;
-    else if (diff > -3) texte = `💪 Légèrement en dessous de la moyenne (${avg.toFixed(2)}). Un entraînement ciblé et tu passes devant.`;
-    else                texte = `🔥 En dessous de la moyenne (${avg.toFixed(2)}), mais c'est le point de départ de tous les champions !`;
-
+    let texte = diff > 3
+      ? `🚀 Tu es largement au-dessus de la moyenne (${avg.toFixed(2)}). Tu fais partie des meilleurs sur Trilo !`
+      : diff > 0
+      ? `👍 Tu es au-dessus de la moyenne (${avg.toFixed(2)}). Continue dans cette direction.`
+      : diff > -3
+      ? `💪 Légèrement en dessous de la moyenne (${avg.toFixed(2)}). Un entraînement ciblé et tu passes devant.`
+      : `🔥 En dessous de la moyenne (${avg.toFixed(2)}), mais c'est le point de départ de tous les champions !`;
     zone.innerHTML = `<p>${texte}</p>`;
   } catch (e) {
     zone.innerHTML = "Erreur lors de l'analyse avancée.";
@@ -490,11 +617,11 @@ async function enregistrerScore(result) {
   if (!currentUser) return;
   try {
     await addDoc(collection(db, "scores"), {
-      uid:         currentUser.uid,
-      email:       currentUser.email,
+      uid: currentUser.uid,
+      email: currentUser.email,
       globalScore: result.globalScore,
       performances: result.performances,
-      timestamp:   serverTimestamp()
+      timestamp: serverTimestamp()
     });
   } catch (e) {
     console.error("Erreur enregistrement :", e);
@@ -507,46 +634,44 @@ async function enregistrerScore(result) {
 
 async function analyser() {
   const result = calculerScores();
-
   if (!result) {
     el("score").textContent   = "⚠️ Erreur";
-    el("message").textContent = "Remplis au moins une discipline avec distance ET temps (format MM:SS).";
+    el("message").textContent = "Remplis au moins une discipline avec distance ET temps.";
     return;
   }
 
-  const { globalScore, performances } = result;
+  const { globalScore } = result;
   const { level } = obtenirNiveau(globalScore);
 
-  // Résultat principal
   el("score").textContent = level;
   el("message").innerHTML = `Score global : <strong>${globalScore.toFixed(2)} / 20</strong>`;
 
-  // Coach IA
+  // Coach IA : gratuit vs premium
   const zoneCoach = el("aiAnalysis");
   if (zoneCoach) {
-    if (currentUser) {
-      zoneCoach.innerHTML = genererCoachIA(result);
-    } else {
+    if (!currentUser) {
       zoneCoach.innerHTML = "🔒 Connecte-toi pour accéder au Coach IA.";
+    } else if (isPremium) {
+      zoneCoach.innerHTML = genererCoachPremium(result);
+    } else {
+      zoneCoach.innerHTML = genererCoachGratuit(result);
     }
   }
 
-  // Sauvegarder en local
+  // Sauvegarder local
   sessions.push({
     globalScore,
-    performances,
+    performances: result.performances,
     swimDist: result.swimDist,
     bikeDist: result.bikeDist,
     runDist:  result.runDist,
-    date:     new Date().toISOString()
+    date: new Date().toISOString()
   });
   localStorage.setItem("triloSessions", JSON.stringify(sessions));
 
-  // Dashboard + badges
   mettreAJourDashboard();
   afficherBadges();
 
-  // Firebase
   if (currentUser) {
     await enregistrerScore(result);
     await chargerClassement();
@@ -576,23 +701,15 @@ async function creerProfil(user) {
   const ref  = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
   if (!snap.exists()) {
-    await setDoc(ref, {
-      email:     user.email,
-      uid:       user.uid,
-      premium:   false,
-      createdAt: serverTimestamp()
-    });
+    await setDoc(ref, { email: user.email, uid: user.uid, premium: false, createdAt: serverTimestamp() });
   }
 }
 
 async function verifierPremium(user) {
-  const ref  = doc(db, "users", user.uid);
   try {
-    const snap = await getDoc(ref);
-    isPremium  = snap.exists() && snap.data().premium === true;
-  } catch {
-    isPremium = false;
-  }
+    const snap = await getDoc(doc(db, "users", user.uid));
+    isPremium = snap.exists() && snap.data().premium === true;
+  } catch { isPremium = false; }
 }
 
 function afficherEtatAuth() {
@@ -600,13 +717,12 @@ function afficherEtatAuth() {
   if (!loginCard) return;
 
   if (currentUser) {
+    const badge = isPremium ? ' <span style="color:#ffd700;font-size:0.8em;">⭐ PREMIUM</span>' : '';
     loginCard.innerHTML = `
-      <p style="color:#00d4ff;font-weight:bold;">👤 ${currentUser.email}</p>
+      <p style="color:#00d4ff;font-weight:bold;">👤 ${currentUser.email}${badge}</p>
       <button id="logoutBtn" type="button">Se déconnecter</button>
     `;
-    document.getElementById("logoutBtn")?.addEventListener("click", async () => {
-      await signOut(auth);
-    });
+    el("logoutBtn")?.addEventListener("click", async () => { await signOut(auth); });
   } else {
     loginCard.innerHTML = `
       <h2>Connexion Trilo</h2>
@@ -619,27 +735,20 @@ function afficherEtatAuth() {
         <button id="loginBtn" type="button">Connexion</button>
       </div>
     `;
-    document.getElementById("signupBtn")?.addEventListener("click", async () => {
-      const email    = el("email")?.value?.trim();
-      const password = el("password")?.value?.trim();
+    el("signupBtn")?.addEventListener("click", async () => {
+      const email = el("email")?.value?.trim(), password = el("password")?.value?.trim();
       if (!email || !password) return alert("Email et mot de passe requis.");
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         await creerProfil(cred.user);
-      } catch (e) {
-        alert("Erreur inscription : " + e.message);
-      }
+      } catch (e) { alert("Erreur inscription : " + e.message); }
     });
-
-    document.getElementById("loginBtn")?.addEventListener("click", async () => {
-      const email    = el("email")?.value?.trim();
-      const password = el("password")?.value?.trim();
+    el("loginBtn")?.addEventListener("click", async () => {
+      const email = el("email")?.value?.trim(), password = el("password")?.value?.trim();
       if (!email || !password) return alert("Email et mot de passe requis.");
       try {
         await signInWithEmailAndPassword(auth, email, password);
-      } catch (e) {
-        alert("Erreur connexion : " + e.message);
-      }
+      } catch (e) { alert("Erreur connexion : " + e.message); }
     });
   }
 }
@@ -650,21 +759,16 @@ function afficherEtatAuth() {
 
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
-
   if (user) {
     await creerProfil(user);
     await verifierPremium(user);
     await chargerClassement();
   } else {
     isPremium = false;
-    const leaderboard = el("leaderboard");
-    if (leaderboard) leaderboard.innerHTML = "🔒 Connecte-toi pour accéder au classement.";
-    const comparison = el("comparison");
-    if (comparison) comparison.innerHTML = "🔒 Connecte-toi pour comparer tes performances.";
-    const adv = el("advancedComparison");
-    if (adv) adv.innerHTML = "🔒 Premium requis pour débloquer l'analyse avancée.";
+    if (el("leaderboard"))        el("leaderboard").innerHTML        = "🔒 Connecte-toi pour accéder au classement.";
+    if (el("comparison"))         el("comparison").innerHTML         = "🔒 Connecte-toi pour comparer tes performances.";
+    if (el("advancedComparison")) el("advancedComparison").innerHTML = "🔒 Premium requis pour débloquer l'analyse avancée.";
   }
-
   afficherEtatAuth();
   mettreAJourDashboard();
   afficherBadges();
@@ -675,20 +779,13 @@ onAuthStateChanged(auth, async (user) => {
 ========================= */
 
 window.addEventListener("DOMContentLoaded", () => {
-  // Analyser
   el("analyzeBtn")?.addEventListener("click", analyser);
-
-  // Réinitialiser
   el("resetBtn")?.addEventListener("click", reinitialiser);
-
-  // Premium (placeholder)
   document.querySelector(".premium-btn")?.addEventListener("click", () => {
     if (!currentUser) return alert("🔒 Connecte-toi d'abord.");
     if (isPremium)    return alert("✅ Tu es déjà Premium !");
     alert("💳 Intègre Stripe ici pour activer le Premium.");
   });
-
-  // Init
   mettreAJourDashboard();
   afficherBadges();
 });
