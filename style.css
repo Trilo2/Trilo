@@ -865,3 +865,159 @@ button:active {
     width: 72px;
   }
 }
+
+/* =========================
+   PARCOURS GPS
+========================= */
+
+.parcours-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 32px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-card);
+  animation: fadeUp 0.5s ease both;
+  animation-delay: 0.4s;
+}
+
+.parcours-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.parcours-head span {
+  font-size: 30px;
+  width: 52px;
+  height: 52px;
+  background: var(--bg-inner);
+  border: 1px solid var(--border-accent);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+.parcours-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.parcours-head p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.parcours-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.parcours-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.parcours-row select {
+  flex: 1;
+  min-width: 140px;
+  padding: 13px 16px;
+  border-radius: var(--radius-input);
+  border: 1px solid var(--border);
+  background: var(--bg-inner);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a8faa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+.parcours-row select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+#parcoursGeoBtn {
+  background: linear-gradient(135deg, var(--accent2), #1d4ed8);
+  color: white;
+  white-space: nowrap;
+  box-shadow: 0 4px 18px rgba(59,130,246,0.3);
+}
+
+#parcoursManuelBtn {
+  background: linear-gradient(135deg, var(--accent), #0099bb);
+  color: #000;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.parcours-result {
+  background: var(--bg-inner);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  min-height: 70px;
+}
+
+.parcours-found p {
+  color: var(--text);
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+.parcours-link {
+  display: inline-block;
+  background: linear-gradient(135deg, #15803d, #16a34a);
+  color: white;
+  text-decoration: none;
+  padding: 13px 24px;
+  border-radius: var(--radius-btn);
+  font-weight: 700;
+  font-size: 15px;
+  transition: var(--transition);
+  box-shadow: 0 4px 18px rgba(22,163,74,0.35);
+  margin-bottom: 14px;
+}
+
+.parcours-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(22,163,74,0.5);
+}
+
+.parcours-tip {
+  font-size: 12px !important;
+  color: var(--text-muted) !important;
+  font-style: italic;
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .parcours-row {
+    flex-direction: column;
+  }
+  .parcours-row select,
+  .parcours-row input,
+  .parcours-row button {
+    width: 100%;
+  }
+}
