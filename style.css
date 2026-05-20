@@ -548,3 +548,128 @@ button:hover {
     font-size:17px;
 
 }
+/* =========================
+   RÉCUPÉRATION
+========================= */
+
+.recup-block {
+  background: rgba(0, 212, 255, 0.08);
+  border-left: 3px solid #00d4ff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 10px 0;
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+/* =========================
+   PROCHAINE SÉANCE
+========================= */
+
+.next-session-block {
+  background: rgba(255, 215, 0, 0.08);
+  border-left: 3px solid #ffd700;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 10px 0;
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+/* =========================
+   MODE RACE
+========================= */
+
+.race-section {
+  margin-top: 16px;
+}
+
+.race-section h3 {
+  font-size: 1.05em;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.race-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  line-height: 1.8;
+}
+
+.race-card strong {
+  font-size: 1em;
+  color: #00d4ff;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.race-note {
+  font-size: 0.78em;
+  color: #888;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* =========================
+   TEASER PREMIUM
+========================= */
+
+.premium-teaser {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 12px;
+  font-size: 0.88em;
+  color: #ffd700;
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+.badge-item strong {
+  font-size: 0.95em;
+  color: #fff;
+}
+
+.badge-item span {
+  font-size: 0.8em;
+  color: #aaa;
+  margin-top: 2px;
+}
+
+/* =========================
+   CLASSEMENT
+========================= */
+
+.leaderboard-list {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.leaderboard-list li {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.9em;
+  color: #ccc;
+}
+
+.leaderboard-list li.me {
+  color: #00d4ff;
+  font-weight: bold;
+}
