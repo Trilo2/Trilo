@@ -134,21 +134,39 @@ async function geocoderVille(ville) {
 }
 
 function ouvrirKomoot(lat, lng) {
-  const type    = document.getElementById("parcoursType")?.value || "running";
-  const dist    = document.getElementById("parcoursDist")?.value || "5";
-  const result  = document.getElementById("parcoursResult");
+function ouvrirKomoot(lat, lng) {
+  const type = document.getElementById("parcoursType")?.value || "running";
+  const dist = document.getElementById("parcoursDist")?.value || "5";
+  const result = document.getElementById("parcoursResult");
 
-  // Labels lisibles
   const labels = {
-    "running":      "running",
+    "running": "running",
     "cycling-road": "vélo route",
-    "cycling-mtb":  "VTT",
-    "swimming":     "natation"
+    "cycling-mtb": "VTT",
+    "swimming": "natation"
   };
 
-  // URL Komoot : recherche de parcours autour des coordonnées
-  // Komoot utilise ce format pour afficher les tours proches d'un point
-  const komootUrl = `https://www.komoot.com/discover/around/${lat},${lng}?sport=${type}&max_distance=${dist * 1000}`;
+  const recherche = encodeURIComponent(
+    `${labels[type] || type} ${dist} km autour de ${lat},${lng} site:komoot.com`
+  );
+
+  const komootUrl =
+    `https://www.google.com/search?q=${recherche}`;
+
+  result.innerHTML = `
+    <div class="parcours-found">
+      <p>🗺️ Recherche de parcours <strong>${labels[type] || type}</strong> de <strong>${dist} km</strong> près de toi.</p>
+
+      <a href="${komootUrl}" target="_blank" rel="noopener" class="parcours-link">
+        Voir les parcours sur Komoot →
+      </a>
+
+      <p class="parcours-tip">
+        💡 La recherche ouvre des parcours Komoot proches de ta position sans erreur 404.
+      </p>
+    </div>
+  `;
+}
 
   result.innerHTML = `
     <div class="parcours-found">
