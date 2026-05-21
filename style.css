@@ -1046,11 +1046,10 @@ button:active {
   filter: brightness(1.15);
 }
 
-.p-komoot    { background: linear-gradient(135deg, #15803d, #16a34a); box-shadow: 0 3px 12px rgba(22,163,74,0.3); }
-.p-plan      { background: linear-gradient(135deg, #0f766e, #0d9488); box-shadow: 0 3px 12px rgba(13,148,136,0.3); }
 .p-wikiloc   { background: linear-gradient(135deg, #1d4ed8, #2563eb); box-shadow: 0 3px 12px rgba(37,99,235,0.3); }
 .p-strava    { background: linear-gradient(135deg, #c2410c, #ea580c); box-shadow: 0 3px 12px rgba(234,88,12,0.3); }
-.p-openrunner{ background: linear-gradient(135deg, #6d28d9, #7c3aed); box-shadow: 0 3px 12px rgba(124,58,237,0.3); }
+.p-alltrails { background: linear-gradient(135deg, #15803d, #16a34a); box-shadow: 0 3px 12px rgba(22,163,74,0.3); }
+.p-garmin    { background: linear-gradient(135deg, #1f2937, #374151); box-shadow: 0 3px 12px rgba(0,0,0,0.4); }
 
 @media (max-width: 768px) {
   .parcours-links { flex-direction: column; }
