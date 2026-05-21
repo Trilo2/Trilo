@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://trilo2.github.io/Trilo/sitemap.xml
