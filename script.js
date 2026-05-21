@@ -408,7 +408,7 @@ async function verifierPremium(user) {
   } catch { isPremium = false; }
 }
 
-function afficherEtatAuth() {
+async function afficherEtatAuth() {
   const userZone  = el("user-status");
   const authForm  = el("auth-form");
   const logoutBtn = el("logoutBtn");
@@ -447,10 +447,20 @@ window.addEventListener("DOMContentLoaded", () => {
   el("analyzeBtn")?.addEventListener("click", analyser);
   el("resetBtn")?.addEventListener("click", reinitialiser);
 
+  // Afficher le champ pseudo seulement quand on clique sur "Créer un compte"
   el("signupBtn")?.addEventListener("click", async () => {
+    const pseudoZone = el("pseudo-zone");
+    const pseudo     = el("pseudo")?.value?.trim();
+
+    // Si le champ pseudo n est pas encore visible, l afficher
+    if (pseudoZone && pseudoZone.style.display === "none") {
+      pseudoZone.style.display = "block";
+      el("pseudo")?.focus();
+      return;
+    }
+
     const email    = el("email")?.value?.trim();
     const password = el("password")?.value?.trim();
-    const pseudo   = el("pseudo")?.value?.trim();
     if (!email || !password) return alert("Email et mot de passe requis.");
     if (!pseudo) return alert("Choisis un pseudo !");
     try {
