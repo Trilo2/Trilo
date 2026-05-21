@@ -19,6 +19,14 @@
     gtag('config', 'G-GSNS075D5R');
   </script>
 
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00d4ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Trilo">
+  <link rel="apple-touch-icon" href="logo-trilo.png">
+
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -285,6 +293,17 @@
   <script type="module" src="script.js"></script>
   <script type="module" src="parcours.js"></script>
   <script type="module" src="historique.js"></script>
+
+  <!-- Enregistrement PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/Trilo/sw.js')
+          .then(() => console.log('✅ Trilo PWA prête !'))
+          .catch(err => console.log('SW erreur :', err));
+      });
+    }
+  </script>
 
 </body>
 </html>
