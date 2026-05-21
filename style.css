@@ -1055,3 +1055,157 @@ button:active {
   .parcours-links { flex-direction: column; }
   .parcours-link  { text-align: center; }
 }
+
+/* =========================
+   HISTORIQUE DES SÉANCES
+========================= */
+
+.historique-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 32px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-card);
+  animation: fadeUp 0.5s ease both;
+}
+
+.historique-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.historique-head span {
+  font-size: 30px;
+  width: 52px;
+  height: 52px;
+  background: var(--bg-inner);
+  border: 1px solid var(--border-accent);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+.historique-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.historique-head p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.historique-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+#viderHistoriqueBtn {
+  background: rgba(239,68,68,0.15);
+  border: 1px solid rgba(239,68,68,0.3);
+  color: #ef4444;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+#viderHistoriqueBtn:hover {
+  background: rgba(239,68,68,0.25);
+  transform: translateY(-1px);
+}
+
+.historique-empty {
+  color: var(--text-muted);
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+}
+
+.historique-item {
+  background: var(--bg-inner);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  position: relative;
+  transition: var(--transition);
+}
+
+.historique-item:hover {
+  border-color: var(--border-accent);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.historique-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.historique-date {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.historique-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+}
+
+.historique-niveau {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.historique-sports {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.historique-sport {
+  background: rgba(0,212,255,0.07);
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.historique-delete-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: var(--transition);
+  padding: 4px;
+}
+
+.historique-delete-btn:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+  .historique-sports { flex-direction: column; }
+}
