@@ -1,59 +1,5 @@
 /* =========================
-   MODULE PARCOURS GPS
-   À ajouter dans script.js
-   ou charger en <script type="module" src="parcours.js">
-========================= */
-
-/* =========================
-   SECTION HTML À AJOUTER
-   dans index.html avant </main>
-========================= */
-
-/*
-<section class="parcours-card">
-  <div class="parcours-head">
-    <span>🗺️</span>
-    <div>
-      <h2>Parcours GPS</h2>
-      <p>Trouve un parcours running ou vélo près de chez toi.</p>
-    </div>
-  </div>
-
-  <div class="parcours-controls">
-    <div class="parcours-row">
-      <select id="parcoursType">
-        <option value="running">🏃 Running</option>
-        <option value="cycling-road">🚴 Vélo route</option>
-        <option value="cycling-mtb">🚵 VTT</option>
-        <option value="swimming">🏊 Natation (piscines)</option>
-      </select>
-
-      <select id="parcoursDist">
-        <option value="5">5 km</option>
-        <option value="10">10 km</option>
-        <option value="20">20 km</option>
-        <option value="42">42 km</option>
-        <option value="50">50 km</option>
-        <option value="100">100 km</option>
-      </select>
-
-      <button id="parcoursGeoBtn" type="button">📍 Ma position</button>
-    </div>
-
-    <div class="parcours-row" id="parcoursManuelZone" style="display:none;">
-      <input id="parcoursVille" type="text" placeholder="Entre ta ville ou adresse...">
-      <button id="parcoursManuelBtn" type="button">🔍 Rechercher</button>
-    </div>
-  </div>
-
-  <div id="parcoursResult" class="parcours-result">
-    Clique sur "Ma position" pour trouver des parcours près de toi.
-  </div>
-</section>
-*/
-
-/* =========================
-   LOGIQUE JS
+   MODULE PARCOURS GPS — TRILO
 ========================= */
 
 function initParcours() {
@@ -63,7 +9,6 @@ function initParcours() {
 
   if (!geoBtn) return;
 
-  // Bouton géolocalisation
   geoBtn.addEventListener("click", () => {
     const result = document.getElementById("parcoursResult");
     result.innerHTML = "📡 Récupération de ta position...";
@@ -75,31 +20,26 @@ function initParcours() {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        ouvrirKomoot(lat, lng);
+        ouvrirParcours(pos.coords.latitude, pos.coords.longitude);
       },
-      (err) => {
-        console.warn("Géoloc refusée :", err.message);
+      () => {
         afficherZoneManuelle();
       },
       { timeout: 8000 }
     );
   });
 
-  // Bouton saisie manuelle
   if (manuelBtn) {
     manuelBtn.addEventListener("click", async () => {
-      const ville = document.getElementById("parcoursVille")?.value?.trim();
+      const ville  = document.getElementById("parcoursVille")?.value?.trim();
+      const result = document.getElementById("parcoursResult");
       if (!ville) return;
 
-      const result = document.getElementById("parcoursResult");
-      result.innerHTML = "🔍 Recherche de la ville...";
-
+      result.innerHTML = "🔍 Recherche en cours...";
       try {
         const coords = await geocoderVille(ville);
         if (coords) {
-          ouvrirKomoot(coords.lat, coords.lng);
+          ouvrirParcours(coords.lat, coords.lng);
         } else {
           result.innerHTML = "❌ Ville introuvable. Essaie avec un nom plus précis.";
         }
@@ -108,7 +48,6 @@ function initParcours() {
       }
     });
 
-    // Aussi sur Entrée
     document.getElementById("parcoursVille")?.addEventListener("keydown", (e) => {
       if (e.key === "Enter") manuelBtn.click();
     });
@@ -118,13 +57,12 @@ function initParcours() {
 function afficherZoneManuelle() {
   const result     = document.getElementById("parcoursResult");
   const manuelZone = document.getElementById("parcoursManuelZone");
-  result.innerHTML  = "📍 Géolocalisation refusée ou indisponible. Entre ta ville manuellement.";
+  result.innerHTML = "📍 Géolocalisation refusée. Entre ta ville manuellement.";
   if (manuelZone) manuelZone.style.display = "flex";
 }
 
 async function geocoderVille(ville) {
-  // Nominatim (OpenStreetMap) — gratuit, sans clé API
-  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(ville)}&format=json&limit=1`;
+  const url  = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(ville)}&format=json&limit=1`;
   const res  = await fetch(url, { headers: { "Accept-Language": "fr" } });
   const data = await res.json();
   if (data && data.length > 0) {
@@ -133,51 +71,47 @@ async function geocoderVille(ville) {
   return null;
 }
 
-function ouvrirKomoot(lat, lng) {
-function ouvrirKomoot(lat, lng) {
-  const type = document.getElementById("parcoursType")?.value || "running";
-  const dist = document.getElementById("parcoursDist")?.value || "5";
+function ouvrirParcours(lat, lng) {
+  const type   = document.getElementById("parcoursType")?.value || "running";
+  const dist   = parseInt(document.getElementById("parcoursDist")?.value || "5");
   const result = document.getElementById("parcoursResult");
 
   const labels = {
-    "running": "running",
-    "cycling-road": "vélo route",
-    "cycling-mtb": "VTT",
-    "swimming": "natation"
+    "running":      "Running",
+    "cycling-road": "Vélo route",
+    "cycling-mtb":  "VTT"
   };
 
-  const recherche = encodeURIComponent(
-    `${labels[type] || type} ${dist} km autour de ${lat},${lng} site:komoot.com`
-  );
+  // ✅ Komoot Routes — URL fonctionnelle 2025
+  const sportKomoot = { "running": "running", "cycling-road": "road-cycling", "cycling-mtb": "mountain-biking" };
+  const komootUrl  = `https://www.komoot.com/routes?sport=${sportKomoot[type] || "running"}&map_position=${lat},${lng},12`;
+  const komootPlan = `https://www.komoot.com/plan/@${lat},${lng},13z?sport=${sportKomoot[type] || "running"}`;
 
-  const komootUrl =
-    `https://www.google.com/search?q=${recherche}`;
+  // ✅ Wikiloc — lat/lng dans l'URL, très fiable
+  const delta      = (dist / 111).toFixed(4);
+  const wikiSport  = { "running": "10", "cycling-road": "1", "cycling-mtb": "3" };
+  const wikiloc    = `https://www.wikiloc.com/wikiloc/find.do?act=findr&sw.lat=${(lat - delta)}&sw.lon=${(lng - delta)}&ne.lat=${(lat + Number(delta))}&ne.lon=${(lng + Number(delta))}&type=${wikiSport[type] || "10"}`;
+
+  // ✅ Strava segments — fonctionne avec hash
+  const stravaSport = { "running": "running", "cycling-road": "cycling", "cycling-mtb": "cycling" };
+  const strava      = `https://www.strava.com/segments/explore?activity_type=${stravaSport[type] || "running"}#${lat},${lng},13z`;
+
+  // ✅ OpenRunner — site FR très populaire pour parcours GPS
+  const openrunner  = `https://www.openrunner.com/search?lat=${lat}&lng=${lng}&distance=${dist}&activity=${type === "running" ? "running" : "cycling"}`;
 
   result.innerHTML = `
     <div class="parcours-found">
-      <p>🗺️ Recherche de parcours <strong>${labels[type] || type}</strong> de <strong>${dist} km</strong> près de toi.</p>
-
-      <a href="${komootUrl}" target="_blank" rel="noopener" class="parcours-link">
-        Voir les parcours sur Komoot →
-      </a>
-
-      <p class="parcours-tip">
-        💡 La recherche ouvre des parcours Komoot proches de ta position sans erreur 404.
-      </p>
+      <p>🗺️ Parcours <strong>${labels[type] || type}</strong> — <strong>${dist} km</strong> autour de toi</p>
+      <div class="parcours-links">
+        <a href="${komootUrl}" target="_blank" rel="noopener" class="parcours-link p-komoot">🟢 Komoot — Parcours</a>
+        <a href="${komootPlan}" target="_blank" rel="noopener" class="parcours-link p-plan">✏️ Komoot — Planifier</a>
+        <a href="${wikiloc}" target="_blank" rel="noopener" class="parcours-link p-wikiloc">🔵 Wikiloc GPS</a>
+        <a href="${strava}" target="_blank" rel="noopener" class="parcours-link p-strava">🟠 Strava Segments</a>
+        <a href="${openrunner}" target="_blank" rel="noopener" class="parcours-link p-openrunner">🇫🇷 OpenRunner</a>
+      </div>
+      <p class="parcours-tip">💡 Wikiloc et Komoot proposent les meilleurs parcours communautaires. OpenRunner est très populaire en France.</p>
     </div>
   `;
 }
 
-  result.innerHTML = `
-    <div class="parcours-found">
-      <p>🗺️ Parcours <strong>${labels[type] || type}</strong> de <strong>${dist} km</strong> trouvés près de toi !</p>
-      <a href="${komootUrl}" target="_blank" rel="noopener" class="parcours-link">
-        Voir les parcours sur Komoot →
-      </a>
-      <p class="parcours-tip">💡 Komoot va s'ouvrir avec les meilleurs parcours validés par la communauté autour de toi.</p>
-    </div>
-  `;
-}
-
-// Lancer au chargement
 window.addEventListener("DOMContentLoaded", initParcours);
