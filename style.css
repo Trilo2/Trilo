@@ -1209,3 +1209,163 @@ button:active {
 @media (max-width: 768px) {
   .historique-sports { flex-direction: column; }
 }
+
+/* =========================
+   STREAKS
+========================= */
+
+.streak-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 100, 0, 0.25);
+  border-radius: var(--radius-card);
+  padding: 32px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-card), 0 0 30px rgba(255,100,0,0.08);
+  animation: fadeUp 0.5s ease both;
+  text-align: center;
+}
+
+.streak-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.streak-head span {
+  font-size: 30px;
+  width: 52px;
+  height: 52px;
+  background: rgba(255,100,0,0.1);
+  border: 1px solid rgba(255,100,0,0.3);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.streak-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.streak-head p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.streak-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.streak-fire {
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 8px;
+  animation: pulse-fire 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-fire {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.1); }
+}
+
+.streak-count {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  line-height: 1;
+  background: linear-gradient(135deg, #ff6400, #ff9500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.streak-label {
+  font-size: 14px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.streak-message {
+  font-size: 14px;
+  color: var(--text);
+  margin: 12px 0 20px;
+  font-style: italic;
+}
+
+.streak-days {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.streak-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 44px;
+}
+
+.streak-day-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.streak-day-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+.streak-day-done .streak-day-icon {
+  background: rgba(0,212,255,0.15);
+  border: 1px solid var(--accent);
+}
+
+.streak-day-missed .streak-day-icon {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  color: #ef4444;
+  font-size: 12px;
+}
+
+.streak-day-today .streak-day-icon {
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.3);
+}
+
+.streak-day-future .streak-day-icon {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.streak-best {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.streak-best strong {
+  color: var(--gold);
+}
