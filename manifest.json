@@ -1,10 +1,25 @@
 {
-  "name": "Trilo",
+  "name": "Trilo - Analyse Triathlon",
   "short_name": "Trilo",
-  "description": "Analyse tes performances triathlon",
+  "description": "Analyse tes performances de triathlon avec IA, badges et classement mondial.",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#020617",
-  "theme_color": "#2563eb",
-  "icons": []
+  "background_color": "#020510",
+  "theme_color": "#00d4ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "logo-trilo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo-trilo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
