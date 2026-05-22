@@ -337,9 +337,32 @@
       </div>
     </section>
 
-    <!-- 10. GRAPHIQUE -->
+    <!-- 10. GRAPHIQUE GLOBAL -->
     <section class="chart-box">
       <canvas id="chart"></canvas>
+    </section>
+
+    <!-- 11. STATS — DISTANCE TOTALE + GRAPHIQUES PAR SPORT -->
+    <section class="stats-card">
+      <div class="stats-head">
+        <span>📏</span>
+        <div>
+          <h2>Distance totale parcourue</h2>
+          <p>Tous tes kilomètres depuis le début sur Trilo.</p>
+        </div>
+      </div>
+      <div id="distanceTotaleZone"></div>
+    </section>
+
+    <section class="stats-card">
+      <div class="stats-head">
+        <span>📊</span>
+        <div>
+          <h2>Évolution par sport</h2>
+          <p>Suis ta progression dans chaque discipline.</p>
+        </div>
+      </div>
+      <div id="graphiquesParSportZone"></div>
     </section>
 
     <!-- 11. PREMIUM -->
@@ -404,6 +427,7 @@
   <script type="module" src="script.js"></script>
   <script type="module" src="parcours.js"></script>
   <script type="module" src="historique.js"></script>
+  <script type="module" src="stats.js"></script>
 
   <script type="module" src="streaks.js"></script>
 
