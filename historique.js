@@ -18,7 +18,11 @@ function afficherHistorique() {
   // Trier du plus récent au plus ancien
   const sorted = [...sessions].reverse();
 
-  zone.innerHTML = sorted.map((s, i) => {
+  const MAX_VISIBLE = 5;
+  const visible = sorted.slice(0, MAX_VISIBLE);
+  const reste   = sorted.length - MAX_VISIBLE;
+
+  zone.innerHTML = visible.map((s, i) => {
     const date = s.date
       ? new Date(s.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" })
       : "Date inconnue";
@@ -49,7 +53,56 @@ function afficherHistorique() {
     `;
   }).join("");
 
+  // Bouton "Voir plus"
+  if (reste > 0) {
+    zone.innerHTML += `<button id="voirPlusBtn" class="voir-plus-btn">Voir ${reste} séance${reste > 1 ? "s" : ""} de plus ▾</button>`;
+  }
+
   // Boutons supprimer
+  // Event "Voir plus"
+  document.getElementById("voirPlusBtn")?.addEventListener("click", () => {
+    const allItems = sorted.slice(MAX_VISIBLE).map((s, i) => {
+      const idx = sessions.length - 1 - (MAX_VISIBLE + i);
+      const date = s.date
+        ? new Date(s.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" })
+        : "Date inconnue";
+      const score = parseFloat(s.globalScore).toFixed(2);
+      const niveau = obtenirNiveauLabel(s.globalScore);
+      const sports = (s.performances || []).map(p => {
+        const vitesse = p.sport === "natation" ? `${p.speed?.toFixed(1)} m/min` : `${p.speed?.toFixed(1)} km/h`;
+        const emoji = p.sport === "natation" ? "🏊" : p.sport === "vélo" ? "🚴" : "🏃";
+        return `<span class="historique-sport">${emoji} ${p.sport} — ${vitesse} — ${p.score?.toFixed(2)}/20</span>`;
+      }).join("");
+      const scoreColor = s.globalScore >= 12 ? "#00d4ff" : s.globalScore >= 7 ? "#ffd700" : "#e2e8f0";
+      return `<div class="historique-item">
+        <div class="historique-header">
+          <span class="historique-date">📅 ${date}</span>
+          <span class="historique-score" style="color:${scoreColor};">${score}/20</span>
+        </div>
+        <div class="historique-niveau">${niveau}</div>
+        <div class="historique-sports">${sports || ""}</div>
+        <button class="historique-delete-btn" data-index="${idx}" title="Supprimer">🗑</button>
+      </div>`;
+    }).join("");
+
+    // Remplacer le bouton par les séances restantes
+    const btn = document.getElementById("voirPlusBtn");
+    if (btn) {
+      btn.insertAdjacentHTML("beforebegin", allItems);
+      btn.remove();
+      // Rebind les boutons supprimer
+      zone.querySelectorAll(".historique-delete-btn").forEach(b => {
+        b.addEventListener("click", () => {
+          const idx2 = parseInt(b.dataset.index);
+          const s2 = JSON.parse(localStorage.getItem("triloSessions")) || [];
+          s2.splice(idx2, 1);
+          localStorage.setItem("triloSessions", JSON.stringify(s2));
+          afficherHistorique();
+        });
+      });
+    }
+  });
+
   zone.querySelectorAll(".historique-delete-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const idx = parseInt(btn.dataset.index);
