@@ -398,10 +398,30 @@ function mettreAJourDashboard() {
 
 function mettreAJourGraphique() {
   const canvas = el("chart");
+  const chartBox = document.querySelector(".chart-box");
   if (!canvas || typeof Chart === "undefined") return;
+
+  // Verrouiller le graphique pour les non-premium
+  if (!currentUser || !isPremium) {
+    if (chartBox) {
+      chartBox.innerHTML = `<div class="premium-lock-msg">
+        🔒 <strong>Premium requis</strong><br>
+        <span style="color:var(--text-muted);font-size:13px;">Débloque le graphique d'évolution avec Trilo Premium</span>
+      </div>`;
+    }
+    return;
+  }
+
+  // Restaurer le canvas si remplacé
+  if (chartBox && !document.getElementById("chart")) {
+    chartBox.innerHTML = `<canvas id="chart"></canvas>`;
+  }
+  const canvasNew = document.getElementById("chart");
+  if (!canvasNew) return;
+
   const slice = sessions.slice(-10);
   if (chart) chart.destroy();
-  chart = new Chart(canvas.getContext("2d"), {
+  chart = new Chart(canvasNew.getContext("2d"), {
     type: "line",
     data: {
       labels: slice.map((_, i) => `S${sessions.length - slice.length + i + 1}`),
