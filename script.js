@@ -531,6 +531,8 @@ onAuthStateChanged(auth, async (user) => {
     await creerProfil(user);
     await verifierPremium(user);
     await chargerClassement();
+    mettreAJourDashboard(); // Après vérification Premium
+    afficherBadges();
   } else {
     isPremium = false;
     if (el("leaderboard"))        el("leaderboard").innerHTML        = "🔒 Connecte-toi pour accéder au classement.";
@@ -538,8 +540,10 @@ onAuthStateChanged(auth, async (user) => {
     if (el("advancedComparison")) el("advancedComparison").innerHTML = "🔒 Premium requis.";
   }
   afficherEtatAuth();
-  mettreAJourDashboard();
-  afficherBadges();
+  if (!user) {
+    mettreAJourDashboard();
+    afficherBadges();
+  }
 });
 
 window.addEventListener("DOMContentLoaded", () => {
