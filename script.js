@@ -413,24 +413,11 @@ function mettreAJourGraphique() {
   const chartBox = document.querySelector(".chart-box");
   if (!canvas || typeof Chart === "undefined") return;
 
-  // Verrouiller le graphique pour les non-premium
-  if (!currentUser || !isPremium) {
-    if (chartBox) {
-      chartBox.innerHTML = `<div class="premium-lock-msg" style="padding:60px 30px;">
-        <div style="font-size:32px;margin-bottom:10px;">📈</div>
-        🔒 <strong>Graphique Trilo Premium</strong><br>
-        <span style="color:var(--text-muted);font-size:13px;">Débloque le graphique d'évolution avec Trilo Premium</span>
-      </div>`;
-    }
-    return;
-  }
-
   // Restaurer le canvas si remplacé
   if (chartBox && !document.getElementById("chart")) {
     chartBox.innerHTML = `<canvas id="chart"></canvas>`;
   }
-  const canvasNew = document.getElementById("chart");
-  if (!canvasNew) return;
+  const canvasNew = document.getElementById("chart") || canvas;
 
   const slice = sessions.slice(-10);
   if (chart) chart.destroy();
@@ -585,6 +572,8 @@ async function verifierPremium(user) {
     const snap = await getDoc(doc(db, "users", user.uid));
     isPremium = snap.exists() && snap.data().premium === true;
   } catch { isPremium = false; }
+  window._triloIsPremium = isPremium;
+  if (typeof window.rafraichirStats === "function") window.rafraichirStats();
 }
 
 async function afficherEtatAuth() {
@@ -615,6 +604,8 @@ onAuthStateChanged(auth, async (user) => {
     afficherBadges();
   } else {
     isPremium = false;
+    window._triloIsPremium = false;
+    if (typeof window.rafraichirStats === "function") window.rafraichirStats();
     if (el("leaderboard"))        el("leaderboard").innerHTML        = "🔒 Connecte-toi pour accéder au classement.";
     if (el("comparison"))         el("comparison").innerHTML         = "🔒 Connecte-toi pour comparer tes performances.";
     if (el("advancedComparison")) el("advancedComparison").innerHTML = "🔒 Premium requis.";
