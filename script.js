@@ -210,12 +210,22 @@ function genererCoachGratuit(result) {
   return html;
 }
 
-function genererCoachPremium(result) {
+async function genererCoachPremium(result) {
   const { globalScore, performances } = result;
   const { level, intro } = obtenirNiveau(globalScore);
   const sorted = [...performances].sort((a, b) => b.score - a.score);
   const meilleur = sorted[0];
   const pointFaible = sorted[sorted.length - 1];
+
+  // Détail des performances
+  let details = "";
+  performances.forEach(p => {
+    const v = p.sport === "natation"
+      ? `${p.speed.toFixed(1)} m/min (${(p.speed * 60 / 1000).toFixed(2)} km/h)`
+      : `${p.speed.toFixed(1)} km/h`;
+    details += `${p.sport}: ${v}, score ${p.score.toFixed(2)}/20. `;
+  });
+
   let html = `<strong>${level}</strong><br>${intro}<br><br>`;
   html += `<strong>Score global : ${globalScore.toFixed(2)} / 20</strong><br><br>`;
   html += `<strong>📊 Détail des performances :</strong><br>`;
@@ -229,14 +239,61 @@ function genererCoachPremium(result) {
   if (meilleur) html += `💚 Point fort : <strong>${meilleur.sport}</strong><br>`;
   if (pointFaible && pointFaible.sport !== meilleur?.sport) html += `⚠️ À travailler : <strong>${pointFaible.sport}</strong><br>`;
   html += `<br>` + genererRecuperation(result);
-  html += `<br><strong>🎯 Conseils personnalisés :</strong><br>`;
-  performances.forEach(p => { html += `${randElement(conseilsPersonnalises[p.sport] || [])}<br>`; });
   html += `<br>` + genererProchaineSéance(result);
   html += `<br>` + genererModeRace(result);
+
+  // Appel API Claude
+  html += `<br><div id="claude-coach-zone">🤖 <em>Analyse IA en cours...</em></div>`;
+
+  // Appel asynchrone à Claude
+  const prompt = `Tu es un coach de triathlon expert. Voici les performances d'un athlète :
+Score global : ${globalScore.toFixed(2)}/20
+${details}
+Point fort : ${meilleur?.sport || "aucun"}
+Point faible : ${pointFaible?.sport || "aucun"}
+
+En 3-4 phrases maximum, donne une analyse personnalisée et des conseils précis pour progresser. Sois direct, motivant et concret. Réponds en français.`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const texteIA = data.content?.[0]?.text || "Analyse IA indisponible.";
+    const zone = document.getElementById("claude-coach-zone");
+    if (zone) {
+      zone.innerHTML = `<div class="claude-ia-block">
+        <strong>🤖 Analyse IA Claude :</strong><br>
+        ${texteIA}
+      </div>`;
+    }
+  } catch(e) {
+    const zone = document.getElementById("claude-coach-zone");
+    if (zone) zone.innerHTML = "";
+  }
+
   return html;
 }
 
 function mettreAJourDashboard() {
+  // Dashboard verrouillé pour les non-premium
+  const dashGrid = document.querySelector(".dashboard-grid");
+  if (dashGrid) {
+    if (!currentUser || !isPremium) {
+      dashGrid.innerHTML = `<div class="premium-lock-msg" style="grid-column:1/-1;text-align:center;padding:30px;">
+        🔒 <strong>Premium requis</strong><br>
+        <span style="color:var(--text-muted);font-size:13px;">Débloque le dashboard avancé avec Trilo Premium</span>
+      </div>`;
+      return;
+    }
+  }
+
   if (sessions.length === 0) {
     ["bestScore","averageScore","sessionCount"].forEach(id => { if (el(id)) el(id).textContent = "0"; });
     if (el("bestSport")) el("bestSport").textContent = "Aucun";
@@ -281,6 +338,7 @@ async function chargerClassement() {
   const zone = el("leaderboard");
   if (!zone) return;
   if (!currentUser) { zone.innerHTML = "🔒 Connecte-toi pour accéder au classement."; return; }
+  if (!isPremium)   { zone.innerHTML = "🔒 Premium requis pour accéder au classement mondial."; return; }
   try {
     const snap = await getDocs(query(collection(db, "scores"), orderBy("globalScore", "desc"), limit(10)));
     if (snap.empty) { zone.innerHTML = "Aucun score enregistré."; return; }
@@ -295,7 +353,9 @@ async function chargerClassement() {
 
 async function chargerComparaison(monScore) {
   const zone = el("comparison");
-  if (!zone || !currentUser) return;
+  if (!zone) return;
+  if (!currentUser) { zone.innerHTML = "🔒 Connecte-toi pour comparer tes performances."; return; }
+  if (!isPremium)   { zone.innerHTML = "🔒 Premium requis pour comparer tes performances."; return; }
   try {
     const snap = await getDocs(query(collection(db, "scores"), orderBy("globalScore", "desc")));
     if (snap.empty) { zone.innerHTML = "Pas assez de données."; return; }
@@ -362,7 +422,7 @@ async function analyser() {
   const zoneCoach = el("aiAnalysis");
   if (zoneCoach) {
     if (!currentUser)   zoneCoach.innerHTML = "🔒 Connecte-toi pour accéder au Coach IA.";
-    else if (isPremium) zoneCoach.innerHTML = genererCoachPremium(result);
+    else if (isPremium) zoneCoach.innerHTML = await genererCoachPremium(result);
     else                zoneCoach.innerHTML = genererCoachGratuit(result);
   }
   sessions.push({
