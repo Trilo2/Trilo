@@ -1009,3 +1009,52 @@ button:active { transform: translateY(0); }
   .hero h1 { font-size: 52px; letter-spacing: 6px; }
   .logo-trilo { width: 68px; }
 }
+
+/* =========================
+   COACH IA CLAUDE
+========================= */
+
+.claude-ia-block {
+  background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(0,100,255,0.04));
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text);
+  position: relative;
+  overflow: hidden;
+}
+
+.claude-ia-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), #0066ff, var(--accent));
+  background-size: 200% auto;
+  animation: shimmer 2s linear infinite;
+}
+
+.claude-ia-block strong {
+  color: var(--accent);
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+/* =========================
+   PREMIUM LOCK
+========================= */
+
+.premium-lock-msg {
+  background: rgba(245,158,11,0.05);
+  border: 1px solid rgba(245,158,11,0.15);
+  border-radius: var(--radius-sm);
+  padding: 30px !important;
+  text-align: center;
+  font-size: 15px;
+  color: var(--text);
+}
