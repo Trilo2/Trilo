@@ -27,12 +27,12 @@
   <link rel="icon" type="image/png" href="logo-trilo.png">
 
   <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY73QCQGWZ"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GSNS075D5R"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-ZY73QCQGWZ');
+    gtag('config', 'G-GSNS075D5R');
   </script>
 
   <!-- PWA -->
@@ -47,7 +47,58 @@
 </head>
 
 <body>
+
+  <!-- NAVBAR FIXE -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="logo-trilo.png" alt="Trilo" class="navbar-logo-img">
+      <span>TRILO</span>
+    </div>
+    <div class="navbar-links">
+      <a href="#analyser">📊 Analyser</a>
+      <a href="#coach">🤖 Coach IA</a>
+      <a href="#dashboard">📈 Dashboard</a>
+      <a href="#premium">⭐ Premium</a>
+    </div>
+    <div id="navbar-user"></div>
+  </nav>
+
   <main class="app">
+
+    <!-- 0. LANDING PAGE -->
+    <section class="landing" id="landing">
+      <div class="landing-content">
+        <img src="logo-trilo.png" alt="Logo Trilo" class="logo-trilo">
+        <h1>TRILO</h1>
+        <p class="subtitle">Analyse. Progresse. Domine.</p>
+        <p class="landing-desc">
+          Le premier coach IA gratuit pour triathlètes. Analyse tes performances en natation, vélo et course à pied. Obtiens des conseils personnalisés, suis ta progression et compare-toi aux meilleurs.
+        </p>
+        <div class="landing-features">
+          <div class="landing-feature">
+            <span>🤖</span>
+            <strong>Coach IA</strong>
+            <p>Analyse intelligente de tes performances</p>
+          </div>
+          <div class="landing-feature">
+            <span>🏁</span>
+            <strong>Mode Race</strong>
+            <p>Compare-toi aux courses officielles</p>
+          </div>
+          <div class="landing-feature">
+            <span>🔥</span>
+            <strong>Streaks</strong>
+            <p>Garde ta motivation chaque jour</p>
+          </div>
+          <div class="landing-feature">
+            <span>🗺️</span>
+            <strong>Parcours GPS</strong>
+            <p>Trouve des itinéraires près de chez toi</p>
+          </div>
+        </div>
+        <a href="#analyser" class="landing-cta">🚀 Commencer gratuitement</a>
+      </div>
+    </section>
 
     <!-- 1. HERO -->
     <header class="hero">
@@ -78,6 +129,7 @@
     </section>
 
     <!-- 3. SPORTS -->
+    <div id="analyser"></div>
     <section class="panel">
       <div class="sport-block">
         <div class="sport-head">
@@ -144,6 +196,7 @@
     </section>
 
     <!-- 5. COACH IA -->
+    <div id="coach"></div>
     <section class="ai-coach">
       <div class="ai-head">
         <span>🤖</span>
@@ -234,6 +287,7 @@
     </section>
 
     <!-- 9. DASHBOARD -->
+    <div id="dashboard"></div>
     <section class="dashboard-card">
       <div class="dashboard-head">
         <span>📊</span>
@@ -268,6 +322,7 @@
     </section>
 
     <!-- 11. PREMIUM -->
+    <div id="premium"></div>
     <section class="premium-card">
       <span class="premium-badge">PREMIUM</span>
       <h2>Trilo Premium</h2>
