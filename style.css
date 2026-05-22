@@ -1623,3 +1623,93 @@ body {
     padding: 20px;
   }
 }
+.trilo-v2 {
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: 25px;
+  background: rgba(8, 18, 35, 0.95);
+  color: white;
+  box-shadow: 0 0 35px rgba(0, 255, 255, 0.18);
+}
+
+.trilo-v2 h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 25px;
+}
+
+.score-global-box,
+.records-box,
+.progression-box,
+.badges-box {
+  padding: 22px;
+  margin-bottom: 25px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.score-global {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #00eaff;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.level-bar {
+  width: 100%;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.level-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #00eaff, #00ff88);
+  transition: width 0.8s ease;
+}
+
+.v2-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.v2-card {
+  padding: 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.badges-list {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 10px 15px;
+  border-radius: 20px;
+  background: rgba(0, 234, 255, 0.18);
+  border: 1px solid rgba(0, 234, 255, 0.4);
+  font-weight: bold;
+}
+
+.badge.locked {
+  opacity: 0.6;
+}
+
+@media (max-width: 800px) {
+  .v2-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .trilo-v2 {
+    padding: 20px;
+  }
+}
