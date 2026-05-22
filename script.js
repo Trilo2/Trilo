@@ -440,6 +440,75 @@ function mettreAJourGraphique() {
   });
 }
 
+function mettreAJourAnalyseV2(result) {
+  if (!result) return;
+  const { globalScore, performances } = result;
+  const sorted = [...performances].sort((a, b) => b.score - a.score);
+  const meilleur = sorted[0];
+  const pointFaible = sorted[sorted.length - 1];
+  const { level } = obtenirNiveau(globalScore);
+
+  // Score global
+  const elScore = el("v2-score");
+  if (elScore) elScore.textContent = globalScore.toFixed(0);
+
+  const elNiveau = el("v2-niveau");
+  if (elNiveau) elNiveau.textContent = "Niveau : " + level;
+
+  // Point fort / à améliorer
+  const elFort = el("v2-fort");
+  if (elFort && meilleur) {
+    elFort.innerHTML = `<strong>${meilleur.sport}</strong> — ${meilleur.score.toFixed(0)}/100`;
+  }
+
+  const elFaible = el("v2-faible");
+  if (elFaible && pointFaible) {
+    elFaible.innerHTML = pointFaible.sport === meilleur?.sport
+      ? `Continue à progresser !`
+      : `<strong>${pointFaible.sport}</strong> — ${pointFaible.score.toFixed(0)}/100`;
+  }
+
+  // Conseil IA court
+  const elConseil = el("v2-conseil");
+  if (elConseil) {
+    const conseils = {
+      natation: "Travaille ta technique de respiration et la rotation des hanches pour gagner en efficacité.",
+      "vélo":   "Maintiens une cadence régulière 80-100 rpm et hydrate-toi toutes les 15 min.",
+      course:   "Garde une foulée économique avec une cadence de 180 pas/min."
+    };
+    const conseil = conseils[pointFaible?.sport] || "Continue à t'entraîner régulièrement !";
+    elConseil.textContent = conseil;
+  }
+
+  // Records
+  const elBestSport = el("v2-best-sport");
+  if (elBestSport && meilleur) elBestSport.textContent = meilleur.sport;
+
+  const totalKm = sessions.reduce((acc, s) => {
+    return acc + (s.swimDist || 0) / 1000 + (s.bikeDist || 0) + (s.runDist || 0);
+  }, 0);
+  const elDist = el("v2-distance");
+  if (elDist) elDist.textContent = totalKm.toFixed(1) + " km";
+
+  const allScores = sessions.map(s => s.globalScore);
+  const bestScore = allScores.length > 0 ? Math.max(...allScores) : 0;
+  const elBest = el("v2-best-score");
+  if (elBest) elBest.textContent = bestScore.toFixed(0);
+
+  // Progression (% entre les 2 dernières séances)
+  const elProg = el("v2-progression");
+  if (elProg && sessions.length >= 2) {
+    const last = sessions[sessions.length - 1].globalScore;
+    const prev = sessions[sessions.length - 2].globalScore;
+    const diff = last - prev;
+    const pct = prev > 0 ? ((diff / prev) * 100).toFixed(0) : 0;
+    const symbol = diff >= 0 ? "📈 +" : "📉 ";
+    elProg.innerHTML = `${symbol}${pct}% depuis ta dernière séance`;
+  } else if (elProg) {
+    elProg.textContent = "Fais plus d'analyses pour voir ta progression";
+  }
+}
+
 async function chargerClassement() {
   const zone = el("leaderboard");
   if (!zone) return;
