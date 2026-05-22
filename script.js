@@ -210,7 +210,7 @@ function genererCoachGratuit(result) {
   return html;
 }
 
-async function genererCoachPremium(result) {
+function genererCoachPremium(result) {
   const { globalScore, performances } = result;
   const { level, intro } = obtenirNiveau(globalScore);
   const sorted = [...performances].sort((a, b) => b.score - a.score);
@@ -242,43 +242,82 @@ async function genererCoachPremium(result) {
   html += `<br>` + genererProchaineSéance(result);
   html += `<br>` + genererModeRace(result);
 
-  // Appel API Claude
-  html += `<br><div id="claude-coach-zone">🤖 <em>Analyse IA en cours...</em></div>`;
-
-  // Appel asynchrone à Claude
-  const prompt = `Tu es un coach de triathlon expert. Voici les performances d'un athlète :
-Score global : ${globalScore.toFixed(2)}/20
-${details}
-Point fort : ${meilleur?.sport || "aucun"}
-Point faible : ${pointFaible?.sport || "aucun"}
-
-En 3-4 phrases maximum, donne une analyse personnalisée et des conseils précis pour progresser. Sois direct, motivant et concret. Réponds en français.`;
-
-  try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        messages: [{ role: "user", content: prompt }]
-      })
-    });
-    const data = await response.json();
-    const texteIA = data.content?.[0]?.text || "Analyse IA indisponible.";
-    const zone = document.getElementById("claude-coach-zone");
-    if (zone) {
-      zone.innerHTML = `<div class="claude-ia-block">
-        <strong>🤖 Analyse IA Claude :</strong><br>
-        ${texteIA}
-      </div>`;
-    }
-  } catch(e) {
-    const zone = document.getElementById("claude-coach-zone");
-    if (zone) zone.innerHTML = "";
-  }
+  // Analyse IA locale intelligente
+  html += `<br>` + genererAnalyseIA(result);
 
   return html;
+}
+
+function genererAnalyseIA(result) {
+  const { globalScore, performances } = result;
+  const sorted = [...performances].sort((a, b) => a.score - b.score);
+  const faible = sorted[0];
+  const fort   = sorted[sorted.length - 1];
+
+  const nbSports = performances.length;
+
+  // Analyse selon le score
+  let intro = "";
+  if (globalScore >= 16) {
+    intro = `Ton score de ${globalScore.toFixed(2)}/20 te place dans l'élite mondiale du triathlon. Tu as atteint un niveau exceptionnel qui demande une planification d'entraînement très précise pour continuer à progresser.`;
+  } else if (globalScore >= 13) {
+    intro = `Avec ${globalScore.toFixed(2)}/20, tu es clairement au-dessus de la moyenne des triathlètes. Ton profil montre une vraie maîtrise des disciplines — il s'agit maintenant d'optimiser les détails.`;
+  } else if (globalScore >= 10) {
+    intro = `${globalScore.toFixed(2)}/20 est un bon score solide. Tu as les bases bien établies, et avec un travail ciblé tu peux facilement passer au niveau supérieur dans les prochains mois.`;
+  } else if (globalScore >= 7) {
+    intro = `Ton score de ${globalScore.toFixed(2)}/20 montre une progression encourageante. Tu construis ta base aérobie — c'est la phase la plus importante et la plus formatrice.`;
+  } else {
+    intro = `${globalScore.toFixed(2)}/20 : tu es au début de ton parcours triathlon. C'est le moment idéal pour construire des bases solides qui te serviront toute ta carrière sportive.`;
+  }
+
+  // Analyse du point faible
+  let conseilFaible = "";
+  if (faible) {
+    const vitesses = {
+      natation: [
+        `Ta natation (${faible.speed?.toFixed(1)} m/min) est ton point à améliorer en priorité. Vise 3 séances piscine par semaine avec des séries courtes et intenses plutôt qu'une longue sortie.`,
+        `Pour progresser en natation, concentre-toi sur la technique avant la vitesse : travaille le catch (prise d'eau) et la rotation des hanches avec un coach si possible.`,
+        `La natation représente seulement 10-15% du temps en course mais peut te faire perdre beaucoup d'énergie. Optimise ta technique pour arriver frais sur le vélo.`
+      ],
+      "vélo": [
+        `Le vélo (${faible.speed?.toFixed(1)} km/h) est ta discipline à cibler. Deux entraînements vélo par semaine suffisent : un en endurance longue, un en intervalles de puissance.`,
+        `Pour progresser à vélo, travaille ton endurance de base : des sorties de 1h30-2h à allure modérée (70% FCmax) pour construire ton moteur aérobie.`,
+        `La position sur le vélo a un impact énorme sur la performance. Vérifie ton fitting et travaille la souplesse pour une meilleure efficacité aérodynamique.`
+      ],
+      course: [
+        `Ta course à pied (${faible.speed?.toFixed(1)} km/h) a le plus grand potentiel de progression. Augmente progressivement ton volume de 10% par semaine maximum pour éviter les blessures.`,
+        `Pour améliorer ta course, intègre des sorties longues lentes (65% FCmax) et des séances de fractionné court (10x400m). Ce combo est le plus efficace pour progresser rapidement.`,
+        `La course à pied après le vélo est spécifique — entraîne-toi en "brique" (vélo + course enchaînés) au moins une fois par semaine pour habituer tes jambes à la transition.`
+      ]
+    };
+    const conseils = vitesses[faible.sport] || [];
+    conseilFaible = randElement(conseils) || "";
+  }
+
+  // Conseil selon le nombre de disciplines
+  let conseilGlobal = "";
+  if (nbSports === 3) {
+    conseilGlobal = `Tu as pratiqué les 3 disciplines — c'est parfait pour un entraînement complet. Veille à bien planifier tes récupérations entre les séances pour éviter le surmenage.`;
+  } else if (nbSports === 1) {
+    conseilGlobal = `Tu t'es concentré sur une seule discipline aujourd'hui. Pour progresser en triathlon, essaie d'intégrer les 3 sports dans ta semaine d'entraînement.`;
+  }
+
+  // Conseil nutrition/récupération selon l'intensité
+  let conseilRecup = "";
+  if (globalScore >= 13) {
+    conseilRecup = `À ton niveau, la nutrition et le sommeil sont aussi importants que l'entraînement : 7-9h de sommeil, 1.6-2g de protéines/kg et une bonne hydratation sont non-négociables.`;
+  } else {
+    conseilRecup = `Pense à bien t'hydrater avant, pendant et après l'effort. Une bonne récupération (sommeil, alimentation) vaut autant que l'entraînement lui-même.`;
+  }
+
+  const analyse = [intro, conseilFaible, conseilGlobal, conseilRecup]
+    .filter(Boolean)
+    .join(" ");
+
+  return `<div class="claude-ia-block">
+    <strong>🤖 Analyse Coach IA :</strong><br>
+    ${analyse}
+  </div>`;
 }
 
 function mettreAJourDashboard() {
@@ -422,7 +461,7 @@ async function analyser() {
   const zoneCoach = el("aiAnalysis");
   if (zoneCoach) {
     if (!currentUser)   zoneCoach.innerHTML = "🔒 Connecte-toi pour accéder au Coach IA.";
-    else if (isPremium) zoneCoach.innerHTML = await genererCoachPremium(result);
+    else if (isPremium) zoneCoach.innerHTML = genererCoachPremium(result);
     else                zoneCoach.innerHTML = genererCoachGratuit(result);
   }
   sessions.push({
