@@ -27,7 +27,7 @@ function afficherHistorique() {
       ? new Date(s.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" })
       : "Date inconnue";
 
-    const score = parseFloat(s.globalScore).toFixed(2);
+    const score = parseFloat(s.globalScore).toFixed(0);
     const niveau = obtenirNiveauLabel(s.globalScore);
 
     const sports = (s.performances || []).map(p => {
@@ -35,16 +35,16 @@ function afficherHistorique() {
         ? `${p.speed?.toFixed(1)} m/min`
         : `${p.speed?.toFixed(1)} km/h`;
       const emoji = p.sport === "natation" ? "🏊" : p.sport === "vélo" ? "🚴" : "🏃";
-      return `<span class="historique-sport">${emoji} ${p.sport} — ${vitesse} — ${p.score?.toFixed(2)}/20</span>`;
+      return `<span class="historique-sport">${emoji} ${p.sport} — ${vitesse} — ${p.score?.toFixed(0)}/100</span>`;
     }).join("");
 
-    const scoreColor = s.globalScore >= 12 ? "#00d4ff" : s.globalScore >= 7 ? "#ffd700" : "#e2e8f0";
+    const scoreColor = s.globalScore >= 60 ? "#00d4ff" : s.globalScore >= 35 ? "#ffd700" : "#e2e8f0";
 
     return `
       <div class="historique-item">
         <div class="historique-header">
           <span class="historique-date">📅 ${date}</span>
-          <span class="historique-score" style="color:${scoreColor};">${score}/20</span>
+          <span class="historique-score" style="color:${scoreColor};">${score}/100</span>
         </div>
         <div class="historique-niveau">${niveau}</div>
         <div class="historique-sports">${sports || "<span style='color:#7a8faa;'>Aucun détail disponible</span>"}</div>
@@ -66,18 +66,18 @@ function afficherHistorique() {
       const date = s.date
         ? new Date(s.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" })
         : "Date inconnue";
-      const score = parseFloat(s.globalScore).toFixed(2);
+      const score = parseFloat(s.globalScore).toFixed(0);
       const niveau = obtenirNiveauLabel(s.globalScore);
       const sports = (s.performances || []).map(p => {
         const vitesse = p.sport === "natation" ? `${p.speed?.toFixed(1)} m/min` : `${p.speed?.toFixed(1)} km/h`;
         const emoji = p.sport === "natation" ? "🏊" : p.sport === "vélo" ? "🚴" : "🏃";
-        return `<span class="historique-sport">${emoji} ${p.sport} — ${vitesse} — ${p.score?.toFixed(2)}/20</span>`;
+        return `<span class="historique-sport">${emoji} ${p.sport} — ${vitesse} — ${p.score?.toFixed(0)}/100</span>`;
       }).join("");
-      const scoreColor = s.globalScore >= 12 ? "#00d4ff" : s.globalScore >= 7 ? "#ffd700" : "#e2e8f0";
+      const scoreColor = s.globalScore >= 60 ? "#00d4ff" : s.globalScore >= 35 ? "#ffd700" : "#e2e8f0";
       return `<div class="historique-item">
         <div class="historique-header">
           <span class="historique-date">📅 ${date}</span>
-          <span class="historique-score" style="color:${scoreColor};">${score}/20</span>
+          <span class="historique-score" style="color:${scoreColor};">${score}/100</span>
         </div>
         <div class="historique-niveau">${niveau}</div>
         <div class="historique-sports">${sports || ""}</div>
@@ -117,11 +117,11 @@ function afficherHistorique() {
 }
 
 function obtenirNiveauLabel(score) {
-  if (score < 4)  return "Niveau 1 😐 Débutant";
-  if (score < 7)  return "Niveau 2 👍 En progrès";
-  if (score < 10) return "Niveau 3 🔥 Bon niveau";
-  if (score < 13) return "Niveau 4 💪 Très bon";
-  if (score < 16) return "Niveau 5 🚀 Expert";
+  if (score < 20) return "Niveau 1 😐 Débutant";
+  if (score < 35) return "Niveau 2 👍 En progrès";
+  if (score < 50) return "Niveau 3 🔥 Bon niveau";
+  if (score < 65) return "Niveau 4 💪 Très bon";
+  if (score < 80) return "Niveau 5 🚀 Expert";
   return           "Niveau 6 🏆 Élite";
 }
 
