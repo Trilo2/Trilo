@@ -1539,177 +1539,126 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-.demo-analyse {
-  margin: 50px auto;
-  padding: 30px;
-  max-width: 1100px;
-  border-radius: 25px;
-  background: rgba(10, 20, 40, 0.95);
-  color: white;
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.18);
+
+/* =========================
+   ANALYSE TRILO V2
+========================= */
+
+.analyse-v2-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(24px);
+  box-shadow: var(--shadow);
+  animation: cardIn 0.6s ease both;
 }
 
-.demo-analyse h2 {
-  text-align: center;
-  font-size: 2rem;
+.analyse-v2-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.analyse-v2-head span {
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,100,255,0.05));
+  border: 1px solid var(--border-bright);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.analyse-v2-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  margin-bottom: 4px;
+}
+
+.analyse-v2-head p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.analyse-v2-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.v2-box {
+  background: var(--bg-inner);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  transition: var(--transition);
+}
+
+.v2-box:hover {
+  border-color: var(--border-bright);
+}
+
+.v2-box h3 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
   margin-bottom: 10px;
 }
 
-.demo-subtitle {
+.v2-box p {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.v2-box p strong {
+  color: var(--accent);
+}
+
+.v2-score {
   text-align: center;
-  opacity: 0.8;
-  margin-bottom: 30px;
+  grid-column: span 1;
 }
 
-.demo-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+.v2-big {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  line-height: 1;
+  background: linear-gradient(135deg, #fff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
 }
 
-.demo-card {
-  padding: 20px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.08);
-  text-align: center;
+.v2-score small {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
 }
 
-.demo-card h3 {
-  margin-bottom: 12px;
+.v2-score p {
+  margin-top: 10px;
+  font-size: 12px;
 }
 
-.score {
-  font-size: 2.3rem;
-  font-weight: bold;
-  color: #00eaff;
+.v2-conseil {
+  grid-column: span 2;
 }
 
-.score.best {
-  color: #00ff88;
-}
-
-.score.weak {
-  color: #ffcc00;
-}
-
-.coach-demo {
-  margin-top: 25px;
-  padding: 22px;
-  border-radius: 18px;
-  background: rgba(0, 234, 255, 0.12);
-  border: 1px solid rgba(0, 234, 255, 0.4);
-}
-
-.progress-demo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-around;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.progress-demo p {
-  background: rgba(255, 255, 255, 0.08);
-  padding: 12px 18px;
-  border-radius: 15px;
-}
-
-@media (max-width: 800px) {
-  .demo-grid {
+@media (max-width: 768px) {
+  .analyse-v2-grid {
     grid-template-columns: 1fr;
   }
-
-  .demo-analyse {
-    padding: 20px;
-  }
-}
-.trilo-v2 {
-  max-width: 1100px;
-  margin: 50px auto;
-  padding: 30px;
-  border-radius: 25px;
-  background: rgba(8, 18, 35, 0.95);
-  color: white;
-  box-shadow: 0 0 35px rgba(0, 255, 255, 0.18);
-}
-
-.trilo-v2 h2 {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 25px;
-}
-
-.score-global-box,
-.records-box,
-.progression-box,
-.badges-box {
-  padding: 22px;
-  margin-bottom: 25px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.score-global {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #00eaff;
-  text-align: center;
-  margin: 15px 0;
-}
-
-.level-bar {
-  width: 100%;
-  height: 18px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.level-fill {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, #00eaff, #00ff88);
-  transition: width 0.8s ease;
-}
-
-.v2-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 25px;
-}
-
-.v2-card {
-  padding: 20px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.08);
-  text-align: center;
-}
-
-.badges-list {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.badge {
-  padding: 10px 15px;
-  border-radius: 20px;
-  background: rgba(0, 234, 255, 0.18);
-  border: 1px solid rgba(0, 234, 255, 0.4);
-  font-weight: bold;
-}
-
-.badge.locked {
-  opacity: 0.6;
-}
-
-@media (max-width: 800px) {
-  .v2-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .trilo-v2 {
-    padding: 20px;
-  }
+  .v2-conseil { grid-column: span 1; }
 }
