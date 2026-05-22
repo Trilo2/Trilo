@@ -135,7 +135,7 @@ function afficherGraphiquesParSport() {
         plugins: { legend: { display: false } },
         scales: {
           x: { ticks: { color: "#aaa", font: { size: 10 } }, grid: { color: "#222" } },
-          y: { ticks: { color: "#aaa", font: { size: 10 } }, grid: { color: "#222" }, min: 0, max: 20 }
+          y: { ticks: { color: "#aaa", font: { size: 10 } }, grid: { color: "#222" }, min: 0, max: 100 }
         }
       }
     });
