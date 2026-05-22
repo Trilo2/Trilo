@@ -521,7 +521,12 @@ async function analyser() {
     el("score").textContent   = "⚠️ Erreur";
     el("message").textContent = "Remplis au moins une discipline avec distance ET temps.";
     return;
-  }
+  }lancerAnalyseTriloV2(
+scoreNatation,
+scoreVelo,
+scoreCourse,
+distanceTotale
+);
   const { globalScore } = result;
   el("score").textContent = obtenirNiveau(globalScore).level;
   el("message").innerHTML = `Score global : <strong>${globalScore.toFixed(2)} / 20</strong>`;
