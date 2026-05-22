@@ -350,9 +350,7 @@ function mettreAJourDashboard() {
   // Verrouiller si pas premium
   if (!currentUser || !isPremium) {
     if (dashCard) {
-      // Garder le titre mais remplacer le contenu
       const head = dashCard.querySelector(".dashboard-head");
-      // Supprimer tout sauf le head
       while (dashCard.children.length > 1) {
         dashCard.removeChild(dashCard.lastChild);
       }
@@ -361,6 +359,8 @@ function mettreAJourDashboard() {
       lock.innerHTML = `🔒 <strong>Premium requis</strong><br><span style="color:var(--text-muted);font-size:13px;">Débloque le dashboard avancé avec Trilo Premium</span>`;
       dashCard.appendChild(lock);
     }
+    // Mettre à jour le graphique aussi (pour afficher le message Premium)
+    mettreAJourGraphique();
     return;
   }
 
@@ -688,5 +688,6 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   mettreAJourDashboard();
+  mettreAJourGraphique();
   afficherBadges();
 });
