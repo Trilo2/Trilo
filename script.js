@@ -72,30 +72,41 @@ function genererModeRace(result) {
   const swimPerf = result.performances.find(p => p.sport === "natation");
   const bikePerf = result.performances.find(p => p.sport === "vélo");
   const runPerf  = result.performances.find(p => p.sport === "course");
+
+  // Si l'utilisateur n'a pas fait les 3 disciplines, on prévient
+  const nbDisciplines = result.performances.length;
+  if (nbDisciplines < 3) {
+    return `<div class="race-section">
+      <h3>🏁 Mode Race</h3>
+      <div class="race-card">
+        <p style="color:var(--text-muted);font-size:14px;">
+          ⚠️ Le mode Race nécessite les <strong>3 disciplines</strong> (natation, vélo, course) pour estimer ton temps total sur une course officielle.
+        </p>
+        <p style="color:var(--text-muted);font-size:13px;margin-top:8px;">
+          Tu as renseigné ${nbDisciplines} discipline${nbDisciplines > 1 ? "s" : ""}. Refais une analyse avec les 3 sports pour débloquer cette fonctionnalité !
+        </p>
+      </div>
+    </div>`;
+  }
+
   let html = `<div class="race-section"><h3>🏁 Mode Race — Comparaison officielle</h3>`;
   Object.values(RACES).forEach(race => {
     html += `<div class="race-card"><strong>${race.label}</strong><br>`;
-    if (swimPerf && swimPerf.speed > 0) {
-      const t = Math.round(race.swim / swimPerf.speed);
-      const e = (t - race.tempsRef.swim) <= 0 ? "✅" : (t - race.tempsRef.swim) <= 5 ? "🟡" : "🔴";
-      html += `🏊 Natation (${race.swim}m) : ~${t} min ${e} (ref: ${race.tempsRef.swim} min)<br>`;
-    }
-    if (bikePerf && bikePerf.speed > 0) {
-      const t = Math.round((race.bike / bikePerf.speed) * 60);
-      const e = (t - race.tempsRef.bike) <= 0 ? "✅" : (t - race.tempsRef.bike) <= 10 ? "🟡" : "🔴";
-      html += `🚴 Vélo (${race.bike}km) : ~${t} min ${e} (ref: ${race.tempsRef.bike} min)<br>`;
-    }
-    if (runPerf && runPerf.speed > 0) {
-      const t = Math.round((race.run / runPerf.speed) * 60);
-      const e = (t - race.tempsRef.run) <= 0 ? "✅" : (t - race.tempsRef.run) <= 10 ? "🟡" : "🔴";
-      html += `🏃 Course (${race.run}km) : ~${t} min ${e} (ref: ${race.tempsRef.run} min)<br>`;
-    }
-    let total = 5;
-    if (swimPerf) total += Math.round(race.swim / swimPerf.speed);
-    if (bikePerf) total += Math.round((race.bike / bikePerf.speed) * 60);
-    if (runPerf)  total += Math.round((race.run / runPerf.speed) * 60);
+    const tSwim = Math.round(race.swim / swimPerf.speed);
+    const eSwim = (tSwim - race.tempsRef.swim) <= 0 ? "✅" : (tSwim - race.tempsRef.swim) <= 5 ? "🟡" : "🔴";
+    html += `🏊 Natation (${race.swim}m) : ~${tSwim} min ${eSwim} (ref: ${race.tempsRef.swim} min)<br>`;
+
+    const tBike = Math.round((race.bike / bikePerf.speed) * 60);
+    const eBike = (tBike - race.tempsRef.bike) <= 0 ? "✅" : (tBike - race.tempsRef.bike) <= 10 ? "🟡" : "🔴";
+    html += `🚴 Vélo (${race.bike}km) : ~${tBike} min ${eBike} (ref: ${race.tempsRef.bike} min)<br>`;
+
+    const tRun = Math.round((race.run / runPerf.speed) * 60);
+    const eRun = (tRun - race.tempsRef.run) <= 0 ? "✅" : (tRun - race.tempsRef.run) <= 10 ? "🟡" : "🔴";
+    html += `🏃 Course (${race.run}km) : ~${tRun} min ${eRun} (ref: ${race.tempsRef.run} min)<br>`;
+
+    const total = tSwim + tBike + tRun + 5;
     const h = Math.floor(total / 60), m = total % 60;
-    html += `⏱️ Total estimé : <strong>${h > 0 ? h + "h" : ""}${m}min</strong><br></div>`;
+    html += `⏱️ Total estimé : <strong>${h > 0 ? h + "h" : ""}${m}min</strong> (avec transitions)<br></div>`;
   });
   html += `<p class="race-note">* Estimations hors fatigue cumulée.</p></div>`;
   return html;
@@ -686,6 +697,21 @@ window.addEventListener("DOMContentLoaded", () => {
       alert("❌ Erreur : " + e.message);
     }
   });
+
+  // Bouton retour en haut
+  const scrollBtn = el("scrollTopBtn");
+  if (scrollBtn) {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 400) {
+        scrollBtn.classList.add("visible");
+      } else {
+        scrollBtn.classList.remove("visible");
+      }
+    });
+    scrollBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
 
   mettreAJourDashboard();
   mettreAJourGraphique();
