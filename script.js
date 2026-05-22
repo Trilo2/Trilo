@@ -321,16 +321,39 @@ function genererAnalyseIA(result) {
 }
 
 function mettreAJourDashboard() {
-  // Dashboard verrouillé pour les non-premium
-  const dashGrid = document.querySelector(".dashboard-grid");
-  if (dashGrid) {
-    if (!currentUser || !isPremium) {
-      dashGrid.innerHTML = `<div class="premium-lock-msg" style="grid-column:1/-1;text-align:center;padding:30px;">
-        🔒 <strong>Premium requis</strong><br>
-        <span style="color:var(--text-muted);font-size:13px;">Débloque le dashboard avancé avec Trilo Premium</span>
-      </div>`;
-      return;
+  const dashCard = document.querySelector(".dashboard-card");
+
+  // Verrouiller si pas premium
+  if (!currentUser || !isPremium) {
+    if (dashCard) {
+      // Garder le titre mais remplacer le contenu
+      const head = dashCard.querySelector(".dashboard-head");
+      // Supprimer tout sauf le head
+      while (dashCard.children.length > 1) {
+        dashCard.removeChild(dashCard.lastChild);
+      }
+      const lock = document.createElement("div");
+      lock.className = "premium-lock-msg";
+      lock.innerHTML = `🔒 <strong>Premium requis</strong><br><span style="color:var(--text-muted);font-size:13px;">Débloque le dashboard avancé avec Trilo Premium</span>`;
+      dashCard.appendChild(lock);
     }
+    return;
+  }
+
+  // Restaurer la grille si elle a été remplacée
+  if (dashCard && !el("bestScore")) {
+    while (dashCard.children.length > 1) {
+      dashCard.removeChild(dashCard.lastChild);
+    }
+    const grid = document.createElement("div");
+    grid.className = "dashboard-grid";
+    grid.innerHTML = `
+      <div class="dashboard-box"><h3>🏅 Meilleur score</h3><div id="bestScore">0</div></div>
+      <div class="dashboard-box"><h3>📈 Score moyen</h3><div id="averageScore">0</div></div>
+      <div class="dashboard-box"><h3>🔥 Séances</h3><div id="sessionCount">0</div></div>
+      <div class="dashboard-box"><h3>💪 Sport dominant</h3><div id="bestSport">Aucun</div></div>
+    `;
+    dashCard.appendChild(grid);
   }
 
   if (sessions.length === 0) {
