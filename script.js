@@ -73,7 +73,6 @@ function genererModeRace(result) {
   const bikePerf = result.performances.find(p => p.sport === "vélo");
   const runPerf  = result.performances.find(p => p.sport === "course");
 
-  // Si l'utilisateur n'a pas fait les 3 disciplines, on prévient
   const nbDisciplines = result.performances.length;
   if (nbDisciplines < 3) {
     return `<div class="race-section">
@@ -176,7 +175,6 @@ function calculerScores() {
   let runDist  = Number(el("runDist")?.value  || 0);
   const runTime  = convertirTempsEnMinutes(el("runTime")?.value  || "");
 
-  // Validation des valeurs max réalistes
   if (swimDist > 10000) { alert("⚠️ Distance natation trop élevée (max 10 000m)"); return null; }
   if (bikeDist > 300)   { alert("⚠️ Distance vélo trop élevée (max 300km)"); return null; }
   if (runDist > 100)    { alert("⚠️ Distance course trop élevée (max 100km)"); return null; }
@@ -184,7 +182,6 @@ function calculerScores() {
   if (bikeTime > 600)   { alert("⚠️ Temps vélo trop élevé (max 10h)"); return null; }
   if (runTime > 600)    { alert("⚠️ Temps course trop élevé (max 10h)"); return null; }
 
-  // Validation vitesses aberrantes
   if (swimDist > 0 && swimTime > 0) {
     const speed = swimDist / swimTime;
     if (speed > 120) { alert("⚠️ Vitesse natation irréaliste. Vérifie tes données."); return null; }
@@ -252,15 +249,6 @@ function genererCoachPremium(result) {
   const meilleur = sorted[0];
   const pointFaible = sorted[sorted.length - 1];
 
-  // Détail des performances
-  let details = "";
-  performances.forEach(p => {
-    const v = p.sport === "natation"
-      ? `${p.speed.toFixed(1)} m/min (${(p.speed * 60 / 1000).toFixed(2)} km/h)`
-      : `${p.speed.toFixed(1)} km/h`;
-    details += `${p.sport}: ${v}, score ${p.score.toFixed(2)}/20. `;
-  });
-
   let html = `<strong>${level}</strong><br>${intro}<br><br>`;
   html += `<strong>Score global : ${globalScore.toFixed(2)} / 20</strong><br><br>`;
   html += `<strong>📊 Détail des performances :</strong><br>`;
@@ -276,8 +264,6 @@ function genererCoachPremium(result) {
   html += `<br>` + genererRecuperation(result);
   html += `<br>` + genererProchaineSéance(result);
   html += `<br>` + genererModeRace(result);
-
-  // Analyse IA locale intelligente
   html += `<br>` + genererAnalyseIA(result);
 
   return html;
@@ -288,10 +274,8 @@ function genererAnalyseIA(result) {
   const sorted = [...performances].sort((a, b) => a.score - b.score);
   const faible = sorted[0];
   const fort   = sorted[sorted.length - 1];
-
   const nbSports = performances.length;
 
-  // Analyse selon le score
   let intro = "";
   if (globalScore >= 16) {
     intro = `Ton score de ${globalScore.toFixed(2)}/20 te place dans l'élite mondiale du triathlon. Tu as atteint un niveau exceptionnel qui demande une planification d'entraînement très précise pour continuer à progresser.`;
@@ -305,7 +289,6 @@ function genererAnalyseIA(result) {
     intro = `${globalScore.toFixed(2)}/20 : tu es au début de ton parcours triathlon. C'est le moment idéal pour construire des bases solides qui te serviront toute ta carrière sportive.`;
   }
 
-  // Analyse du point faible
   let conseilFaible = "";
   if (faible) {
     const vitesses = {
@@ -329,7 +312,6 @@ function genererAnalyseIA(result) {
     conseilFaible = randElement(conseils) || "";
   }
 
-  // Conseil selon le nombre de disciplines
   let conseilGlobal = "";
   if (nbSports === 3) {
     conseilGlobal = `Tu as pratiqué les 3 disciplines — c'est parfait pour un entraînement complet. Veille à bien planifier tes récupérations entre les séances pour éviter le surmenage.`;
@@ -337,7 +319,6 @@ function genererAnalyseIA(result) {
     conseilGlobal = `Tu t'es concentré sur une seule discipline aujourd'hui. Pour progresser en triathlon, essaie d'intégrer les 3 sports dans ta semaine d'entraînement.`;
   }
 
-  // Conseil nutrition/récupération selon l'intensité
   let conseilRecup = "";
   if (globalScore >= 13) {
     conseilRecup = `À ton niveau, la nutrition et le sommeil sont aussi importants que l'entraînement : 7-9h de sommeil, 1.6-2g de protéines/kg et une bonne hydratation sont non-négociables.`;
@@ -358,10 +339,8 @@ function genererAnalyseIA(result) {
 function mettreAJourDashboard() {
   const dashCard = document.querySelector(".dashboard-card");
 
-  // Verrouiller si pas premium
   if (!currentUser || !isPremium) {
     if (dashCard) {
-      const head = dashCard.querySelector(".dashboard-head");
       while (dashCard.children.length > 1) {
         dashCard.removeChild(dashCard.lastChild);
       }
@@ -370,12 +349,10 @@ function mettreAJourDashboard() {
       lock.innerHTML = `🔒 <strong>Premium requis</strong><br><span style="color:var(--text-muted);font-size:13px;">Débloque le dashboard avancé avec Trilo Premium</span>`;
       dashCard.appendChild(lock);
     }
-    // Mettre à jour le graphique aussi (pour afficher le message Premium)
     mettreAJourGraphique();
     return;
   }
 
-  // Restaurer la grille si elle a été remplacée
   if (dashCard && !el("bestScore")) {
     while (dashCard.children.length > 1) {
       dashCard.removeChild(dashCard.lastChild);
@@ -397,6 +374,7 @@ function mettreAJourDashboard() {
     mettreAJourGraphique();
     return;
   }
+
   const scores = sessions.map(s => s.globalScore);
   if (el("bestScore"))    el("bestScore").textContent    = Math.max(...scores).toFixed(2);
   if (el("averageScore")) el("averageScore").textContent = (scores.reduce((a,b) => a+b, 0) / scores.length).toFixed(2);
@@ -409,19 +387,20 @@ function mettreAJourDashboard() {
 }
 
 function mettreAJourGraphique() {
-  const canvas = el("chart");
   const chartBox = document.querySelector(".chart-box");
-  if (!canvas || typeof Chart === "undefined") return;
+  if (!chartBox || typeof Chart === "undefined") return;
 
-  // Restaurer le canvas si remplacé
-  if (chartBox && !document.getElementById("chart")) {
+  // Toujours lire le canvas depuis le DOM (évite les problèmes de closure)
+  let canvas = document.getElementById("chart");
+  if (!canvas) {
     chartBox.innerHTML = `<canvas id="chart"></canvas>`;
+    canvas = document.getElementById("chart");
   }
-  const canvasNew = document.getElementById("chart") || canvas;
+  if (!canvas) return;
 
   const slice = sessions.slice(-10);
-  if (chart) chart.destroy();
-  chart = new Chart(canvasNew.getContext("2d"), {
+  if (chart) { chart.destroy(); chart = null; }
+  chart = new Chart(canvas.getContext("2d"), {
     type: "line",
     data: {
       labels: slice.map((_, i) => `S${sessions.length - slice.length + i + 1}`),
@@ -496,11 +475,8 @@ async function chargerComparaisonAvancee(monScore) {
 async function enregistrerScore(result) {
   if (!currentUser) return;
   try {
-    // Recuperer le pseudo depuis le profil
     const userSnap = await getDoc(doc(db, "users", currentUser.uid));
     const pseudo = userSnap.exists() ? (userSnap.data().pseudo || "Anonyme") : "Anonyme";
-
-    // setDoc avec uid comme ID = un seul score par utilisateur (meilleur score)
     const refScore = doc(db, "scores", currentUser.uid);
     const existing = await getDoc(refScore);
     if (!existing.exists() || result.globalScore > existing.data().globalScore) {
@@ -515,27 +491,27 @@ async function enregistrerScore(result) {
   } catch(e) { console.error("Erreur enregistrement :", e); }
 }
 
+// FIX CRITIQUE : lancerAnalyseTriloV2 est maintenant appelé à la fin de analyser(),
+// avec les bonnes variables issues de result (scores convertis /20 → /100).
 async function analyser() {
   const result = calculerScores();
   if (!result) {
     el("score").textContent   = "⚠️ Erreur";
     el("message").textContent = "Remplis au moins une discipline avec distance ET temps.";
     return;
-  }lancerAnalyseTriloV2(
-scoreNatation,
-scoreVelo,
-scoreCourse,
-distanceTotale
-);
+  }
+
   const { globalScore } = result;
   el("score").textContent = obtenirNiveau(globalScore).level;
   el("message").innerHTML = `Score global : <strong>${globalScore.toFixed(2)} / 20</strong>`;
+
   const zoneCoach = el("aiAnalysis");
   if (zoneCoach) {
     if (!currentUser)   zoneCoach.innerHTML = "🔒 Connecte-toi pour accéder au Coach IA.";
     else if (isPremium) zoneCoach.innerHTML = genererCoachPremium(result);
     else                zoneCoach.innerHTML = genererCoachGratuit(result);
   }
+
   sessions.push({
     globalScore, performances: result.performances,
     swimDist: result.swimDist, bikeDist: result.bikeDist, runDist: result.runDist,
@@ -544,12 +520,26 @@ distanceTotale
   localStorage.setItem("triloSessions", JSON.stringify(sessions));
   mettreAJourDashboard();
   afficherBadges();
+
   if (currentUser) {
     await enregistrerScore(result);
     await chargerClassement();
     await chargerComparaison(globalScore);
     await chargerComparaisonAvancee(globalScore);
   }
+
+  // FIX : appel placé ici avec les bonnes variables (scores /20 convertis en /100)
+  const swimPerf = result.performances.find(p => p.sport === "natation");
+  const bikePerf = result.performances.find(p => p.sport === "vélo");
+  const runPerf  = result.performances.find(p => p.sport === "course");
+  const distanceTotale = parseFloat(((result.swimDist / 1000) + result.bikeDist + result.runDist).toFixed(2));
+
+  lancerAnalyseTriloV2(
+    swimPerf ? parseFloat((swimPerf.score * 5).toFixed(1)) : 0,
+    bikePerf ? parseFloat((bikePerf.score * 5).toFixed(1)) : 0,
+    runPerf  ? parseFloat((runPerf.score  * 5).toFixed(1)) : 0,
+    distanceTotale
+  );
 }
 
 function reinitialiser() {
@@ -605,7 +595,7 @@ onAuthStateChanged(auth, async (user) => {
     await creerProfil(user);
     await verifierPremium(user);
     await chargerClassement();
-    mettreAJourDashboard(); // Après vérification Premium
+    mettreAJourDashboard();
     afficherBadges();
   } else {
     isPremium = false;
@@ -638,12 +628,10 @@ window.addEventListener("DOMContentLoaded", () => {
   el("analyzeBtn")?.addEventListener("click", analyser);
   el("resetBtn")?.addEventListener("click", reinitialiser);
 
-  // Afficher le champ pseudo seulement quand on clique sur "Créer un compte"
   el("signupBtn")?.addEventListener("click", async () => {
     const pseudoZone = el("pseudo-zone");
     const pseudo     = el("pseudo")?.value?.trim();
 
-    // Si le champ pseudo n est pas encore visible, l afficher
     if (pseudoZone && pseudoZone.style.display === "none") {
       pseudoZone.style.display = "block";
       el("pseudo")?.focus();
@@ -679,7 +667,6 @@ window.addEventListener("DOMContentLoaded", () => {
     alert("💳 Intègre Stripe ici pour activer le Premium.");
   });
 
-  // Mot de passe oublié
   el("forgotBtn")?.addEventListener("click", async () => {
     const email = el("email")?.value?.trim();
     if (!email) {
@@ -694,15 +681,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Bouton retour en haut
   const scrollBtn = el("scrollTopBtn");
   if (scrollBtn) {
     window.addEventListener("scroll", () => {
-      if (window.scrollY > 400) {
-        scrollBtn.classList.add("visible");
-      } else {
-        scrollBtn.classList.remove("visible");
-      }
+      scrollBtn.classList.toggle("visible", window.scrollY > 400);
     });
     scrollBtn.addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -713,38 +695,46 @@ window.addEventListener("DOMContentLoaded", () => {
   mettreAJourGraphique();
   afficherBadges();
 });
+
 function lancerAnalyseTriloV2(natationScore, veloScore, courseScore, distanceTotale) {
+  // FIX : gardes sur tous les éléments DOM avant toute manipulation
+  const scoreGlobalEl    = el("scoreGlobalV2");
+  const levelProgressEl  = el("levelProgressV2");
+  const niveauEl         = el("niveauV2");
+  const pointFortEl      = el("pointFortV2");
+  const pointFaibleEl    = el("pointFaibleV2");
+  const conseilEl        = el("conseilV2");
+  const recordSportEl    = el("recordSportV2");
+  const recordDistanceEl = el("recordDistanceV2");
+  const recordScoreEl    = el("recordScoreV2");
+  const progressionEl    = el("progressionMoisV2");
+
   const scoreGlobal = Math.round((natationScore + veloScore + courseScore) / 3);
 
-  document.getElementById("scoreGlobalV2").textContent = scoreGlobal + " / 100";
-  document.getElementById("levelProgressV2").style.width = scoreGlobal + "%";
+  if (scoreGlobalEl)    scoreGlobalEl.textContent = scoreGlobal + " / 100";
+  if (levelProgressEl)  levelProgressEl.style.width = scoreGlobal + "%";
 
   let niveau = "Débutant";
-  if (scoreGlobal >= 85) niveau = "Expert";
+  if (scoreGlobal >= 85)      niveau = "Expert";
   else if (scoreGlobal >= 70) niveau = "Avancé";
   else if (scoreGlobal >= 50) niveau = "Intermédiaire";
 
-  document.getElementById("niveauV2").textContent = "Niveau : " + niveau;
+  if (niveauEl) niveauEl.textContent = "Niveau : " + niveau;
 
   const scores = [
     { sport: "Natation", score: natationScore },
-    { sport: "Vélo", score: veloScore },
-    { sport: "Course", score: courseScore }
+    { sport: "Vélo",     score: veloScore     },
+    { sport: "Course",   score: courseScore   }
   ];
-
   scores.sort((a, b) => b.score - a.score);
 
-  const pointFort = scores[0];
+  const pointFort   = scores[0];
   const pointFaible = scores[2];
 
-  document.getElementById("pointFortV2").textContent =
-    pointFort.sport + " avec " + pointFort.score + "/100";
-
-  document.getElementById("pointFaibleV2").textContent =
-    pointFaible.sport + " avec " + pointFaible.score + "/100";
+  if (pointFortEl)   pointFortEl.textContent   = pointFort.sport   + " avec " + pointFort.score   + "/100";
+  if (pointFaibleEl) pointFaibleEl.textContent = pointFaible.sport + " avec " + pointFaible.score + "/100";
 
   let conseil = "";
-
   if (pointFaible.sport === "Natation") {
     conseil = "Travaille ta technique et ajoute une séance de respiration.";
   } else if (pointFaible.sport === "Vélo") {
@@ -752,42 +742,36 @@ function lancerAnalyseTriloV2(natationScore, veloScore, courseScore, distanceTot
   } else {
     conseil = "Ajoute une séance de course lente pour progresser sans te blesser.";
   }
+  if (conseilEl) conseilEl.textContent = conseil;
 
-  document.getElementById("conseilV2").textContent = conseil;
-
-  document.getElementById("recordSportV2").textContent =
-    "Meilleur sport : " + pointFort.sport;
-
-  document.getElementById("recordDistanceV2").textContent =
-    "Distance totale : " + distanceTotale + " km";
-
-  document.getElementById("recordScoreV2").textContent =
-    "Meilleur score : " + pointFort.score + " / 100";
+  if (recordSportEl)    recordSportEl.textContent    = "Meilleur sport : "    + pointFort.sport;
+  if (recordDistanceEl) recordDistanceEl.textContent = "Distance totale : "   + distanceTotale + " km";
+  if (recordScoreEl)    recordScoreEl.textContent    = "Meilleur score : "    + pointFort.score + " / 100";
 
   let progression = "+0%";
-  if (scoreGlobal >= 85) progression = "+25%";
+  if      (scoreGlobal >= 85) progression = "+25%";
   else if (scoreGlobal >= 70) progression = "+18%";
   else if (scoreGlobal >= 50) progression = "+10%";
-  else progression = "+4%";
+  else                        progression = "+4%";
 
-  document.getElementById("progressionMoisV2").textContent =
-    "Progression mensuelle estimée : " + progression;
+  if (progressionEl) progressionEl.textContent = "Progression mensuelle estimée : " + progression;
 
   afficherBadgesV2(scoreGlobal, distanceTotale, pointFort.sport);
 }
 
 function afficherBadgesV2(scoreGlobal, distanceTotale, meilleurSport) {
-  const badgesBox = document.getElementById("badgesV2");
+  // FIX : garde sur l'élément avant manipulation
+  const badgesBox = el("badgesV2");
+  if (!badgesBox) return;
+
   badgesBox.innerHTML = "";
 
   const badges = [];
-
-  if (scoreGlobal >= 50) badges.push("🏅 Premier niveau");
-  if (scoreGlobal >= 70) badges.push("🔥 Athlète régulier");
-  if (scoreGlobal >= 85) badges.push("⚡ Niveau expert");
-  if (distanceTotale >= 50) badges.push("📏 Gros volume");
-  if (distanceTotale >= 100) badges.push("🚀 Machine d’endurance");
-
+  if (scoreGlobal >= 50)      badges.push("🏅 Premier niveau");
+  if (scoreGlobal >= 70)      badges.push("🔥 Athlète régulier");
+  if (scoreGlobal >= 85)      badges.push("⚡ Niveau expert");
+  if (distanceTotale >= 50)   badges.push("📏 Gros volume");
+  if (distanceTotale >= 100)  badges.push("🚀 Machine d'endurance");
   badges.push("⭐ Point fort : " + meilleurSport);
 
   badges.forEach(function(badge) {
