@@ -563,11 +563,23 @@ onAuthStateChanged(auth, async (user) => {
     if (el("advancedComparison")) el("advancedComparison").innerHTML = "🔒 Premium requis.";
   }
   afficherEtatAuth();
+  mettreAJourNavbar();
   if (!user) {
     mettreAJourDashboard();
     afficherBadges();
   }
 });
+
+function mettreAJourNavbar() {
+  const zone = document.getElementById("navbar-user");
+  if (!zone) return;
+  if (currentUser) {
+    const badge = isPremium ? ' ⭐' : '';
+    zone.innerHTML = `<span style="color:var(--accent);">👤 ${currentUser.email.split('@')[0]}${badge}</span>`;
+  } else {
+    zone.innerHTML = `<a href="#login" style="color:var(--text-muted);text-decoration:none;font-size:13px;" onclick="document.querySelector('.login-card').scrollIntoView({behavior:'smooth'});return false;">Se connecter</a>`;
+  }
+}
 
 window.addEventListener("DOMContentLoaded", () => {
   el("analyzeBtn")?.addEventListener("click", analyser);
