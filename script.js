@@ -4,7 +4,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
-  signOut
+  signOut,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
   getFirestore,
@@ -157,12 +158,35 @@ function afficherBadges() {
 }
 
 function calculerScores() {
-  const swimDist = Number(el("swimDist")?.value || 0);
+  let swimDist = Number(el("swimDist")?.value || 0);
   const swimTime = convertirTempsEnMinutes(el("swimTime")?.value || "");
-  const bikeDist = Number(el("bikeDist")?.value || 0);
+  let bikeDist = Number(el("bikeDist")?.value || 0);
   const bikeTime = convertirTempsEnMinutes(el("bikeTime")?.value || "");
-  const runDist  = Number(el("runDist")?.value  || 0);
+  let runDist  = Number(el("runDist")?.value  || 0);
   const runTime  = convertirTempsEnMinutes(el("runTime")?.value  || "");
+
+  // Validation des valeurs max réalistes
+  if (swimDist > 10000) { alert("⚠️ Distance natation trop élevée (max 10 000m)"); return null; }
+  if (bikeDist > 300)   { alert("⚠️ Distance vélo trop élevée (max 300km)"); return null; }
+  if (runDist > 100)    { alert("⚠️ Distance course trop élevée (max 100km)"); return null; }
+  if (swimTime > 600)   { alert("⚠️ Temps natation trop élevé (max 10h)"); return null; }
+  if (bikeTime > 600)   { alert("⚠️ Temps vélo trop élevé (max 10h)"); return null; }
+  if (runTime > 600)    { alert("⚠️ Temps course trop élevé (max 10h)"); return null; }
+
+  // Validation vitesses aberrantes
+  if (swimDist > 0 && swimTime > 0) {
+    const speed = swimDist / swimTime;
+    if (speed > 120) { alert("⚠️ Vitesse natation irréaliste. Vérifie tes données."); return null; }
+  }
+  if (bikeDist > 0 && bikeTime > 0) {
+    const speed = bikeDist / (bikeTime / 60);
+    if (speed > 80) { alert("⚠️ Vitesse vélo irréaliste. Vérifie tes données."); return null; }
+  }
+  if (runDist > 0 && runTime > 0) {
+    const speed = runDist / (runTime / 60);
+    if (speed > 35) { alert("⚠️ Vitesse course irréaliste. Vérifie tes données."); return null; }
+  }
+
   let total = 0, count = 0;
   const performances = [];
   if (swimDist > 0 && swimTime > 0) {
@@ -624,6 +648,21 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!currentUser) return alert("🔒 Connecte-toi d'abord.");
     if (isPremium)    return alert("✅ Tu es déjà Premium !");
     alert("💳 Intègre Stripe ici pour activer le Premium.");
+  });
+
+  // Mot de passe oublié
+  el("forgotBtn")?.addEventListener("click", async () => {
+    const email = el("email")?.value?.trim();
+    if (!email) {
+      alert("Entre ton email d'abord puis clique sur Mot de passe oublié.");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("✅ Email de réinitialisation envoyé à " + email + " ! Vérifie ta boîte mail.");
+    } catch(e) {
+      alert("❌ Erreur : " + e.message);
+    }
   });
 
   mettreAJourDashboard();
