@@ -383,6 +383,7 @@ function mettreAJourDashboard() {
   if (sessions.length === 0) {
     ["bestScore","averageScore","sessionCount"].forEach(id => { if (el(id)) el(id).textContent = "0"; });
     if (el("bestSport")) el("bestSport").textContent = "Aucun";
+    mettreAJourGraphique();
     return;
   }
   const scores = sessions.map(s => s.globalScore);
@@ -404,8 +405,9 @@ function mettreAJourGraphique() {
   // Verrouiller le graphique pour les non-premium
   if (!currentUser || !isPremium) {
     if (chartBox) {
-      chartBox.innerHTML = `<div class="premium-lock-msg">
-        🔒 <strong>Premium requis</strong><br>
+      chartBox.innerHTML = `<div class="premium-lock-msg" style="padding:60px 30px;">
+        <div style="font-size:32px;margin-bottom:10px;">📈</div>
+        🔒 <strong>Graphique Trilo Premium</strong><br>
         <span style="color:var(--text-muted);font-size:13px;">Débloque le graphique d'évolution avec Trilo Premium</span>
       </div>`;
     }
