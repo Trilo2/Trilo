@@ -708,3 +708,87 @@ window.addEventListener("DOMContentLoaded", () => {
   mettreAJourGraphique();
   afficherBadges();
 });
+function lancerAnalyseTriloV2(natationScore, veloScore, courseScore, distanceTotale) {
+  const scoreGlobal = Math.round((natationScore + veloScore + courseScore) / 3);
+
+  document.getElementById("scoreGlobalV2").textContent = scoreGlobal + " / 100";
+  document.getElementById("levelProgressV2").style.width = scoreGlobal + "%";
+
+  let niveau = "Débutant";
+  if (scoreGlobal >= 85) niveau = "Expert";
+  else if (scoreGlobal >= 70) niveau = "Avancé";
+  else if (scoreGlobal >= 50) niveau = "Intermédiaire";
+
+  document.getElementById("niveauV2").textContent = "Niveau : " + niveau;
+
+  const scores = [
+    { sport: "Natation", score: natationScore },
+    { sport: "Vélo", score: veloScore },
+    { sport: "Course", score: courseScore }
+  ];
+
+  scores.sort((a, b) => b.score - a.score);
+
+  const pointFort = scores[0];
+  const pointFaible = scores[2];
+
+  document.getElementById("pointFortV2").textContent =
+    pointFort.sport + " avec " + pointFort.score + "/100";
+
+  document.getElementById("pointFaibleV2").textContent =
+    pointFaible.sport + " avec " + pointFaible.score + "/100";
+
+  let conseil = "";
+
+  if (pointFaible.sport === "Natation") {
+    conseil = "Travaille ta technique et ajoute une séance de respiration.";
+  } else if (pointFaible.sport === "Vélo") {
+    conseil = "Ajoute une sortie longue facile pour améliorer ton endurance.";
+  } else {
+    conseil = "Ajoute une séance de course lente pour progresser sans te blesser.";
+  }
+
+  document.getElementById("conseilV2").textContent = conseil;
+
+  document.getElementById("recordSportV2").textContent =
+    "Meilleur sport : " + pointFort.sport;
+
+  document.getElementById("recordDistanceV2").textContent =
+    "Distance totale : " + distanceTotale + " km";
+
+  document.getElementById("recordScoreV2").textContent =
+    "Meilleur score : " + pointFort.score + " / 100";
+
+  let progression = "+0%";
+  if (scoreGlobal >= 85) progression = "+25%";
+  else if (scoreGlobal >= 70) progression = "+18%";
+  else if (scoreGlobal >= 50) progression = "+10%";
+  else progression = "+4%";
+
+  document.getElementById("progressionMoisV2").textContent =
+    "Progression mensuelle estimée : " + progression;
+
+  afficherBadgesV2(scoreGlobal, distanceTotale, pointFort.sport);
+}
+
+function afficherBadgesV2(scoreGlobal, distanceTotale, meilleurSport) {
+  const badgesBox = document.getElementById("badgesV2");
+  badgesBox.innerHTML = "";
+
+  const badges = [];
+
+  if (scoreGlobal >= 50) badges.push("🏅 Premier niveau");
+  if (scoreGlobal >= 70) badges.push("🔥 Athlète régulier");
+  if (scoreGlobal >= 85) badges.push("⚡ Niveau expert");
+  if (distanceTotale >= 50) badges.push("📏 Gros volume");
+  if (distanceTotale >= 100) badges.push("🚀 Machine d’endurance");
+
+  badges.push("⭐ Point fort : " + meilleurSport);
+
+  badges.forEach(function(badge) {
+    const span = document.createElement("span");
+    span.className = "badge";
+    span.textContent = badge;
+    badgesBox.appendChild(span);
+  });
+}
