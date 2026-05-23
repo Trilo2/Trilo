@@ -223,6 +223,15 @@ function calculerScores() {
   return { globalScore: total / count, performances, swimDist, swimTime, bikeDist, bikeTime, runDist, runTime };
 }
 
+function obtenirCategorie(age) {
+  if (age < 18)  return "Junior";
+  if (age < 30)  return "Senior 1 (18-29)";
+  if (age < 40)  return "Senior 2 (30-39)";
+  if (age < 50)  return "Master 1 (40-49)";
+  if (age < 60)  return "Master 2 (50-59)";
+  return            "Master 3 (60+)";
+}
+
 function obtenirNiveau(score) {
   if (score < 20) return { level: "Niveau 1 😐 Débutant",   intro: "Tu construis ta base, continue !" };
   if (score < 35) return { level: "Niveau 2 👍 En progrès", intro: "Bonne progression, tu t'améliores." };
@@ -533,14 +542,50 @@ async function chargerComparaison(monScore) {
   if (!currentUser) { zone.innerHTML = "🔒 Connecte-toi pour comparer tes performances."; return; }
   if (!isPremium)   { zone.innerHTML = "🔒 Premium requis pour comparer tes performances."; return; }
   try {
-    const snap = await getDocs(query(collection(db, "scores"), orderBy("globalScore", "desc")));
-    if (snap.empty) { zone.innerHTML = "Pas assez de données."; return; }
-    const scores = [];
-    snap.forEach(d => scores.push(d.data().globalScore));
-    const percentile = Math.round(((scores.length - scores.filter(s => s > monScore).length) / scores.length) * 100);
-    const moyenne = (scores.reduce((a,b) => a+b, 0) / scores.length).toFixed(2);
-    zone.innerHTML = `<p>Tu es meilleur que <strong>${percentile}%</strong> des utilisateurs Trilo.</p><p>Moyenne mondiale : <strong>${moyenne}</strong> | Ton score : <strong>${monScore.toFixed(2)}</strong></p>`;
-  } catch { zone.innerHTML = "Impossible de charger la comparaison."; }
+    // Charger les scores et joindre avec les users pour obtenir l'âge
+    const scoresSnap = await getDocs(query(collection(db, "scores"), orderBy("globalScore", "desc")));
+    if (scoresSnap.empty) { zone.innerHTML = "Pas assez de données."; return; }
+
+    // Récupérer l'âge de l'utilisateur courant
+    const userSnap = await getDoc(doc(db, "users", currentUser.uid));
+    const monAge = userSnap.exists() ? userSnap.data().age : null;
+    const maCategorie = monAge ? obtenirCategorie(monAge) : null;
+
+    const tousScores = [];
+    const scoresCategorie = [];
+
+    for (const d of scoresSnap.docs) {
+      const data = d.data();
+      tousScores.push(data.globalScore);
+      // Charger l'utilisateur pour avoir son âge
+      if (maCategorie) {
+        const uSnap = await getDoc(doc(db, "users", data.uid));
+        if (uSnap.exists() && uSnap.data().age) {
+          const cat = obtenirCategorie(uSnap.data().age);
+          if (cat === maCategorie) scoresCategorie.push(data.globalScore);
+        }
+      }
+    }
+
+    const percentile = Math.round(((tousScores.length - tousScores.filter(s => s > monScore).length) / tousScores.length) * 100);
+    const moyenne = (tousScores.reduce((a,b) => a+b, 0) / tousScores.length).toFixed(2);
+
+    let html = `<p>Tu es meilleur que <strong>${percentile}%</strong> des utilisateurs Trilo.</p>`;
+    html += `<p>Moyenne mondiale : <strong>${moyenne}</strong> | Ton score : <strong>${monScore.toFixed(2)}</strong></p>`;
+
+    if (maCategorie && scoresCategorie.length >= 2) {
+      const moyCat = (scoresCategorie.reduce((a,b) => a+b, 0) / scoresCategorie.length).toFixed(2);
+      const pctCat = Math.round(((scoresCategorie.length - scoresCategorie.filter(s => s > monScore).length) / scoresCategorie.length) * 100);
+      html += `<hr style="margin:12px 0;border-color:rgba(0,212,255,0.2);">`;
+      html += `<p>📊 Catégorie <strong>${maCategorie}</strong></p>`;
+      html += `<p>Tu es meilleur que <strong>${pctCat}%</strong> de ta catégorie.</p>`;
+      html += `<p>Moyenne catégorie : <strong>${moyCat}</strong></p>`;
+    } else if (maCategorie) {
+      html += `<p style="font-size:12px;color:var(--text-muted);margin-top:8px;">📊 Catégorie ${maCategorie} : pas encore assez d'utilisateurs pour comparer.</p>`;
+    }
+
+    zone.innerHTML = html;
+  } catch(e) { console.error(e); zone.innerHTML = "Impossible de charger la comparaison."; }
 }
 
 async function chargerComparaisonAvancee(monScore) {
@@ -587,11 +632,7 @@ async function enregistrerScore(result) {
 
 async function analyser() {
   const result = calculerScores();
-  window._triloLastResult = result;
-
-document
-.getElementById("shareBtn")
-.style.display="block";if (!result) {
+  if (!result) {
     el("score").textContent   = "⚠️ Erreur";
     el("message").textContent = "Remplis au moins une discipline avec distance ET temps.";
     return;
@@ -633,13 +674,14 @@ function reinitialiser() {
   if (el("aiAnalysis")) el("aiAnalysis").innerHTML = "Fais une analyse pour recevoir ton coaching IA.";
 }
 
-async function creerProfil(user, pseudo) {
+async function creerProfil(user, pseudo, age) {
   const ref = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
   if (!snap.exists()) {
     await setDoc(ref, {
       uid: user.uid,
       pseudo: pseudo || "Triathlète",
+      age: age || null,
       premium: false,
       createdAt: serverTimestamp()
     });
@@ -716,6 +758,7 @@ window.addEventListener("DOMContentLoaded", () => {
   el("signupBtn")?.addEventListener("click", async () => {
     const pseudoZone = el("pseudo-zone");
     const pseudo     = el("pseudo")?.value?.trim();
+    const age        = parseInt(el("age")?.value || 0);
 
     // Si le champ pseudo n est pas encore visible, l afficher
     if (pseudoZone && pseudoZone.style.display === "none") {
@@ -728,9 +771,10 @@ window.addEventListener("DOMContentLoaded", () => {
     const password = el("password")?.value?.trim();
     if (!email || !password) return alert("Email et mot de passe requis.");
     if (!pseudo) return alert("Choisis un pseudo !");
+    if (!age || age < 5 || age > 100) return alert("Entre un âge valide (5-100) !");
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
-      await creerProfil(cred.user, pseudo);
+      await creerProfil(cred.user, pseudo, age);
     } catch(e) { alert("Erreur inscription : " + e.message); }
   });
 
@@ -808,6 +852,9 @@ window.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const target = link.getAttribute("href");
       afficherSection(target);
+      // Marquer actif
+      document.querySelectorAll('.navbar-links a, .mobile-link').forEach(a => a.classList.remove('active'));
+      document.querySelectorAll(`.navbar-links a[href="${target}"], .mobile-link[href="${target}"]`).forEach(a => a.classList.add('active'));
     });
   });
 
