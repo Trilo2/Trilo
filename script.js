@@ -608,6 +608,7 @@ async function analyser() {
   localStorage.setItem("triloSessions", JSON.stringify(sessions));
   mettreAJourDashboard();
   afficherBadges();
+  mettreAJourAnalyseV2(result);
   if (currentUser) {
     await enregistrerScore(result);
     await chargerClassement();
