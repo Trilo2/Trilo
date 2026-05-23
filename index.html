@@ -38,7 +38,7 @@
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#00d4ff">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Trilo">
   <link rel="apple-touch-icon" href="logo-trilo.png">
@@ -92,7 +92,7 @@
             <div class="feature-badge feature-badge-free">GRATUIT</div>
             <span>📊</span>
             <strong>Analyse des perfs</strong>
-            <p>Score détaillé sur 20 pour chaque discipline</p>
+            <p>Score détaillé sur 100 pour chaque discipline</p>
           </div>
           <div class="landing-feature">
             <div class="feature-badge feature-badge-free">GRATUIT</div>
@@ -251,12 +251,12 @@
       </div>
     </section>
 
-   <!-- 4. RÉSULTAT -->
-<section class="result">
-  <h2 id="score">Aucun score</h2>
-  <p id="message">Entre tes performances puis clique sur analyser.</p>
-  <button id="shareBtn" type="button" class="share-btn" style="display:none;">📸 Partager ma séance</button>
-</section>
+    <!-- 4. RÉSULTAT -->
+    <section class="result">
+      <h2 id="score">Aucun score</h2>
+      <p id="message">Entre tes performances puis clique sur analyser.</p>
+      <button id="shareBtn" type="button" class="share-btn" style="display:none;">📸 Partager ma séance</button>
+    </section>
 
     <!-- 5. COACH IA -->
     <div id="coach"></div>
@@ -349,7 +349,7 @@
       <div id="historiqueList"></div>
     </section>
 
-    <!-- 7. PARCOURS GPS -->
+    <!-- 8. PARCOURS GPS -->
     <section class="parcours-card">
       <div class="parcours-head">
         <span>🗺️</span>
@@ -384,7 +384,7 @@
       </div>
     </section>
 
-    <!-- 8. BADGES -->
+    <!-- 9. BADGES -->
     <section class="badges-card">
       <div class="badges-head">
         <span>🏅</span>
@@ -398,7 +398,7 @@
       </div>
     </section>
 
-    <!-- 9. DASHBOARD -->
+    <!-- 10. DASHBOARD -->
     <div id="dashboard"></div>
     <section class="dashboard-card">
       <div class="dashboard-head">
@@ -428,12 +428,12 @@
       </div>
     </section>
 
-    <!-- 10. GRAPHIQUE GLOBAL -->
+    <!-- 11. GRAPHIQUE GLOBAL -->
     <section class="chart-box">
       <canvas id="chart"></canvas>
     </section>
 
-    <!-- 11. STATS — DISTANCE TOTALE + GRAPHIQUES PAR SPORT -->
+    <!-- 12. STATS — DISTANCE TOTALE -->
     <section class="stats-card">
       <div class="stats-head">
         <span>📏</span>
@@ -445,7 +445,7 @@
       <div id="distanceTotaleZone"></div>
     </section>
 
-    <!-- 11. PREMIUM -->
+    <!-- 13. PREMIUM -->
     <div id="premium"></div>
     <section class="premium-card">
       <span class="premium-badge">PREMIUM</span>
@@ -454,7 +454,7 @@
       <button class="premium-btn" type="button">🚀 Passer à Premium</button>
     </section>
 
-    <!-- 12. CLASSEMENT + COMPARAISON (tout en bas) -->
+    <!-- 14. ZONE PREMIUM (graphiques par sport + classement + comparaison) -->
     <section class="premium-zone">
 
       <section class="premium-section">
@@ -520,7 +520,6 @@
   <script type="module" src="historique.js"></script>
   <script type="module" src="stats.js"></script>
   <script type="module" src="share.js"></script>
-
   <script type="module" src="streaks.js"></script>
 
   <!-- Enregistrement PWA -->
