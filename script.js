@@ -760,6 +760,54 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Système d'onglets - afficher seulement la section cliquée
+  const sections = {
+    "#analyser": [".panel", ".result", ".ai-coach", ".analyse-v2-card"],
+    "#coach":    [".ai-coach", ".analyse-v2-card"],
+    "#dashboard": [".dashboard-card", ".chart-box", ".stats-card", ".historique-card", ".streak-card", ".parcours-card", ".badges-card"],
+    "#premium":   [".premium-card", ".premium-section"],
+    "#accueil":   [".landing"]
+  };
+
+  function afficherSection(target) {
+    // Tout cacher
+    document.querySelectorAll('.panel, .result, .ai-coach, .analyse-v2-card, .dashboard-card, .chart-box, .stats-card, .historique-card, .streak-card, .parcours-card, .badges-card, .premium-card, .premium-section, .landing, .login-card').forEach(el => {
+      el.style.display = "none";
+    });
+    // Toujours afficher la connexion
+    const login = document.querySelector('.login-card');
+    if (login) login.style.display = "block";
+
+    if (!sections[target]) {
+      // Accueil par défaut - tout afficher
+      document.querySelectorAll('.panel, .result, .ai-coach, .analyse-v2-card, .dashboard-card, .chart-box, .stats-card, .historique-card, .streak-card, .parcours-card, .badges-card, .premium-card, .premium-section, .landing').forEach(el => {
+        el.style.display = "";
+      });
+      return;
+    }
+    sections[target].forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.style.display = "";
+      });
+    });
+    // Scroll en haut
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // Bind clic sur tous les liens navbar
+  document.querySelectorAll('.navbar-links a, .mobile-link').forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const target = link.getAttribute("href");
+      afficherSection(target);
+    });
+  });
+
+  // Logo = accueil
+  document.querySelector('.navbar-logo')?.addEventListener("click", () => {
+    afficherSection("#accueil-tout");
+  });
+
   // Menu hamburger
   const hamBtn = el("hamburgerBtn");
   const mobileMenu = el("mobileMenu");
