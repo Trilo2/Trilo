@@ -38,6 +38,7 @@ let currentUser = null;
 let isPremium   = false;
 let chart       = null;
 let sessions    = JSON.parse(localStorage.getItem("triloSessions")) || [];
+window.sessions = sessions;
 
 function el(id) { return document.getElementById(id); }
 
