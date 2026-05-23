@@ -128,8 +128,13 @@ function obtenirNiveauLabel(score) {
 function viderHistorique() {
   if (!confirm("Supprimer tout l'historique ? Cette action est irréversible.")) return;
   localStorage.removeItem("triloSessions");
+  // Vider aussi le tableau sessions en mémoire dans script.js
+  if (window.sessions && Array.isArray(window.sessions)) {
+    window.sessions.length = 0;
+  }
   afficherHistorique();
   if (typeof mettreAJourDashboard === "function") mettreAJourDashboard();
+  if (typeof mettreAJourGraphique === "function") mettreAJourGraphique();
 }
 
 // Rafraîchir l'historique après chaque analyse
