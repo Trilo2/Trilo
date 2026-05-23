@@ -2043,3 +2043,389 @@ body {
     justify-content: center;
   }
 }
+
+/* =========================
+   OBJECTIF
+========================= */
+
+.objectif-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(24px);
+  box-shadow: var(--shadow);
+  animation: cardIn 0.6s ease both;
+}
+
+.objectif-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.objectif-head span {
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,100,255,0.05));
+  border: 1px solid var(--border-bright);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.objectif-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  margin-bottom: 4px;
+}
+
+.objectif-head p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.obj-result-card {
+  background: var(--bg-inner);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  padding: 22px;
+  animation: cardIn 0.4s ease;
+}
+
+.obj-result-card h3 {
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.obj-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.obj-stat {
+  background: rgba(0,212,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+
+.obj-stat small {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.obj-stat strong {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+.obj-success {
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.3);
+  color: #10b981;
+  padding: 20px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.obj-plan h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.obj-plan h5 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 16px 0 8px;
+}
+
+.obj-seances {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.obj-seances li {
+  background: rgba(0,212,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.obj-tip {
+  background: rgba(245,158,11,0.05);
+  border-left: 3px solid var(--gold);
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .obj-stats { grid-template-columns: 1fr; }
+}
+
+/* =========================
+   OBJECTIFS
+========================= */
+
+.objectif-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(24px);
+  box-shadow: var(--shadow);
+  animation: cardIn 0.6s ease both;
+}
+
+.objectif-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.objectif-head span {
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(0,212,255,0.05));
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px rgba(16,185,129,0.2);
+}
+
+.objectif-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  margin-bottom: 4px;
+}
+
+.objectif-head p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Formulaire de création */
+.objectif-intro {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.objectif-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.objectif-save-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 4px 16px rgba(16,185,129,0.3);
+  transition: var(--transition);
+  width: 100%;
+}
+
+.objectif-save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(16,185,129,0.5);
+}
+
+/* Objectif actif */
+.objectif-cible {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-inner);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.objectif-sport-emoji {
+  font-size: 36px;
+  width: 60px;
+  height: 60px;
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.objectif-cible h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.objectif-cible p {
+  font-size: 15px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.objectif-delete-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.4;
+  padding: 6px;
+  transition: var(--transition);
+}
+
+.objectif-delete-btn:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.objectif-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.objectif-stat {
+  background: var(--bg-inner);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  text-align: center;
+}
+
+.objectif-stat strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.objectif-stat span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+.objectif-progress-zone {
+  margin-bottom: 20px;
+}
+
+.objectif-progress-bar {
+  height: 14px;
+  background: var(--bg-inner);
+  border-radius: 7px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+
+.objectif-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 7px;
+  transition: width 0.6s ease;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.objectif-progress-text {
+  text-align: center;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.objectif-plan {
+  background: var(--bg-inner);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+}
+
+.objectif-plan h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.objectif-plan ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.objectif-plan ul li {
+  padding: 10px 14px;
+  background: rgba(0,212,255,0.05);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .objectif-fields {
+    grid-template-columns: 1fr;
+  }
+  .objectif-stats {
+    grid-template-columns: 1fr;
+  }
+}
