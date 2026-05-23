@@ -323,6 +323,53 @@
       </div>
     </section>
 
+    <!-- 5.6 OBJECTIF -->
+    <section class="objectif-card">
+      <div class="objectif-head">
+        <span>🎯</span>
+        <div>
+          <h2>Mon objectif</h2>
+          <p>Fixe un objectif et reçois un plan d'entraînement personnalisé.</p>
+        </div>
+      </div>
+      <div class="objectif-form">
+        <div class="input-grid">
+          <div class="field">
+            <label for="objSport">Sport</label>
+            <select id="objSport">
+              <option value="course">🏃 Course à pied</option>
+              <option value="vélo">🚴 Vélo</option>
+              <option value="natation">🏊 Natation</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="objDist">Distance (km ou m pour nage)</label>
+            <input id="objDist" type="number" placeholder="Ex : 10">
+          </div>
+        </div>
+        <div class="field" style="margin-top:12px;">
+          <label for="objTemps">Temps objectif (mm:ss ou hh:mm:ss)</label>
+          <input id="objTemps" type="text" placeholder="Ex : 50:00 pour 50 min">
+        </div>
+        <button id="objCalcBtn" type="button" style="margin-top:16px;background:linear-gradient(135deg,#0ea5e9,#0066cc);color:#fff;width:100%;padding:14px;border-radius:12px;font-weight:600;cursor:pointer;border:none;">
+          🚀 Calculer mon plan
+        </button>
+      </div>
+      <div id="objResult" style="margin-top:20px;"></div>
+    </section>
+
+    <!-- 5.6 OBJECTIFS -->
+    <section class="objectif-card">
+      <div class="objectif-head">
+        <span>🎯</span>
+        <div>
+          <h2>Mon objectif</h2>
+          <p>Définis un objectif et Trilo t'aide à l'atteindre.</p>
+        </div>
+      </div>
+      <div id="objectifZone"></div>
+    </section>
+
     <!-- 6. STREAK -->
     <section class="streak-card">
       <div class="streak-head">
@@ -573,6 +620,8 @@
   <script type="module" src="stats.js"></script>
   <script type="module" src="share.js"></script>
   <script type="module" src="streaks.js"></script>
+  <script type="module" src="objectifs.js"></script>
+  <script type="module" src="objectif.js"></script>
 
   <!-- Enregistrement PWA -->
   <script>
