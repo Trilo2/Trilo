@@ -1824,3 +1824,20 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Grille 4 colonnes pour la section comment ça marche */
+.how-steps {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+@media (max-width: 900px) {
+  .how-steps {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .how-steps {
+    grid-template-columns: 1fr !important;
+  }
+}
