@@ -1841,3 +1841,27 @@ body {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* =========================
+   BOUTON PARTAGE
+========================= */
+
+.share-btn {
+  display: inline-block;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #e1306c, #c13584, #833ab4);
+  color: white;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 4px 20px rgba(225, 48, 108, 0.4);
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(225, 48, 108, 0.6);
+}
