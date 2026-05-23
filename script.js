@@ -587,7 +587,11 @@ async function enregistrerScore(result) {
 
 async function analyser() {
   const result = calculerScores();
-  if (!result) {
+  window._triloLastResult = result;
+
+document
+.getElementById("shareBtn")
+.style.display="block";if (!result) {
     el("score").textContent   = "⚠️ Erreur";
     el("message").textContent = "Remplis au moins une discipline avec distance ET temps.";
     return;
