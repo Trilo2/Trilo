@@ -1865,37 +1865,38 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 6px 30px rgba(225, 48, 108, 0.6);
 }
-.share-btn{
-margin-top:20px;
-width:100%;
-padding:16px;
 
-background:linear-gradient(
-135deg,
-#ff3cac,
-#784ba0,
-#2b86ff
-);
+/* =========================
+   MENU NAVBAR INTUITIF
+========================= */
 
-color:white;
-
-border:none;
-
-border-radius:18px;
-
-font-size:16px;
-
-font-weight:700;
-
-cursor:pointer;
-
-transition:0.25s;
+.navbar-links a {
+  position: relative;
+  transition: var(--transition);
 }
 
-.share-btn:hover{
-transform:translateY(-2px);
+.navbar-links a.active {
+  color: var(--accent);
+  background: var(--accent-glow);
+  font-weight: 600;
+}
 
-box-shadow:
-0 0 35px
-rgba(255,60,172,0.4);
+.navbar-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.mobile-link.active {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
 }
