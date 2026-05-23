@@ -760,6 +760,23 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Menu hamburger
+  const hamBtn = el("hamburgerBtn");
+  const mobileMenu = el("mobileMenu");
+  if (hamBtn && mobileMenu) {
+    hamBtn.addEventListener("click", () => {
+      hamBtn.classList.toggle("active");
+      mobileMenu.classList.toggle("open");
+    });
+    // Fermer le menu au clic sur un lien
+    mobileMenu.querySelectorAll(".mobile-link").forEach(link => {
+      link.addEventListener("click", () => {
+        hamBtn.classList.remove("active");
+        mobileMenu.classList.remove("open");
+      });
+    });
+  }
+
   // Bouton retour en haut
   const scrollBtn = el("scrollTopBtn");
   if (scrollBtn) {
