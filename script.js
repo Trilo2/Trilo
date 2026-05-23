@@ -607,6 +607,10 @@ async function analyser() {
     date: new Date().toISOString()
   });
   localStorage.setItem("triloSessions", JSON.stringify(sessions));
+  window._triloLastResult = result;
+  // Afficher le bouton de partage
+  const shareBtn = document.getElementById("shareBtn");
+  if (shareBtn) shareBtn.style.display = "inline-block";
   mettreAJourDashboard();
   afficherBadges();
   mettreAJourAnalyseV2(result);
