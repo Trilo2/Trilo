@@ -236,7 +236,6 @@ function afficherObjectif() {
           <h3>${sportLabel}</h3>
           <p>${distance} ${unite} en ${formaterTemps(tempsMin)}</p>
         </div>
-        <button id="objDeleteBtn" class="objectif-delete-btn" title="Supprimer">🗑</button>
       </div>
 
       <div class="objectif-stats">
@@ -271,6 +270,8 @@ function afficherObjectif() {
           ${calc.plan.map(item => `<li>${item}</li>`).join("")}
         </ul>
       </div>
+
+      <button id="objDeleteBtn" class="objectif-delete-btn">🔄 Définir un nouvel objectif</button>
     </div>
   `;
 
