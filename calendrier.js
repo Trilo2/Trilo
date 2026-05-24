@@ -261,8 +261,9 @@ function afficherCalendrier() {
       const detail = isPremium && seance.premium
         ? `<div class="cal-cell-detail">${seance.premium}</div>`
         : seance.premium ? `<div class="cal-cell-locked">🔒</div>` : "";
+      const reposClass = seance.type === "repos" ? "cal-cell-repos" : "";
       html += `
-        <div class="cal-cell ${isToday ? "cal-today" : ""}" style="border-left:3px solid ${color};">
+        <div class="cal-cell ${isToday ? "cal-today" : ""} ${reposClass}" style="border-left:3px solid ${color};">
           <div class="cal-cell-day">${d}</div>
           <div class="cal-cell-label">${seance.libelle}</div>
           ${detail}
