@@ -339,3 +339,28 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 window.rafraichirCalendrier = afficherCalendrier;
+function choisirProgrammeDepuisObjectif(obj) {
+  if (!obj) return "triathlon_s";
+
+  if (obj.sport === "course") {
+    if (obj.distance <= 1.5) return "course_1km";
+    if (obj.distance <= 5) return "course_5km";
+    if (obj.distance <= 10) return "course_10km";
+    if (obj.distance <= 21.1) return "semi";
+    return "marathon";
+  }
+
+  if (obj.sport === "vélo") {
+    if (obj.distance <= 20) return "velo_court";
+    if (obj.distance <= 60) return "velo_moyen";
+    return "velo_long";
+  }
+
+  if (obj.sport === "natation") {
+    if (obj.distance <= 400) return "natation_court";
+    if (obj.distance <= 1500) return "natation_moyen";
+    return "natation_long";
+  }
+
+  return "triathlon_s";
+}
