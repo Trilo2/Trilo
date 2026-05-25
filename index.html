@@ -323,12 +323,18 @@
       </div>
     </section>
 
+    <!-- 5.6 OBJECTIF + CALENDRIER COMBINÉ -->
+    <section class="objectif-card">
+      <div class="objectif-head">
+        <span>🎯</span>
+        <div>
+          <h2>Mon objectif & plan d'entraînement</h2>
+          <p>Définis ton objectif et reçois un calendrier personnalisé.</p>
+        </div>
+      </div>
+      <div id="objectifZone"></div>
+    </section>
 
-    <!-- 5.7 CALENDRIER ENTRAÎNEMENT -->
-<section class="calendrier-card">
-  ...
-  <div id="calendrierZone"></div>
-</section>
     <!-- 6. STREAK -->
     <section class="streak-card">
       <div class="streak-head">
@@ -579,8 +585,9 @@
   <script type="module" src="stats.js"></script>
   <script type="module" src="share.js"></script>
   <script type="module" src="streaks.js"></script>
-  <script type="module" src="calendrier.js"></script>
-  
+  <script type="module" src="objectifs.js"></script>
+  <script type="module" src="objectif.js"></script>
+
   <!-- Enregistrement PWA -->
   <script>
     if ('serviceWorker' in navigator) {
