@@ -165,9 +165,57 @@ function afficherBadges() {
   const zone = el("badgesList");
   if (!zone) return;
   const obtenus = BADGES.filter(b => b.check(sessions));
+
+  // Détecter les NOUVEAUX badges débloqués
+  const dejaObtenus = JSON.parse(localStorage.getItem("triloBadgesObtenus") || "[]");
+  const nouveauxIds = obtenus.map(b => b.id).filter(id => !dejaObtenus.includes(id));
+
+  // Sauvegarder les badges actuels
+  localStorage.setItem("triloBadgesObtenus", JSON.stringify(obtenus.map(b => b.id)));
+
   zone.innerHTML = obtenus.length === 0
     ? "Fais une analyse pour débloquer tes premiers badges."
     : obtenus.map(b => `<div class="badge-item"><strong>${b.label}</strong><span>${b.desc}</span></div>`).join("");
+
+  // Animer les nouveaux badges
+  if (nouveauxIds.length > 0) {
+    nouveauxIds.forEach(id => {
+      const badge = obtenus.find(b => b.id === id);
+      if (badge) afficherNotifBadge(badge);
+    });
+  }
+}
+
+function afficherNotifBadge(badge) {
+  // Créer la notif si elle n'existe pas
+  let notif = document.getElementById("badgeNotif");
+  if (!notif) {
+    notif = document.createElement("div");
+    notif.id = "badgeNotif";
+    notif.className = "badge-notif";
+    document.body.appendChild(notif);
+  }
+
+  notif.innerHTML = `
+    <div class="badge-notif-content">
+      <div class="badge-notif-trophy">🏆</div>
+      <div class="badge-notif-text">
+        <strong>Nouveau badge débloqué !</strong>
+        <span>${badge.label}</span>
+        <small>${badge.desc}</small>
+      </div>
+    </div>
+  `;
+
+  notif.classList.add("badge-notif-show");
+
+  // Animation sonore (vibration sur mobile)
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+  // Masquer après 4 secondes
+  setTimeout(() => {
+    notif.classList.remove("badge-notif-show");
+  }, 4000);
 }
 
 function calculerScores() {
