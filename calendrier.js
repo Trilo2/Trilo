@@ -55,11 +55,11 @@ const PROGRAMMES = {
   triathlon_ironman: {
     label: "Ironman",
     semaine: [
-      { jour: "Lundi",    type: "natation", libelle: "🏊 Natation 1h30" },
+      { jour: "Lundi",    type: "repos",    libelle: "Repos" },
       { jour: "Mardi",    type: "course",   libelle: "🏃 Tempo 1h30",      premium: "30min échauf + 50min seuil + 10min retour" },
       { jour: "Mercredi", type: "vélo",     libelle: "🚴 Intervalles 2h30", premium: "1h endurance + 4×15min à allure course + 45min retour" },
       { jour: "Jeudi",    type: "natation", libelle: "🏊 Endurance 1h30" },
-      { jour: "Vendredi", type: "course",   libelle: "🏃 Récup 45min" },
+      { jour: "Vendredi", type: "repos",    libelle: "Repos actif" },
       { jour: "Samedi",   type: "vélo",     libelle: "🚴 Très longue 5h",  premium: "Endurance soutenue + nutrition course (60-80g glucides/h)" },
       { jour: "Dimanche", type: "course",   libelle: "🏃 Longue 2h30",     premium: "Sortie longue avec dernier tiers à allure marathon" }
     ]
@@ -236,7 +236,6 @@ function afficherCalendrier() {
       <span><strong>${PROGRAMMES[planning.programme]?.label}</strong></span>
       ${planning.categorie ? `<span>Catégorie : ${planning.categorie}</span>` : ""}
       <span>${planning.semaines} semaines</span>
-      <button id="calResetBtn" class="cal-reset-btn">🗑</button>
     </div>
 
     <div class="cal-grid">
@@ -284,6 +283,10 @@ function afficherCalendrier() {
     `;
   }
 
+  html += `
+    <button id="calResetBtn2" class="cal-reset-btn-big">🔄 Définir un nouveau plan</button>
+  `;
+
   zone.innerHTML = html;
 
   // Navigation mois
@@ -303,7 +306,7 @@ function afficherCalendrier() {
     afficherCalendrier();
   });
 
-  document.getElementById("calResetBtn")?.addEventListener("click", () => {
+  document.getElementById("calResetBtn2")?.addEventListener("click", () => {
     if (confirm("Supprimer ton calendrier d'entraînement ?")) {
       supprimerPlanning();
       afficherCalendrier();
