@@ -2758,3 +2758,19 @@ body {
   color: #ef4444;
   transform: none;
 }
+
+/* Séparateur entre objectif et calendrier dans la même carte */
+#calendrierZone {
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+#calendrierZone::before {
+  content: "📅 CALENDRIER D'ENTRAÎNEMENT";
+  display: block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
