@@ -1849,13 +1849,13 @@ body {
 .share-btn {
   display: inline-block;
   margin-top: 20px;
-  background: linear-gradient(135deg, #e1306c, #c13584, #833ab4);
-  color: white;
+  background: linear-gradient(135deg, #00d4ff, #0099cc);
+  color: #021018;
   padding: 14px 28px;
   border-radius: 999px;
   font-weight: 700;
   font-size: 14px;
-  box-shadow: 0 4px 20px rgba(225, 48, 108, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
   cursor: pointer;
   border: none;
   transition: var(--transition);
@@ -1863,7 +1863,7 @@ body {
 
 .share-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 30px rgba(225, 48, 108, 0.6);
+  box-shadow: 0 6px 30px rgba(0, 212, 255, 0.6);
 }
 
 /* =========================
@@ -2795,4 +2795,98 @@ body {
 
 .objectif-recap {
   margin-bottom: 20px;
+}
+
+/* =========================
+   FAQ
+========================= */
+
+.faq-section {
+  max-width: 900px;
+  margin: 60px auto 40px;
+  padding: 0 24px;
+}
+
+.faq-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px;
+  backdrop-filter: blur(24px);
+  box-shadow: var(--shadow);
+}
+
+.faq-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.faq-item {
+  background: var(--bg-inner);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  transition: var(--transition);
+}
+
+.faq-item[open] {
+  border-color: var(--accent);
+  background: rgba(0, 212, 255, 0.04);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.08);
+}
+
+.faq-item summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: "+";
+  font-size: 22px;
+  color: var(--accent);
+  font-weight: 300;
+  transition: var(--transition);
+  margin-left: 12px;
+}
+
+.faq-item[open] summary::after {
+  content: "−";
+  transform: rotate(180deg);
+}
+
+.faq-item p {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .faq-container {
+    padding: 24px 18px;
+  }
+  .faq-title {
+    font-size: 26px;
+  }
+  .faq-item summary {
+    font-size: 14px;
+  }
 }
