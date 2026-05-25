@@ -2728,3 +2728,33 @@ body {
   border-color: #ef4444;
   transform: translateY(-2px);
 }
+
+/* Message verrouillé calendrier */
+.cal-locked-msg {
+  background: rgba(245,158,11,0.05);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--radius-sm);
+  padding: 30px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--text);
+}
+
+/* Boutons rouges plus discrets et regroupés */
+.objectif-active .objectif-delete-btn,
+.cal-reset-btn-big {
+  background: transparent;
+  border: 1px dashed rgba(239,68,68,0.3);
+  color: rgba(239,68,68,0.7);
+  font-size: 13px;
+  padding: 10px;
+  margin-top: 14px;
+}
+
+.objectif-active .objectif-delete-btn:hover,
+.cal-reset-btn-big:hover {
+  background: rgba(239,68,68,0.05);
+  border-style: solid;
+  color: #ef4444;
+  transform: none;
+}
