@@ -125,12 +125,16 @@ function obtenirNiveauLabel(score) {
   return           "Niveau 6 🏆 Élite";
 }
 
-function viderHistorique() {
-  if (!confirm("Supprimer tout l'historique ? Cette action est irréversible.")) return;
+async function viderHistorique() {
+  if (!confirm("Supprimer tout l'historique et ton score dans le classement ? Cette action est irréversible.")) return;
   localStorage.removeItem("triloSessions");
   // Vider aussi le tableau sessions en mémoire dans script.js
   if (window.sessions && Array.isArray(window.sessions)) {
     window.sessions.length = 0;
+  }
+  // Effacer le score Firebase
+  if (window._triloSupprimerScore && typeof window._triloSupprimerScore === "function") {
+    try { await window._triloSupprimerScore(); } catch(e) {}
   }
   afficherHistorique();
   if (typeof mettreAJourDashboard === "function") mettreAJourDashboard();
