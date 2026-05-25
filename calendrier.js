@@ -136,6 +136,18 @@ function afficherCalendrier() {
   const zone = document.getElementById("calendrierZone");
   if (!zone) return;
 
+  // Vérifier si l'utilisateur est connecté
+  const estConnecte = window._triloUserConnected === true;
+  if (!estConnecte) {
+    zone.innerHTML = `
+      <div class="cal-locked-msg">
+        🔒 <strong>Connecte-toi pour créer ton calendrier d'entraînement</strong>
+        <p style="margin-top:8px;font-size:13px;color:var(--text-muted);">Le calendrier personnalisé est réservé aux membres Trilo.</p>
+      </div>
+    `;
+    return;
+  }
+
   const planning = obtenirPlanning();
 
   if (!planning) {
