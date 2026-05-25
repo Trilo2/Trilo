@@ -18,7 +18,8 @@ import {
   serverTimestamp,
   doc,
   setDoc,
-  getDoc
+  getDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -630,11 +631,34 @@ async function enregistrerScore(result) {
   } catch(e) { console.error("Erreur enregistrement :", e); }
 }
 
+// Exposer la fonction pour supprimer le score (utilisée par historique.js)
+window._triloSupprimerScore = async function() {
+  if (!currentUser) return;
+  try {
+    await deleteDoc(doc(db, "scores", currentUser.uid));
+    console.log("✅ Score Firebase supprimé");
+  } catch(e) { console.error("Erreur suppression score :", e); }
+};
+
 async function analyser() {
+  // Animation de chargement
+  const btn = el("analyzeBtn");
+  const btnTexte = btn ? btn.textContent : "";
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "⏳ Analyse en cours...";
+  }
+  el("score").textContent   = "⏳";
+  el("message").textContent = "Calcul de ton score...";
+
+  // Petite pause pour que l'animation soit visible
+  await new Promise(r => setTimeout(r, 600));
+
   const result = calculerScores();
   if (!result) {
     el("score").textContent   = "⚠️ Erreur";
     el("message").textContent = "Remplis au moins une discipline avec distance ET temps.";
+    if (btn) { btn.disabled = false; btn.textContent = btnTexte; }
     return;
   }
   const { globalScore } = result;
@@ -664,6 +688,12 @@ async function analyser() {
     await chargerClassement();
     await chargerComparaison(globalScore);
     await chargerComparaisonAvancee(globalScore);
+  }
+
+  // Réactiver le bouton
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = btnTexte || "📊 Analyser mes performances";
   }
 }
 
@@ -820,14 +850,14 @@ window.addEventListener("DOMContentLoaded", () => {
   const sections = {
     "#analyser": [".panel", ".result", ".ai-coach", ".analyse-v2-card"],
     "#coach":    [".ai-coach", ".analyse-v2-card"],
-    "#dashboard": [".dashboard-card", ".chart-box", ".stats-card", ".historique-card", ".streak-card", ".parcours-card", ".badges-card"],
+    "#dashboard": [".dashboard-card", ".chart-box", ".stats-card", ".historique-card", ".streak-card", ".parcours-card", ".badges-card", ".objectif-card"],
     "#premium":   [".premium-card", ".premium-section"],
     "#accueil":   [".landing"]
   };
 
   function afficherSection(target) {
     // Tout cacher
-    document.querySelectorAll('.panel, .result, .ai-coach, .analyse-v2-card, .dashboard-card, .chart-box, .stats-card, .historique-card, .streak-card, .parcours-card, .badges-card, .premium-card, .premium-section, .landing, .login-card').forEach(el => {
+    document.querySelectorAll('.panel, .result, .ai-coach, .analyse-v2-card, .dashboard-card, .chart-box, .stats-card, .historique-card, .streak-card, .parcours-card, .badges-card, .premium-card, .premium-section, .landing, .login-card, .objectif-card').forEach(el => {
       el.style.display = "none";
     });
     // Toujours afficher la connexion
@@ -836,7 +866,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (!sections[target]) {
       // Accueil par défaut - tout afficher
-      document.querySelectorAll('.panel, .result, .ai-coach, .analyse-v2-card, .dashboard-card, .chart-box, .stats-card, .historique-card, .streak-card, .parcours-card, .badges-card, .premium-card, .premium-section, .landing').forEach(el => {
+      document.querySelectorAll('.panel, .result, .ai-coach, .analyse-v2-card, .dashboard-card, .chart-box, .stats-card, .historique-card, .streak-card, .parcours-card, .badges-card, .premium-card, .premium-section, .landing, .objectif-card').forEach(el => {
         el.style.display = "";
       });
       return;
