@@ -160,8 +160,45 @@ function afficherCalendrier() {
   if (!planning) {
     // Formulaire de création
     zone.innerHTML = `
-      <p class="cal-intro">Choisis ton objectif de course et Trilo te génère un plan d'entraînement semaine par semaine.</p>
+      <p class="cal-intro">
+Entre ton objectif et Trilo génère ton calendrier automatiquement.
+</p>
 
+<div class="cal-field">
+
+<label>Sport</label>
+
+<select id="calSport">
+<option value="course">🏃 Course</option>
+<option value="vélo">🚴 Vélo</option>
+<option value="natation">🏊 Natation</option>
+
+</select>
+
+</div>
+
+<div class="cal-field">
+
+<label>Distance</label>
+
+<input
+id="calDistance"
+type="number"
+placeholder="Ex : 5"
+/>
+
+</div>
+
+<div class="cal-field">
+
+<label>Temps cible</label>
+
+<input
+id="calTemps"
+placeholder="Ex : 20:00"
+/>
+
+</div>
       <div class="cal-form">
         <div class="cal-field">
           <label>Course visée</label>
