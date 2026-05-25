@@ -136,9 +136,16 @@ function afficherCalendrier() {
   const zone = document.getElementById("calendrierZone");
   if (!zone) return;
 
-  // Vérifier si l'utilisateur est connecté
-  const estConnecte = window._triloUserConnected === true;
-  if (!estConnecte) {
+  // Vérifier si l'utilisateur est connecté (attendre que script.js ait répondu)
+  const estConnecte = window._triloUserConnected;
+
+  // Si on n'a pas encore l'info, attendre 500ms et réessayer
+  if (estConnecte === undefined) {
+    setTimeout(afficherCalendrier, 500);
+    return;
+  }
+
+  if (estConnecte !== true) {
     zone.innerHTML = `
       <div class="cal-locked-msg">
         🔒 <strong>Connecte-toi pour créer ton calendrier d'entraînement</strong>
