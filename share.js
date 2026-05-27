@@ -85,35 +85,65 @@ function genererImagePartage(result) {
 }
 
 function partagerSeance(result) {
-  const canvas = genererImagePartage(result);
+  // Ouvrir un menu de choix
+  const score = result.globalScore.toFixed(0);
+  const url = "https://trilo2.github.io/Trilo/";
+  const message = `Je viens de scorer ${score}/100 sur Trilo ! 🚀\nAnalyse tes perfs de triathlon gratuitement : ${url}`;
 
-  canvas.toBlob(async (blob) => {
-    const file = new File([blob], "trilo-seance.png", { type: "image/png" });
+  // Créer le menu
+  let menu = document.getElementById("shareMenu");
+  if (!menu) {
+    menu = document.createElement("div");
+    menu.id = "shareMenu";
+    menu.className = "share-menu";
+    document.body.appendChild(menu);
+  }
 
-    // API Web Share (mobile)
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({
-          files: [file],
-          title: "Ma séance Trilo",
-          text: `Score : ${result.globalScore.toFixed(0)}/100 sur Trilo ! 🚀\nhttps://trilo2.github.io/Trilo/`
-        });
-        return;
-      } catch (e) {
-        // Si annulé, on continue avec le téléchargement
-      }
-    }
+  menu.innerHTML = `
+    <div class="share-menu-overlay" onclick="document.getElementById('shareMenu').classList.remove('share-menu-show')"></div>
+    <div class="share-menu-content">
+      <h3>📸 Partager ma séance</h3>
+      <p>Score : <strong>${score}/100</strong></p>
 
-    // Sinon télécharger l'image
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "trilo-seance.png";
-    a.click();
-    URL.revokeObjectURL(url);
+      <div class="share-menu-options">
+        <button class="share-option share-whatsapp" onclick="window.open('https://wa.me/?text=${encodeURIComponent(message)}', '_blank')">
+          <span>💬</span> WhatsApp
+        </button>
+        <button class="share-option share-sms" onclick="window.location.href='sms:?&body=${encodeURIComponent(message)}'">
+          <span>📱</span> SMS
+        </button>
+        <button class="share-option share-image" onclick="window._triloDownloadImage()">
+          <span>📷</span> Télécharger l'image
+        </button>
+        <button class="share-option share-copy" onclick="navigator.clipboard.writeText('${message.replace(/'/g, "\\'")}'); alert('✅ Message copié !');">
+          <span>📋</span> Copier le message
+        </button>
+        <button class="share-option share-mail" onclick="window.location.href='mailto:?subject=Ma séance Trilo&body=${encodeURIComponent(message)}'">
+          <span>✉️</span> Email
+        </button>
+      </div>
 
-    alert("📸 Image téléchargée ! Tu peux maintenant la partager sur Instagram, TikTok ou WhatsApp.");
-  }, "image/png");
+      <button class="share-menu-close" onclick="document.getElementById('shareMenu').classList.remove('share-menu-show')">
+        Fermer
+      </button>
+    </div>
+  `;
+
+  menu.classList.add("share-menu-show");
+
+  // Préparer le téléchargement d'image
+  window._triloDownloadImage = function() {
+    const canvas = genererImagePartage(result);
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "trilo-seance.png";
+      a.click();
+      URL.revokeObjectURL(url);
+      document.getElementById("shareMenu").classList.remove("share-menu-show");
+    }, "image/png");
+  };
 }
 
 // Exposer globalement pour script.js
