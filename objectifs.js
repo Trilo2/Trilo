@@ -255,7 +255,6 @@ function afficherObjectif() {
     });
 
     document.getElementById("objSaveBtn")?.addEventListener("click", () => {
-      const programme = document.getElementById("objProgramme").value;
       let programme   = document.getElementById("objProgramme").value;
       const sport     = document.getElementById("objSport").value;
       const distance  = parseFloat(document.getElementById("objDistance").value);
