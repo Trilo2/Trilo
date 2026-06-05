@@ -490,9 +490,12 @@ function genererHTMLCalendrier(obj) {
   return html;
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+// Lancer dès que possible (les modules se chargent après DOMContentLoaded en général)
+if (document.readyState === "loading") {
+  window.addEventListener("DOMContentLoaded", () => afficherObjectif());
+} else {
   afficherObjectif();
-});
+}
 
 window.rafraichirObjectif = afficherObjectif;
 window.rafraichirCalendrier = afficherObjectif;
