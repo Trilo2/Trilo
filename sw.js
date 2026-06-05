@@ -48,6 +48,11 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Ne mettre en cache que les requêtes GET (POST/PUT non supportés par le cache)
+  if (event.request.method !== "GET") {
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
