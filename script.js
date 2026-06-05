@@ -775,6 +775,7 @@ async function verifierPremium(user) {
   window._triloUserConnected = !!user;
   if (typeof window.rafraichirStats === "function") window.rafraichirStats();
   if (typeof window.rafraichirCalendrier === "function") window.rafraichirCalendrier();
+  if (typeof window.rafraichirObjectif === "function") window.rafraichirObjectif();
 }
 
 async function afficherEtatAuth() {
@@ -809,6 +810,7 @@ onAuthStateChanged(auth, async (user) => {
     window._triloUserConnected = false;
     if (typeof window.rafraichirStats === "function") window.rafraichirStats();
     if (typeof window.rafraichirCalendrier === "function") window.rafraichirCalendrier();
+    if (typeof window.rafraichirObjectif === "function") window.rafraichirObjectif();
     if (el("leaderboard"))        el("leaderboard").innerHTML        = "🔒 Connecte-toi pour accéder au classement.";
     if (el("comparison"))         el("comparison").innerHTML         = "🔒 Connecte-toi pour comparer tes performances.";
     if (el("advancedComparison")) el("advancedComparison").innerHTML = "🔒 Premium requis.";
