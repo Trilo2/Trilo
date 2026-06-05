@@ -219,7 +219,7 @@ function afficherObjectif() {
         <div class="objectif-fields">
           <input id="objDistance" type="number" placeholder="Distance" step="0.1">
           <span id="objUnite" style="color:var(--text-muted);align-self:center;">km</span>
-          <input id="objTemps" type="text" placeholder="Temps cible (ex: 50:00)">
+          <input id="objTemps" type="text" placeholder="Temps cible (facultatif, ex: 50:00)">
         </div>
 
         <div class="cal-field">
@@ -263,15 +263,17 @@ function afficherObjectif() {
       const semaines  = parseInt(document.getElementById("objSemaines").value);
 
       if (!distance || distance <= 0) return alert("Entre une distance valide !");
-      if (!tempsStr) return alert("Entre un temps cible !");
 
-      const parts = tempsStr.split(":");
+      // Temps facultatif
       let tempsMin = 0;
-      if (parts.length === 2) tempsMin = Number(parts[0]) + Number(parts[1])/60;
-      else if (parts.length === 3) tempsMin = Number(parts[0])*60 + Number(parts[1]) + Number(parts[2])/60;
-      else return alert("Format temps invalide ! Ex: 50:00 ou 1:30:00");
+      if (tempsStr) {
+        const parts = tempsStr.split(":");
+        if (parts.length === 2) tempsMin = Number(parts[0]) + Number(parts[1])/60;
+        else if (parts.length === 3) tempsMin = Number(parts[0])*60 + Number(parts[1]) + Number(parts[2])/60;
+        else return alert("Format temps invalide ! Ex: 50:00 ou 1:30:00");
 
-      if (tempsMin <= 0) return alert("Temps invalide !");
+        if (tempsMin <= 0) return alert("Temps invalide !");
+      }
 
       sauverObjectif({
         programme, sport, distance, tempsMin, categorie, semaines,
@@ -290,38 +292,49 @@ function afficherObjectif() {
   const unite = sport === "natation" ? "m" : "km";
   const sportEmoji = sport === "natation" ? "🏊" : sport === "vélo" ? "🚴" : "🏃";
 
-  // Calculer vitesse cible et progression
-  let vitesseCible;
-  if (sport === "natation") vitesseCible = distance / tempsMin;
-  else vitesseCible = distance / (tempsMin / 60);
+  const aTemps = tempsMin && tempsMin > 0;
 
-  const meilleure = getMeilleureSession(sport);
+  // Calculer vitesse cible et progression (seulement si temps défini)
+  let vitesseCible = 0;
   let pctProgression = 0;
   let statut = "non-evalue";
-  if (meilleure) {
-    pctProgression = Math.min(100, Math.round((meilleure.speed / vitesseCible) * 100));
-    if (meilleure.speed >= vitesseCible) statut = "atteint";
-    else if (pctProgression >= 90) statut = "proche";
-    else if (pctProgression >= 70) statut = "bon-debut";
-    else statut = "loin";
+
+  if (aTemps) {
+    if (sport === "natation") vitesseCible = distance / tempsMin;
+    else vitesseCible = distance / (tempsMin / 60);
+
+    const meilleure = getMeilleureSession(sport);
+    if (meilleure) {
+      pctProgression = Math.min(100, Math.round((meilleure.speed / vitesseCible) * 100));
+      if (meilleure.speed >= vitesseCible) statut = "atteint";
+      else if (pctProgression >= 90) statut = "proche";
+      else if (pctProgression >= 70) statut = "bon-debut";
+      else statut = "loin";
+    }
+  } else {
+    statut = "sans-temps";
   }
 
   const colors = {
     "atteint": "#10b981", "proche": "#00d4ff", "bon-debut": "#f59e0b",
-    "loin": "#ef4444", "non-evalue": "#4a6080"
+    "loin": "#ef4444", "non-evalue": "#4a6080", "sans-temps": "#8b5cf6"
   };
   const messages = {
     "atteint": "🎉 Objectif atteint !",
     "proche": "💪 Tu y es presque !",
     "bon-debut": "👍 Bon début !",
     "loin": "🔥 Le chemin est long mais faisable",
-    "non-evalue": "📊 Fais une analyse pour voir ta progression"
+    "non-evalue": "📊 Fais une analyse pour voir ta progression",
+    "sans-temps": "🎯 Objectif sans temps cible — concentre-toi sur la distance"
   };
 
   // Format temps
-  const h = Math.floor(tempsMin / 60);
-  const m = Math.floor(tempsMin % 60);
-  const tempsAffiche = h > 0 ? `${h}h${m.toString().padStart(2,"0")}min` : `${m}min`;
+  let tempsAffiche = "";
+  if (aTemps) {
+    const h = Math.floor(tempsMin / 60);
+    const m = Math.floor(tempsMin % 60);
+    tempsAffiche = h > 0 ? `${h}h${m.toString().padStart(2,"0")}min` : `${m}min`;
+  }
 
   const titreObjectif = programme && PROGRAMMES[programme]
     ? PROGRAMMES[programme].label
@@ -333,10 +346,11 @@ function afficherObjectif() {
         <span class="objectif-sport-emoji">${sportEmoji}</span>
         <div>
           <h3>${titreObjectif}</h3>
-          <p>${distance}${unite} en ${tempsAffiche}${categorie ? ` · ${categorie}` : ""}</p>
+          <p>${distance}${unite}${aTemps ? ` en ${tempsAffiche}` : ""}${categorie ? ` · ${categorie}` : ""}</p>
         </div>
       </div>
 
+      ${aTemps ? `
       <div class="objectif-progress-zone">
         <div class="objectif-progress-bar">
           <div class="objectif-progress-fill" style="width:${pctProgression}%;background:${colors[statut]};"></div>
@@ -345,6 +359,13 @@ function afficherObjectif() {
           <strong>${pctProgression}%</strong> — ${messages[statut]}
         </p>
       </div>
+      ` : `
+      <div class="objectif-progress-zone">
+        <p class="objectif-progress-text" style="color:${colors[statut]};">
+          ${messages[statut]}
+        </p>
+      </div>
+      `}
     </div>
   `;
 
