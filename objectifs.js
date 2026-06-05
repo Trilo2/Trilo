@@ -159,18 +159,21 @@ function getMeilleureSession(sport) {
   return meilleure;
 }
 
+let _objTentatives = 0;
 function afficherObjectif() {
   const zone = document.getElementById("objectifZone");
   if (!zone) return;
 
   // Vérifier connexion
   const estConnecte = window._triloUserConnected;
-  if (estConnecte === undefined) {
+  if (estConnecte === undefined && _objTentatives < 10) {
+    _objTentatives++;
     zone.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">⏳ Chargement...</div>`;
-    setTimeout(afficherObjectif, 500);
+    setTimeout(afficherObjectif, 400);
     return;
   }
 
+  // Après 10 tentatives OU si on a la réponse : on continue
   if (estConnecte !== true) {
     zone.innerHTML = `
       <div class="objectif-locked">
@@ -497,5 +500,8 @@ if (document.readyState === "loading") {
   afficherObjectif();
 }
 
-window.rafraichirObjectif = afficherObjectif;
+window.rafraichirObjectif = function() {
+  _objTentatives = 0;
+  afficherObjectif();
+};
 window.rafraichirCalendrier = afficherObjectif;
