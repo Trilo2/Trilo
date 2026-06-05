@@ -931,19 +931,28 @@ window.addEventListener("DOMContentLoaded", () => {
   // Bind clic sur tous les liens navbar
   document.querySelectorAll('.navbar-links a, .mobile-link').forEach(link => {
     link.addEventListener("click", (e) => {
-      e.preventDefault();
       const target = link.getAttribute("href");
-      afficherSection(target);
-      // Marquer actif
-      document.querySelectorAll('.navbar-links a, .mobile-link').forEach(a => a.classList.remove('active'));
-      document.querySelectorAll(`.navbar-links a[href="${target}"], .mobile-link[href="${target}"]`).forEach(a => a.classList.add('active'));
+      // Si c'est un lien vers une vraie page (.html), on laisse le navigateur naviguer
+      if (target && target.includes(".html")) {
+        return; // navigation normale
+      }
+      // Sinon c'est une ancre interne → navigation par onglets
+      if (target && target.startsWith("#")) {
+        e.preventDefault();
+        afficherSection(target);
+        document.querySelectorAll('.navbar-links a, .mobile-link').forEach(a => a.classList.remove('active'));
+        document.querySelectorAll(`.navbar-links a[href="${target}"], .mobile-link[href="${target}"]`).forEach(a => a.classList.add('active'));
+      }
     });
   });
 
-  // Logo = accueil
-  document.querySelector('.navbar-logo')?.addEventListener("click", () => {
-    afficherSection("#accueil-tout");
-  });
+  // Logo = accueil (seulement si on est sur une page avec onglets)
+  const logoLink = document.querySelector('.navbar-logo');
+  if (logoLink && logoLink.tagName !== "A") {
+    logoLink.addEventListener("click", () => {
+      afficherSection("#accueil-tout");
+    });
+  }
 
   // Menu hamburger
   const hamBtn = el("hamburgerBtn");
