@@ -193,17 +193,14 @@ function afficherObjectif() {
         <div class="cal-field">
           <label>🎯 Type de course visée (facultatif)</label>
           <select id="objProgramme">
-            <option value="">— Aucun plan, juste mon objectif —</option>
+            <option value="">— Plan adapté à mon sport —</option>
             <option value="triathlon_xs">Triathlon XS (Découverte)</option>
             <option value="triathlon_s">Triathlon Sprint (S)</option>
             <option value="triathlon_m">Triathlon Olympique (M)</option>
             <option value="triathlon_half">Half Ironman 70.3</option>
             <option value="triathlon_ironman">Ironman</option>
-            <option value="marathon">Marathon (42km) — 100% course</option>
-            <option value="semi">Semi-Marathon (21km) — 100% course</option>
-            <option value="course_libre">Course libre — 100% course</option>
-            <option value="velo_libre">Vélo libre — 100% vélo</option>
-            <option value="natation_libre">Natation libre — 100% natation</option>
+            <option value="marathon">Marathon (42km)</option>
+            <option value="semi">Semi-Marathon (21km)</option>
           </select>
         </div>
 
@@ -256,6 +253,7 @@ function afficherObjectif() {
 
     document.getElementById("objSaveBtn")?.addEventListener("click", () => {
       const programme = document.getElementById("objProgramme").value;
+      let programme   = document.getElementById("objProgramme").value;
       const sport     = document.getElementById("objSport").value;
       const distance  = parseFloat(document.getElementById("objDistance").value);
       const tempsStr  = document.getElementById("objTemps").value;
@@ -263,6 +261,13 @@ function afficherObjectif() {
       const semaines  = parseInt(document.getElementById("objSemaines").value);
 
       if (!distance || distance <= 0) return alert("Entre une distance valide !");
+
+      // Si aucun type de course choisi, adapter le plan au sport sélectionné
+      if (!programme) {
+        if (sport === "course")   programme = "course_libre";
+        else if (sport === "vélo") programme = "velo_libre";
+        else                       programme = "natation_libre";
+      }
 
       // Temps facultatif
       let tempsMin = 0;
