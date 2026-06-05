@@ -87,6 +87,42 @@ const PROGRAMMES = {
       { jour: "Sam", type: "repos",    libelle: "Repos / Étirements" },
       { jour: "Dim", type: "course",   libelle: "🏃 Longue 1h30",     premium: "1h30 endurance + 20min allure semi" }
     ]
+  },
+  course_libre: {
+    label: "Course à pied",
+    semaine: [
+      { jour: "Lun", type: "repos",    libelle: "Repos" },
+      { jour: "Mar", type: "course",   libelle: "🏃 Footing 45min",   premium: "45min endurance à 70% FCmax" },
+      { jour: "Mer", type: "course",   libelle: "🏃 Fractionné 1h",   premium: "15min échauf + 8×400m VMA (récup 1min)" },
+      { jour: "Jeu", type: "repos",    libelle: "Repos" },
+      { jour: "Ven", type: "course",   libelle: "🏃 Tempo 45min",     premium: "10min échauf + 25min allure soutenue" },
+      { jour: "Sam", type: "repos",    libelle: "Repos" },
+      { jour: "Dim", type: "course",   libelle: "🏃 Sortie longue 1h15", premium: "1h15 endurance avec changements d'allure" }
+    ]
+  },
+  velo_libre: {
+    label: "Vélo",
+    semaine: [
+      { jour: "Lun", type: "repos",    libelle: "Repos" },
+      { jour: "Mar", type: "vélo",     libelle: "🚴 Endurance 1h",    premium: "1h à 70% FCmax, cadence 90rpm" },
+      { jour: "Mer", type: "vélo",     libelle: "🚴 Intervalles 1h",  premium: "15min échauf + 5×4min zone 4 (récup 3min)" },
+      { jour: "Jeu", type: "repos",    libelle: "Repos" },
+      { jour: "Ven", type: "vélo",     libelle: "🚴 Seuil 1h",        premium: "15min échauf + 3×10min au seuil" },
+      { jour: "Sam", type: "repos",    libelle: "Repos" },
+      { jour: "Dim", type: "vélo",     libelle: "🚴 Sortie longue 2h30", premium: "2h30 endurance avec relances" }
+    ]
+  },
+  natation_libre: {
+    label: "Natation",
+    semaine: [
+      { jour: "Lun", type: "repos",    libelle: "Repos" },
+      { jour: "Mar", type: "natation", libelle: "🏊 Endurance 45min", premium: "400m échauf + 8×100m allure modérée" },
+      { jour: "Mer", type: "natation", libelle: "🏊 Technique 45min", premium: "Éducatifs : rattrapé, doigts traînés, battements" },
+      { jour: "Jeu", type: "repos",    libelle: "Repos" },
+      { jour: "Ven", type: "natation", libelle: "🏊 Fractionné 1h",   premium: "10×100m allure cible (récup 20s)" },
+      { jour: "Sam", type: "repos",    libelle: "Repos" },
+      { jour: "Dim", type: "natation", libelle: "🏊 Longue 1h",       premium: "1500m continu + 4×50m sprint" }
+    ]
   }
 };
 
@@ -130,6 +166,7 @@ function afficherObjectif() {
   // Vérifier connexion
   const estConnecte = window._triloUserConnected;
   if (estConnecte === undefined) {
+    zone.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">⏳ Chargement...</div>`;
     setTimeout(afficherObjectif, 500);
     return;
   }
@@ -154,15 +191,19 @@ function afficherObjectif() {
       <div class="objectif-form-complet">
 
         <div class="cal-field">
-          <label>🎯 Type de course visée</label>
+          <label>🎯 Type de course visée (facultatif)</label>
           <select id="objProgramme">
+            <option value="">— Aucun plan, juste mon objectif —</option>
             <option value="triathlon_xs">Triathlon XS (Découverte)</option>
             <option value="triathlon_s">Triathlon Sprint (S)</option>
-            <option value="triathlon_m" selected>Triathlon Olympique (M)</option>
+            <option value="triathlon_m">Triathlon Olympique (M)</option>
             <option value="triathlon_half">Half Ironman 70.3</option>
             <option value="triathlon_ironman">Ironman</option>
-            <option value="marathon">Marathon (42km)</option>
-            <option value="semi">Semi-Marathon (21km)</option>
+            <option value="marathon">Marathon (42km) — 100% course</option>
+            <option value="semi">Semi-Marathon (21km) — 100% course</option>
+            <option value="course_libre">Course libre — 100% course</option>
+            <option value="velo_libre">Vélo libre — 100% vélo</option>
+            <option value="natation_libre">Natation libre — 100% natation</option>
           </select>
         </div>
 
@@ -282,12 +323,16 @@ function afficherObjectif() {
   const m = Math.floor(tempsMin % 60);
   const tempsAffiche = h > 0 ? `${h}h${m.toString().padStart(2,"0")}min` : `${m}min`;
 
+  const titreObjectif = programme && PROGRAMMES[programme]
+    ? PROGRAMMES[programme].label
+    : `Objectif ${sport === "natation" ? "Natation" : sport === "vélo" ? "Vélo" : "Course"}`;
+
   let html = `
     <div class="objectif-recap">
       <div class="objectif-cible">
         <span class="objectif-sport-emoji">${sportEmoji}</span>
         <div>
-          <h3>${PROGRAMMES[programme]?.label}</h3>
+          <h3>${titreObjectif}</h3>
           <p>${distance}${unite} en ${tempsAffiche}${categorie ? ` · ${categorie}` : ""}</p>
         </div>
       </div>
@@ -303,8 +348,10 @@ function afficherObjectif() {
     </div>
   `;
 
-  // Calendrier intégré
-  html += genererHTMLCalendrier(obj);
+  // Calendrier intégré SEULEMENT si un programme est choisi
+  if (programme && PROGRAMMES[programme]) {
+    html += genererHTMLCalendrier(obj);
+  }
 
   html += `<button id="objDeleteBtn" class="objectif-delete-btn">🔄 Définir un nouvel objectif</button>`;
 
