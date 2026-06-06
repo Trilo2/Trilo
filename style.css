@@ -3746,3 +3746,171 @@ body {
   color: rgba(255, 255, 255, 0.95);
   line-height: 1.4;
 }
+
+/* =========================
+   SECTION AMIS
+========================= */
+
+.amis-card {
+  max-width: 800px;
+  margin: 0 auto 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  backdrop-filter: blur(24px);
+  box-shadow: var(--shadow);
+}
+
+.amis-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.amis-head span {
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(139,92,246,0.05));
+  border: 1px solid var(--border-bright);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.amis-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  margin-bottom: 4px;
+}
+
+.amis-head p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.amis-locked {
+  background: rgba(245,158,11,0.05);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--radius-sm);
+  padding: 30px;
+  text-align: center;
+}
+
+.amis-ajout {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.amis-ajout input {
+  flex: 1;
+}
+
+.amis-ajout button {
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  color: #021018;
+  font-weight: 700;
+  padding: 0 24px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+
+.amis-ajout button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,212,255,0.4);
+}
+
+.amis-vide {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 20px;
+}
+
+.amis-section-titre {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin: 8px 0 16px;
+}
+
+.amis-classement {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: rank;
+}
+
+.amis-rang {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-inner);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  transition: var(--transition);
+}
+
+.amis-rang:hover {
+  border-color: var(--border-bright);
+}
+
+.amis-moi {
+  background: rgba(0,212,255,0.08);
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(0,212,255,0.1);
+}
+
+.amis-medaille {
+  font-size: 20px;
+  min-width: 36px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.amis-nom {
+  flex: 1;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.amis-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+.amis-retirer {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  color: #ef4444;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: var(--transition);
+}
+
+.amis-retirer:hover {
+  background: rgba(239,68,68,0.2);
+}
+
+@media (max-width: 600px) {
+  .amis-card { padding: 20px 16px; }
+  .amis-ajout { flex-direction: column; }
+  .amis-ajout button { padding: 12px; }
+}
