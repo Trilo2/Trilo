@@ -773,9 +773,15 @@ async function verifierPremium(user) {
   } catch { isPremium = false; }
   window._triloIsPremium = isPremium;
   window._triloUserConnected = !!user;
+  // Exposer le pseudo
+  try {
+    const uSnap = await getDoc(doc(db, "users", user.uid));
+    window._triloPseudo = uSnap.exists() ? (uSnap.data().pseudo || "Triathlète") : "Triathlète";
+  } catch { window._triloPseudo = "Triathlète"; }
   if (typeof window.rafraichirStats === "function") window.rafraichirStats();
   if (typeof window.rafraichirCalendrier === "function") window.rafraichirCalendrier();
   if (typeof window.rafraichirObjectif === "function") window.rafraichirObjectif();
+  if (typeof window.rafraichirProfil === "function") window.rafraichirProfil();
 }
 
 async function afficherEtatAuth() {
@@ -811,6 +817,7 @@ onAuthStateChanged(auth, async (user) => {
     if (typeof window.rafraichirStats === "function") window.rafraichirStats();
     if (typeof window.rafraichirCalendrier === "function") window.rafraichirCalendrier();
     if (typeof window.rafraichirObjectif === "function") window.rafraichirObjectif();
+    if (typeof window.rafraichirProfil === "function") window.rafraichirProfil();
     if (el("leaderboard"))        el("leaderboard").innerHTML        = "🔒 Connecte-toi pour accéder au classement.";
     if (el("comparison"))         el("comparison").innerHTML         = "🔒 Connecte-toi pour comparer tes performances.";
     if (el("advancedComparison")) el("advancedComparison").innerHTML = "🔒 Premium requis.";
