@@ -4,16 +4,53 @@
 ========================= */
 
 const BADGES_PROFIL = [
-  { id: "first",     emoji: "🎯", label: "Première séance",   desc: "Tu as fait ta première analyse",           check: s => s.length >= 1 },
-  { id: "regular",   emoji: "🔥", label: "Régulier",          desc: "5 séances enregistrées",                   check: s => s.length >= 5 },
-  { id: "addict",    emoji: "💎", label: "Accro",             desc: "15 séances enregistrées",                  check: s => s.length >= 15 },
-  { id: "swimmer",   emoji: "🏊", label: "Nageur",            desc: "Une séance de natation",                   check: s => s.some(x => x.performances?.some(p => p.sport === "natation")) },
-  { id: "cyclist",   emoji: "🚴", label: "Cycliste",          desc: "Une séance de vélo",                       check: s => s.some(x => x.performances?.some(p => p.sport === "vélo")) },
-  { id: "runner",    emoji: "🏃", label: "Coureur",           desc: "Une séance de course",                     check: s => s.some(x => x.performances?.some(p => p.sport === "course")) },
-  { id: "triathlete",emoji: "🏆", label: "Triathlète",        desc: "Les 3 sports dans une séance",             check: s => s.some(x => x.performances?.length >= 3) },
-  { id: "beast",     emoji: "⚡", label: "Bête de course",    desc: "Un score supérieur à 60/100",              check: s => s.some(x => x.globalScore > 60) },
-  { id: "elite",     emoji: "👑", label: "Élite",             desc: "Un score supérieur à 75/100",              check: s => s.some(x => x.globalScore > 75) }
+  // — Assiduité —
+  { id: "first",     emoji: "🎯", label: "Première séance",   desc: "Ta première analyse",              check: s => s.length >= 1 },
+  { id: "regular",   emoji: "🔥", label: "Régulier",          desc: "5 séances enregistrées",           check: s => s.length >= 5 },
+  { id: "addict",    emoji: "💎", label: "Accro",             desc: "15 séances enregistrées",          check: s => s.length >= 15 },
+  { id: "machine",   emoji: "🤖", label: "Machine",           desc: "30 séances enregistrées",          check: s => s.length >= 30 },
+  { id: "legend",    emoji: "🌟", label: "Légende",           desc: "50 séances enregistrées",          check: s => s.length >= 50 },
+
+  // — Disciplines —
+  { id: "swimmer",   emoji: "🏊", label: "Nageur",            desc: "Une séance de natation",           check: s => s.some(x => x.performances?.some(p => p.sport === "natation")) },
+  { id: "cyclist",   emoji: "🚴", label: "Cycliste",          desc: "Une séance de vélo",               check: s => s.some(x => x.performances?.some(p => p.sport === "vélo")) },
+  { id: "runner",    emoji: "🏃", label: "Coureur",           desc: "Une séance de course",             check: s => s.some(x => x.performances?.some(p => p.sport === "course")) },
+  { id: "triathlete",emoji: "🏆", label: "Triathlète",        desc: "Les 3 sports dans une séance",     check: s => s.some(x => x.performances?.length >= 3) },
+
+  // — Scores —
+  { id: "score30",   emoji: "📈", label: "En progrès",        desc: "Score supérieur à 30/100",         check: s => s.some(x => x.globalScore > 30) },
+  { id: "score50",   emoji: "💪", label: "Confirmé",          desc: "Score supérieur à 50/100",         check: s => s.some(x => x.globalScore > 50) },
+  { id: "beast",     emoji: "⚡", label: "Bête de course",    desc: "Score supérieur à 60/100",         check: s => s.some(x => x.globalScore > 60) },
+  { id: "elite",     emoji: "👑", label: "Élite",             desc: "Score supérieur à 75/100",         check: s => s.some(x => x.globalScore > 75) },
+  { id: "perfect",   emoji: "🏅", label: "Quasi-parfait",     desc: "Score supérieur à 90/100",         check: s => s.some(x => x.globalScore > 90) },
+
+  // — Distances natation —
+  { id: "swim1k",    emoji: "🌊", label: "1 km à la nage",    desc: "1000m de natation en une fois",    check: s => s.some(x => x.performances?.some(p => p.sport === "natation" && p.distance >= 1000)) },
+  { id: "swim2k",    emoji: "🐬", label: "Dauphin",           desc: "2000m de natation en une fois",    check: s => s.some(x => x.performances?.some(p => p.sport === "natation" && p.distance >= 2000)) },
+
+  // — Distances vélo —
+  { id: "bike20",    emoji: "🚲", label: "20 km à vélo",      desc: "20km de vélo en une fois",         check: s => s.some(x => x.performances?.some(p => p.sport === "vélo" && p.distance >= 20)) },
+  { id: "bike50",    emoji: "🚵", label: "Grimpeur",          desc: "50km de vélo en une fois",         check: s => s.some(x => x.performances?.some(p => p.sport === "vélo" && p.distance >= 50)) },
+  { id: "bike100",   emoji: "🏔️", label: "Centurion",        desc: "100km de vélo en une fois",        check: s => s.some(x => x.performances?.some(p => p.sport === "vélo" && p.distance >= 100)) },
+
+  // — Distances course —
+  { id: "run5",      emoji: "👟", label: "5 km",              desc: "5km de course en une fois",        check: s => s.some(x => x.performances?.some(p => p.sport === "course" && p.distance >= 5)) },
+  { id: "run10",     emoji: "🏃‍♂️", label: "10 km",          desc: "10km de course en une fois",       check: s => s.some(x => x.performances?.some(p => p.sport === "course" && p.distance >= 10)) },
+  { id: "runsemi",   emoji: "🥈", label: "Semi-marathon",     desc: "21km de course en une fois",       check: s => s.some(x => x.performances?.some(p => p.sport === "course" && p.distance >= 21)) },
+  { id: "runmara",   emoji: "🥇", label: "Marathon",          desc: "42km de course en une fois",       check: s => s.some(x => x.performances?.some(p => p.sport === "course" && p.distance >= 42)) },
+
+  // — Spécial —
+  { id: "complete",  emoji: "🎖️", label: "Collectionneur",   desc: "Débloque 15 autres badges",        check: s => false } // calculé à part
 ];
+
+// Badge spécial : débloqué si 15 autres badges obtenus
+function calculerBadges(sessions) {
+  const obtenus = BADGES_PROFIL.filter(b => b.id !== "complete" && b.check(sessions));
+  if (obtenus.length >= 15) {
+    obtenus.push(BADGES_PROFIL.find(b => b.id === "complete"));
+  }
+  return obtenus;
+}
 
 function getSessions() {
   return JSON.parse(localStorage.getItem("triloSessions")) || [];
@@ -82,7 +119,7 @@ function afficherProfil() {
   });
 
   // Badges
-  const badgesObtenus = BADGES_PROFIL.filter(b => b.check(sessions));
+  const badgesObtenus = calculerBadges(sessions);
 
   // Niveau basé sur le meilleur score
   let niveau = "Débutant", niveauEmoji = "🌱";
