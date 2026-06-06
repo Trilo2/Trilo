@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon profil — Trilo</title>
+  <meta name="description" content="Ton profil sportif Trilo : meilleurs temps en natation, vélo, course et tous tes badges.">
+  <link rel="icon" type="image/png" href="logo-trilo.png">
+  <link rel="stylesheet" href="style.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GSNS075D5R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-GSNS075D5R');
+  </script>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="navbar-logo" style="text-decoration:none;">
+      <img src="logo-trilo.png" alt="Trilo" class="navbar-logo-img">
+      <span>TRILO</span>
+    </a>
+    <div class="navbar-links" id="navbar-links">
+      <a href="index.html">🏠 Accueil</a>
+      <a href="analyser.html">📊 Analyser</a>
+      <a href="objectifs.html">🎯 Objectifs</a>
+      <a href="dashboard.html">📈 Dashboard</a>
+      <a href="profil.html" class="active">👤 Profil</a>
+      <a href="premium.html">⭐ Premium</a>
+    </div>
+    <div id="navbar-user"></div>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-link">🏠 Accueil</a>
+    <a href="analyser.html" class="mobile-link">📊 Analyser</a>
+    <a href="objectifs.html" class="mobile-link">🎯 Objectifs</a>
+    <a href="dashboard.html" class="mobile-link">📈 Dashboard</a>
+    <a href="profil.html" class="mobile-link active">👤 Profil</a>
+    <a href="premium.html" class="mobile-link">⭐ Premium</a>
+  </div>
+
+  <main class="app">
+
+    <div class="page-header">
+      <span class="page-header-icon">👤</span>
+      <h1>Mon profil</h1>
+      <p>Tes meilleurs temps, tes stats et tes badges</p>
+    </div>
+
+    <!-- CONNEXION -->
+    <section class="login-card" id="loginCard">
+      <h2>Connexion Trilo</h2>
+      <div id="user-status" style="margin-bottom:12px;"></div>
+      <div id="auth-form">
+        <div class="login-grid">
+          <input id="email" type="email" placeholder="Email">
+          <input id="password" type="password" placeholder="Mot de passe">
+        </div>
+        <div id="pseudo-zone" style="margin-top:12px;display:none;">
+          <input id="pseudo" type="text" placeholder="Ton pseudo" maxlength="20" style="width:100%;margin-bottom:10px;">
+          <input id="age" type="number" placeholder="Ton âge" min="5" max="100" style="width:100%;">
+          <p style="font-size:11px;color:#4a6080;margin-top:6px;">L'âge permet de te comparer à ta catégorie</p>
+        </div>
+        <div class="login-actions">
+          <button id="signupBtn" type="button">Créer un compte</button>
+          <button id="loginBtn" type="button">Connexion</button>
+        </div>
+        <div style="margin-top:10px;text-align:center;">
+          <button id="forgotBtn" type="button" style="background:none;border:none;color:#4a6080;font-size:12px;cursor:pointer;text-decoration:underline;padding:0;">Mot de passe oublié ?</button>
+        </div>
+      </div>
+      <button id="logoutBtn" type="button" style="display:none;">Se déconnecter</button>
+    </section>
+
+    <!-- PROFIL -->
+    <section class="profil-card">
+      <div id="profilZone"></div>
+    </section>
+
+  </main>
+
+  <button id="scrollTopBtn" type="button" aria-label="Retour en haut" style="display:none;">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="script.js"></script>
+  <script type="module" src="profil.js"></script>
+</body>
+</html>
