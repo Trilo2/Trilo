@@ -134,6 +134,193 @@ const TYPES_COULEURS = {
   repos:    "#4a6080"
 };
 
+// Génère les détails précis d'une séance selon son type et son libellé
+function genererDetailsSeance(seance) {
+  const type = seance.type;
+  const libelle = seance.libelle || "";
+
+  if (type === "repos") {
+    return {
+      titre: "Jour de repos",
+      echauffement: null,
+      corps: [
+        "Repos complet ou récupération active",
+        "Étirements doux 10-15 min si tu veux",
+        "Hydratation et bonne alimentation",
+        "Dors suffisamment (8h+) pour récupérer"
+      ],
+      retour: null,
+      conseil: "Le repos fait partie de l'entraînement ! C'est pendant le repos que ton corps progresse."
+    };
+  }
+
+  if (type === "natation") {
+    if (libelle.includes("Technique")) {
+      return {
+        titre: "Séance technique natation",
+        echauffement: "200m nage souple (crawl/dos alterné)",
+        corps: [
+          "4×50m éducatif rattrapé (récup 20s)",
+          "4×50m éducatif doigts traînés (récup 20s)",
+          "4×50m battements avec planche (récup 20s)",
+          "4×50m pull-buoy bras seuls (récup 20s)",
+          "200m nage complète en appliquant la technique"
+        ],
+        retour: "100m nage très souple, respiration calme",
+        conseil: "Concentre-toi sur la qualité du geste, pas la vitesse. Allonge ton mouvement."
+      };
+    }
+    if (libelle.includes("Fractionné")) {
+      return {
+        titre: "Fractionné natation",
+        echauffement: "300m progressif + 4×25m accélérations",
+        corps: [
+          "10×100m à allure cible (récup 20s entre chaque)",
+          "Garde un rythme régulier sur chaque 100m",
+          "Si trop dur : 8×100m avec récup 30s"
+        ],
+        retour: "200m nage souple en dos",
+        conseil: "Vise une vitesse constante. Mieux vaut finir fort que partir trop vite."
+      };
+    }
+    return {
+      titre: "Endurance natation",
+      echauffement: "200m souple + 4×50m progressifs",
+      corps: [
+        "Nage continue à allure modérée",
+        "Respiration tous les 3 mouvements (bilatérale)",
+        "Reste régulier, sensation 'je pourrais tenir longtemps'",
+        "Alterne 200m crawl / 100m dos si tu fatigues"
+      ],
+      retour: "100m nage très souple",
+      conseil: "L'endurance se construit à allure facile. Tu dois pouvoir parler en nageant (presque !)."
+    };
+  }
+
+  if (type === "vélo") {
+    if (libelle.includes("Intervalles") || libelle.includes("Seuil")) {
+      return {
+        titre: "Vélo intervalles / seuil",
+        echauffement: "15 min progressif, cadence 90 rpm",
+        corps: [
+          "Bloc principal : efforts soutenus à allure course",
+          "Ex : 5×4 min en zone 4 (essoufflé mais contrôlé)",
+          "Récupération 3 min en roulant souple entre chaque",
+          "Reste assis, cadence régulière 85-95 rpm"
+        ],
+        retour: "10 min très souple, petit braquet",
+        conseil: "Pendant les efforts tu dois être à ~85% de ton max. Tu peux dire 2-3 mots, pas plus."
+      };
+    }
+    if (libelle.includes("longue") || libelle.includes("Longue")) {
+      return {
+        titre: "Sortie longue vélo",
+        echauffement: "20 min tranquille pour chauffer les jambes",
+        corps: [
+          "Roule à allure endurance (zone 2, conversation possible)",
+          "Garde une cadence fluide 85-90 rpm",
+          "Mange/bois régulièrement (toutes les 30-45 min)",
+          "Ajoute 2-3 accélérations de 3 min si tu te sens bien"
+        ],
+        retour: "10 min roulage souple",
+        conseil: "L'objectif est l'endurance, pas la vitesse. Emporte de l'eau et un en-cas !"
+      };
+    }
+    return {
+      titre: "Endurance vélo",
+      echauffement: "10 min progressif",
+      corps: [
+        "Roule à allure régulière, zone 2-3",
+        "Cadence confortable autour de 90 rpm",
+        "Travaille ta position aérodynamique",
+        "Quelques sprints de 30s en fin si tu veux"
+      ],
+      retour: "5 min souple",
+      conseil: "Garde une respiration régulière. Tu construis ta base d'endurance."
+    };
+  }
+
+  if (type === "course") {
+    if (libelle.includes("Fractionné") || libelle.includes("VMA")) {
+      return {
+        titre: "Fractionné course (VMA)",
+        echauffement: "15 min footing lent + 4 lignes droites + gammes",
+        corps: [
+          "Bloc rapide : ex 8×400m à allure 5km",
+          "Récup : 1 min de marche/trot lent entre chaque",
+          "Garde la même vitesse sur toutes les répétitions",
+          "Si trop dur : réduis à 6×400m"
+        ],
+        retour: "10 min footing très lent",
+        conseil: "Les fractionnés développent ta vitesse. Cours vite mais reste relâché dans le haut du corps."
+      };
+    }
+    if (libelle.includes("Tempo")) {
+      return {
+        titre: "Séance tempo course",
+        echauffement: "15-20 min footing tranquille",
+        corps: [
+          "Bloc tempo : 25-45 min à allure soutenue",
+          "Allure 'confortablement dure' (tu peux dire 1 phrase courte)",
+          "Reste régulier, ne pars pas trop vite",
+          "C'est l'allure que tu pourrais tenir ~1h en course"
+        ],
+        retour: "10 min footing lent",
+        conseil: "Le tempo améliore ton seuil. Tu dois finir en te disant 'j'aurais pu tenir un peu plus'."
+      };
+    }
+    if (libelle.includes("Longue") || libelle.includes("longue")) {
+      return {
+        titre: "Sortie longue course",
+        echauffement: "Commence directement en footing très lent",
+        corps: [
+          "Cours à allure endurance fondamentale (lente !)",
+          "Tu dois pouvoir parler facilement tout du long",
+          "Augmente la durée progressivement chaque semaine",
+          "Dernière partie : accélère légèrement si tu te sens bien"
+        ],
+        retour: "5 min marche + étirements",
+        conseil: "La sortie longue se court LENTEMENT. C'est la durée qui compte, pas la vitesse."
+      };
+    }
+    return {
+      titre: "Footing endurance",
+      echauffement: "5 min marche rapide",
+      corps: [
+        "Footing à allure tranquille (zone 2)",
+        "Respiration régulière, sans forcer",
+        "Foulée souple et relâchée",
+        "Tu dois pouvoir tenir une conversation"
+      ],
+      retour: "Étirements légers 5-10 min",
+      conseil: "Le footing facile construit ta base. Ne te laisse pas tenter d'aller trop vite !"
+    };
+  }
+
+  if (type === "brique") {
+    return {
+      titre: "Séance brique (enchaînement)",
+      echauffement: "10 min vélo progressif",
+      corps: [
+        "Partie vélo : roule à allure course",
+        "Transition rapide : pose le vélo, mets tes baskets vite",
+        "Partie course : pars immédiatement courir",
+        "Tes jambes seront lourdes au début, c'est normal et voulu !"
+      ],
+      retour: "5 min marche + étirements",
+      conseil: "La brique habitue ton corps à courir après le vélo. C'est LA séance clé du triathlon."
+    };
+  }
+
+  return {
+    titre: seance.libelle,
+    echauffement: null,
+    corps: ["Séance d'entraînement"],
+    retour: null,
+    conseil: ""
+  };
+}
+
 function obtenirObjectif() {
   return JSON.parse(localStorage.getItem("triloObjectif")) || null;
 }
@@ -453,6 +640,9 @@ function genererHTMLCalendrier(obj) {
     html += `<div class="cal-cell cal-empty"></div>`;
   }
 
+  // Stocker les séances pour le popup (clic)
+  window._triloSeancesCal = {};
+
   for (let d = 1; d <= dernierJour.getDate(); d++) {
     const date = new Date(annee, mois, d);
     const dateStr = date.toISOString().split("T")[0];
@@ -466,8 +656,10 @@ function genererHTMLCalendrier(obj) {
         ? `<div class="cal-cell-detail">${seance.premium}</div>`
         : seance.premium ? `<div class="cal-cell-locked">🔒</div>` : "";
       const reposClass = seance.type === "repos" ? "cal-cell-repos" : "";
+      const cellId = `cal-${dateStr}`;
+      window._triloSeancesCal[cellId] = { seance, dateStr, jour: d, isPremium };
       html += `
-        <div class="cal-cell ${isToday ? "cal-today" : ""} ${reposClass}" style="border-left:3px solid ${color};">
+        <div class="cal-cell cal-cell-clickable ${isToday ? "cal-today" : ""} ${reposClass}" style="border-left:3px solid ${color};" onclick="window._triloOuvrirSeance('${cellId}')">
           <div class="cal-cell-day">${d}</div>
           <div class="cal-cell-label">${seance.libelle}</div>
           ${detail}
@@ -492,12 +684,85 @@ function genererHTMLCalendrier(obj) {
   return html;
 }
 
-// Lancer dès que possible (les modules se chargent après DOMContentLoaded en général)
-if (document.readyState === "loading") {
-  window.addEventListener("DOMContentLoaded", () => afficherObjectif());
-} else {
-  afficherObjectif();
-}
+// Ouvrir le popup détaillé d'une séance
+window._triloOuvrirSeance = function(cellId) {
+  const data = window._triloSeancesCal?.[cellId];
+  if (!data) return;
+
+  const { seance, jour, isPremium } = data;
+  const details = genererDetailsSeance(seance);
+  const color = TYPES_COULEURS[seance.type];
+
+  let popup = document.getElementById("seancePopup");
+  if (!popup) {
+    popup = document.createElement("div");
+    popup.id = "seancePopup";
+    popup.className = "seance-popup";
+    document.body.appendChild(popup);
+  }
+
+  // Contenu détaillé
+  let contenuDetails = "";
+
+  if (seance.type === "repos") {
+    contenuDetails = `
+      <div class="seance-popup-section">
+        <ul>${details.corps.map(c => `<li>${c}</li>`).join("")}</ul>
+      </div>
+    `;
+  } else if (isPremium) {
+    // Premium : tous les détails
+    contenuDetails = `
+      ${details.echauffement ? `
+      <div class="seance-popup-section">
+        <h4>🔥 Échauffement</h4>
+        <p>${details.echauffement}</p>
+      </div>` : ""}
+      <div class="seance-popup-section">
+        <h4>💪 Corps de séance</h4>
+        <ul>${details.corps.map(c => `<li>${c}</li>`).join("")}</ul>
+      </div>
+      ${details.retour ? `
+      <div class="seance-popup-section">
+        <h4>🧊 Retour au calme</h4>
+        <p>${details.retour}</p>
+      </div>` : ""}
+    `;
+  } else {
+    // Gratuit : aperçu + teaser premium
+    contenuDetails = `
+      <div class="seance-popup-section">
+        <h4>💪 Aperçu</h4>
+        <p>${seance.premium || seance.libelle}</p>
+      </div>
+      <div class="seance-popup-premium">
+        🔒 <strong>Passe Premium</strong> pour voir le détail complet : échauffement, séries précises, allures et retour au calme.
+      </div>
+    `;
+  }
+
+  popup.innerHTML = `
+    <div class="seance-popup-overlay" onclick="document.getElementById('seancePopup').classList.remove('seance-popup-show')"></div>
+    <div class="seance-popup-content" style="border-top:4px solid ${color};">
+      <button class="seance-popup-close" onclick="document.getElementById('seancePopup').classList.remove('seance-popup-show')">✕</button>
+      <div class="seance-popup-header">
+        <span class="seance-popup-emoji">${seance.libelle.match(/\p{Emoji}/u)?.[0] || "📋"}</span>
+        <div>
+          <h3>${details.titre}</h3>
+          <p>Jour ${jour} · ${seance.libelle.replace(/\p{Emoji}/u, "").trim()}</p>
+        </div>
+      </div>
+      ${contenuDetails}
+      ${details.conseil ? `
+      <div class="seance-popup-conseil">
+        <strong>💡 Conseil du coach</strong>
+        <p>${details.conseil}</p>
+      </div>` : ""}
+    </div>
+  `;
+
+  popup.classList.add("seance-popup-show");
+};
 
 window.rafraichirObjectif = function() {
   _objTentatives = 0;
