@@ -3914,3 +3914,176 @@ body {
   .amis-ajout { flex-direction: column; }
   .amis-ajout button { padding: 12px; }
 }
+
+/* =========================
+   POPUP DÉTAIL SÉANCE
+========================= */
+
+.cal-cell-clickable {
+  cursor: pointer;
+}
+
+.cal-cell-clickable:hover {
+  transform: scale(1.05);
+  border-color: var(--accent) !important;
+  z-index: 2;
+  box-shadow: 0 4px 16px rgba(0,212,255,0.2);
+}
+
+.seance-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.seance-popup-show {
+  display: flex;
+  animation: seancePopupFade 0.3s ease;
+}
+
+@keyframes seancePopupFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.seance-popup-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+}
+
+.seance-popup-content {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  padding: 30px;
+  max-width: 460px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  animation: seancePopupSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes seancePopupSlide {
+  from { transform: translateY(40px) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.seance-popup-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--bg-inner);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.seance-popup-close:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.seance-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+  padding-right: 40px;
+}
+
+.seance-popup-emoji {
+  font-size: 44px;
+}
+
+.seance-popup-header h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.seance-popup-header p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.seance-popup-section {
+  margin-bottom: 18px;
+}
+
+.seance-popup-section h4 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.seance-popup-section p {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.seance-popup-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.seance-popup-section ul li {
+  padding: 10px 14px;
+  background: var(--bg-inner);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.seance-popup-conseil {
+  background: rgba(0,212,255,0.06);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-top: 8px;
+}
+
+.seance-popup-conseil strong {
+  display: block;
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.seance-popup-conseil p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.seance-popup-premium {
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  font-size: 13px;
+  color: var(--gold);
+  line-height: 1.5;
+  text-align: center;
+}
