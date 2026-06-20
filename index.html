@@ -55,14 +55,15 @@
       <span>TRILO</span>
     </div>
     <div class="navbar-links" id="navbar-links">
-      <a href="analyser.html">📊 Analyser</a>
-      <a href="calculateur.html">🧮 Calculateur</a>
-      <a href="objectifs.html">🎯 Objectifs</a>
-      <a href="dashboard.html">📈 Dashboard</a>
+      <a href="analyser.html" data-i18n="nav.analyser">📊 Analyser</a>
+      <a href="calculateur.html" data-i18n="nav.calculateur">🧮 Calculateur</a>
+      <a href="objectifs.html" data-i18n="nav.objectifs">🎯 Objectifs</a>
+      <a href="dashboard.html" data-i18n="nav.dashboard">📈 Dashboard</a>
       <a href="profil.html">👤 Profil</a>
-      <a href="premium.html">⭐ Premium</a>
+      <a href="premium.html" data-i18n="nav.premium">⭐ Premium</a>
     </div>
     <div id="navbar-user"></div>
+    <button class="langue-btn" id="langueBtn">🇬🇧 EN</button>
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
       <span></span>
       <span></span>
@@ -87,7 +88,7 @@
       <div class="landing-content">
         <img src="logo-trilo.png" alt="Logo Trilo" class="logo-trilo">
         <h1>TRILO</h1>
-        <p class="subtitle">Analyse. Progresse. Domine.</p>
+        <p class="subtitle" data-i18n="landing.subtitle">Analyse. Progresse. Domine.</p>
         <p class="landing-desc">
           Le premier coach IA gratuit pour triathlètes. Analyse tes performances en natation, vélo et course à pied. Obtiens des conseils personnalisés, suis ta progression et compare-toi aux meilleurs.
         </p>
@@ -136,8 +137,8 @@
           </div>
         </div>
         <div class="landing-ctas">
-          <a href="analyser.html" class="landing-cta landing-cta-free">🚀 Commencer gratuitement</a>
-          <a href="premium.html" class="landing-cta landing-cta-premium">⭐ Passer Premium</a>
+          <a href="analyser.html" class="landing-cta landing-cta-free" data-i18n="landing.cta.free">🚀 Commencer gratuitement</a>
+          <a href="premium.html" class="landing-cta landing-cta-premium" data-i18n="landing.cta.premium">⭐ Passer Premium</a>
         </div>
 
         <!-- GRAND SOMMAIRE DE NAVIGATION -->
@@ -342,5 +343,6 @@
     }
   </script>
 
+  <script src="langue.js"></script>
 </body>
 </html>
