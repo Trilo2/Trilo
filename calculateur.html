@@ -3,10 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Analyser mes performances — Trilo</title>
-  <meta name="description" content="Analyse tes performances de triathlon : natation, vélo, course. Score sur 100 et conseils IA.">
+  <title>Calculateur d'allure course à pied — gratuit | Trilo</title>
+  <meta name="description" content="Calcule ton allure de course gratuitement : entre ta distance et ton temps pour connaître ton allure au km, ta vitesse et tes temps de passage sur 5km, 10km, semi et marathon.">
+  <meta name="keywords" content="calculateur allure, allure course à pied, calcul allure km, vitesse course, temps marathon, allure semi-marathon, pace calculator, calcul vitesse course">
   <link rel="icon" type="image/png" href="logo-trilo.png">
   <link rel="stylesheet" href="style.css">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Calculateur d'allure course à pied — gratuit">
+  <meta property="og:description" content="Calcule ton allure, ta vitesse et tes temps de passage sur toutes les distances.">
+  <meta property="og:url" content="https://trilo2.github.io/Trilo/calculateur.html">
+  <meta property="og:type" content="website">
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY73QCQGWZ"></script>
@@ -20,7 +27,6 @@
 
 <body>
 
-  <!-- NAVBAR PARTAGÉE -->
   <nav class="navbar">
     <a href="index.html" class="navbar-logo" style="text-decoration:none;">
       <img src="logo-trilo.png" alt="Trilo" class="navbar-logo-img">
@@ -28,195 +34,77 @@
     </a>
     <div class="navbar-links" id="navbar-links">
       <a href="index.html">🏠 Accueil</a>
-      <a href="analyser.html" class="active">📊 Analyser</a>
+      <a href="analyser.html">📊 Analyser</a>
+      <a href="calculateur.html" class="active">🧮 Calculateur</a>
       <a href="objectifs.html">🎯 Objectifs</a>
       <a href="dashboard.html">📈 Dashboard</a>
-      <a href="profil.html">👤 Profil</a>
       <a href="premium.html">⭐ Premium</a>
     </div>
-    <div id="navbar-user"></div>
     <button class="langue-btn" id="langueBtn">🇬🇧 EN</button>
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </nav>
 
-  <!-- MENU MOBILE -->
   <div class="mobile-menu" id="mobileMenu">
     <a href="index.html" class="mobile-link">🏠 Accueil</a>
-    <a href="analyser.html" class="mobile-link active">📊 Analyser</a>
+    <a href="analyser.html" class="mobile-link">📊 Analyser</a>
+    <a href="calculateur.html" class="mobile-link active">🧮 Calculateur</a>
     <a href="objectifs.html" class="mobile-link">🎯 Objectifs</a>
     <a href="dashboard.html" class="mobile-link">📈 Dashboard</a>
-    <a href="profil.html" class="mobile-link">👤 Profil</a>
     <a href="premium.html" class="mobile-link">⭐ Premium</a>
   </div>
 
   <main class="app">
 
     <div class="page-header">
-      <span class="page-header-icon">📊</span>
-      <h1>Analyser mes performances</h1>
-      <p>Entre tes temps et distances pour obtenir ton score Trilo</p>
+      <span class="page-header-icon">🧮</span>
+      <h1>Calculateur d'allure</h1>
+      <p>Calcule ton allure, ta vitesse et tes temps de passage — gratuit, sans compte</p>
     </div>
 
-    <!-- CONNEXION (compacte) -->
-    <section class="login-card" id="loginCard">
-
-      <h2>Connexion Trilo</h2>
-      <div id="user-status" style="margin-bottom:12px;"></div>
-      <div id="auth-form">
-        <div class="login-grid">
-          <input id="email" type="email" placeholder="Email">
-          <input id="password" type="password" placeholder="Mot de passe">
+    <section class="calc-card">
+      <div class="calc-form">
+        <div class="calc-field">
+          <label for="calcDistance">Distance (km)</label>
+          <input id="calcDistance" type="number" step="0.1" placeholder="Ex : 10">
         </div>
-        <div id="pseudo-zone" style="margin-top:12px;display:none;">
-          <input id="pseudo" type="text" placeholder="Ton pseudo" maxlength="20" style="width:100%;margin-bottom:10px;">
-          <input id="age" type="number" placeholder="Ton âge" min="5" max="100" style="width:100%;">
-          <p style="font-size:11px;color:#4a6080;margin-top:6px;">L'âge permet de te comparer à ta catégorie</p>
+        <div class="calc-field">
+          <label for="calcTemps">Temps (mm:ss ou hh:mm:ss)</label>
+          <input id="calcTemps" type="text" placeholder="Ex : 50:00">
         </div>
-        <div class="login-actions">
-          <button id="signupBtn" type="button">Créer un compte</button>
-          <button id="loginBtn" type="button">Connexion</button>
-        </div>
-        <div style="margin-top:10px;text-align:center;">
-          <button id="forgotBtn" type="button" style="background:none;border:none;color:#4a6080;font-size:12px;cursor:pointer;text-decoration:underline;padding:0;">Mot de passe oublié ?</button>
-        </div>
-      </div>
-      <button id="logoutBtn" type="button" style="display:none;">Se déconnecter</button>
-    </section>
-
-    <!-- SPORTS -->
-    <section class="panel">
-      <div class="sport-block">
-        <div class="sport-head">
-          <div class="sport-badge">🏊</div>
-          <h2>NATATION</h2>
-        </div>
-        <div class="input-grid">
-          <div class="field">
-            <label for="swimDist">Distance en mètres</label>
-            <input id="swimDist" type="number" placeholder="Ex : 200">
-          </div>
-          <div class="field">
-            <label for="swimTime">Temps</label>
-            <input id="swimTime" type="text" placeholder="Ex : 4:30">
-          </div>
-        </div>
+        <button id="calcBtn" type="button" class="calc-btn">🧮 Calculer mon allure</button>
       </div>
 
-      <div class="sport-block">
-        <div class="sport-head">
-          <div class="sport-badge">🚴</div>
-          <h2>VÉLO</h2>
-        </div>
-        <div class="input-grid">
-          <div class="field">
-            <label for="bikeDist">Distance en kilomètres</label>
-            <input id="bikeDist" type="number" placeholder="Ex : 10">
-          </div>
-          <div class="field">
-            <label for="bikeTime">Temps</label>
-            <input id="bikeTime" type="text" placeholder="Ex : 20:00">
-          </div>
-        </div>
-      </div>
-
-      <div class="sport-block">
-        <div class="sport-head">
-          <div class="sport-badge">🏃</div>
-          <h2>COURSE</h2>
-        </div>
-        <div class="input-grid">
-          <div class="field">
-            <label for="runDist">Distance en kilomètres</label>
-            <input id="runDist" type="number" placeholder="Ex : 5">
-          </div>
-          <div class="field">
-            <label for="runTime">Temps</label>
-            <input id="runTime" type="text" placeholder="Ex : 20:00">
-          </div>
-        </div>
-      </div>
-
-      <p class="help">Format conseillé : 4:30, 20:00 ou 1:15:00</p>
-      <div class="actions">
-        <button id="analyzeBtn" type="button">📊 Analyser mes performances</button>
-        <button id="resetBtn" type="button">🗑 Réinitialiser</button>
+      <div id="calcResult" class="calc-result">
+        <p class="calc-placeholder">Entre ta distance et ton temps, puis clique sur Calculer.</p>
       </div>
     </section>
 
-    <!-- RÉSULTAT -->
-    <section class="result">
-      <h2 id="score">Aucun score</h2>
-      <p id="message">Entre tes performances puis clique sur analyser.</p>
-      <button id="shareBtn" type="button" class="share-btn" style="display:none;">📸 Partager ma séance</button>
-    </section>
-
-    <!-- COACH IA -->
-    <section class="ai-coach">
-      <div class="ai-head">
-        <span>🤖</span>
-        <div>
-          <h2>Coach IA Trilo</h2>
-          <p>Analyse intelligente de tes performances.</p>
-        </div>
-      </div>
-      <div id="aiAnalysis" class="ai-analysis">
-        Fais une analyse pour recevoir ton coaching IA.
-      </div>
-    </section>
-
-    <!-- ANALYSE V2 -->
-    <section class="analyse-v2-card">
-      <div class="analyse-v2-head">
-        <span>🚀</span>
-        <div>
-          <h2>Analyse Trilo V2</h2>
-          <p>Tableau de bord complet de ta dernière séance.</p>
-        </div>
-      </div>
-      <div class="analyse-v2-grid">
-        <div class="v2-box v2-score">
-          <h3>🎯 Score Trilo global</h3>
-          <div class="v2-big" id="v2-score">--</div>
-          <small>/ 100</small>
-          <p id="v2-niveau">Niveau : en attente d'analyse</p>
-        </div>
-        <div class="v2-box v2-fort">
-          <h3>🟢 Point fort</h3>
-          <p id="v2-fort">Analyse non lancée</p>
-        </div>
-        <div class="v2-box v2-faible">
-          <h3>🟡 À améliorer</h3>
-          <p id="v2-faible">Analyse non lancée</p>
-        </div>
-        <div class="v2-box v2-conseil">
-          <h3>🧠 Conseil IA</h3>
-          <p id="v2-conseil">Entre tes performances pour recevoir un conseil.</p>
-        </div>
-        <div class="v2-box v2-records">
-          <h3>🏆 Records personnels</h3>
-          <p>Meilleur sport : <strong id="v2-best-sport">--</strong></p>
-          <p>Distance totale : <strong id="v2-distance">-- km</strong></p>
-          <p>Meilleur score : <strong id="v2-best-score">--</strong> / 100</p>
-        </div>
-        <div class="v2-box v2-progression">
-          <h3>📈 Progression</h3>
-          <p>Progression : <strong id="v2-progression">--</strong></p>
-        </div>
-      </div>
+    <!-- Explication SEO -->
+    <section class="calc-info">
+      <h2>Comment calculer son allure de course ?</h2>
+      <p>L'allure de course se mesure en minutes par kilomètre (min/km). Pour la calculer, on divise le temps total par la distance parcourue. Par exemple, si tu cours 10 km en 50 minutes, ton allure est de 5:00 min/km.</p>
+      <p>La vitesse, elle, s'exprime en kilomètres par heure (km/h). Une allure de 5:00 min/km correspond à une vitesse de 12 km/h. Ce calculateur fait les deux conversions automatiquement et te montre tes temps de passage sur les distances classiques : 1 km, 5 km, 10 km, semi-marathon et marathon.</p>
+      <p>Que tu prépares ta première course ou que tu vises un record personnel, connaître ton allure cible est essentiel pour bien gérer ton effort le jour J.</p>
     </section>
 
   </main>
 
-  <!-- Bouton retour en haut -->
   <button id="scrollTopBtn" type="button" aria-label="Retour en haut" style="display:none;">↑</button>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="confettis.js"></script>
-  <script type="module" src="script.js"></script>
-  <script type="module" src="historique.js"></script>
-  <script type="module" src="share.js"></script>
+  <script type="module" src="calculateur.js"></script>
+  <script>
+    // Menu hamburger
+    const hamBtn = document.getElementById("hamburgerBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    if (hamBtn && mobileMenu) {
+      hamBtn.addEventListener("click", () => {
+        hamBtn.classList.toggle("active");
+        mobileMenu.classList.toggle("open");
+      });
+    }
+  </script>
   <script src="langue.js"></script>
 </body>
 </html>
