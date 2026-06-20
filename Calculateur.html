@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculateur d'allure course à pied — gratuit | Trilo</title>
+  <meta name="description" content="Calcule ton allure de course gratuitement : entre ta distance et ton temps pour connaître ton allure au km, ta vitesse et tes temps de passage sur 5km, 10km, semi et marathon.">
+  <meta name="keywords" content="calculateur allure, allure course à pied, calcul allure km, vitesse course, temps marathon, allure semi-marathon, pace calculator, calcul vitesse course">
+  <link rel="icon" type="image/png" href="logo-trilo.png">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Calculateur d'allure course à pied — gratuit">
+  <meta property="og:description" content="Calcule ton allure, ta vitesse et tes temps de passage sur toutes les distances.">
+  <meta property="og:url" content="https://trilo2.github.io/Trilo/calculateur.html">
+  <meta property="og:type" content="website">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY73QCQGWZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZY73QCQGWZ');
+  </script>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="navbar-logo" style="text-decoration:none;">
+      <img src="logo-trilo.png" alt="Trilo" class="navbar-logo-img">
+      <span>TRILO</span>
+    </a>
+    <div class="navbar-links" id="navbar-links">
+      <a href="index.html">🏠 Accueil</a>
+      <a href="analyser.html">📊 Analyser</a>
+      <a href="calculateur.html" class="active">🧮 Calculateur</a>
+      <a href="objectifs.html">🎯 Objectifs</a>
+      <a href="dashboard.html">📈 Dashboard</a>
+      <a href="premium.html">⭐ Premium</a>
+    </div>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-link">🏠 Accueil</a>
+    <a href="analyser.html" class="mobile-link">📊 Analyser</a>
+    <a href="calculateur.html" class="mobile-link active">🧮 Calculateur</a>
+    <a href="objectifs.html" class="mobile-link">🎯 Objectifs</a>
+    <a href="dashboard.html" class="mobile-link">📈 Dashboard</a>
+    <a href="premium.html" class="mobile-link">⭐ Premium</a>
+  </div>
+
+  <main class="app">
+
+    <div class="page-header">
+      <span class="page-header-icon">🧮</span>
+      <h1>Calculateur d'allure</h1>
+      <p>Calcule ton allure, ta vitesse et tes temps de passage — gratuit, sans compte</p>
+    </div>
+
+    <section class="calc-card">
+      <div class="calc-form">
+        <div class="calc-field">
+          <label for="calcDistance">Distance (km)</label>
+          <input id="calcDistance" type="number" step="0.1" placeholder="Ex : 10">
+        </div>
+        <div class="calc-field">
+          <label for="calcTemps">Temps (mm:ss ou hh:mm:ss)</label>
+          <input id="calcTemps" type="text" placeholder="Ex : 50:00">
+        </div>
+        <button id="calcBtn" type="button" class="calc-btn">🧮 Calculer mon allure</button>
+      </div>
+
+      <div id="calcResult" class="calc-result">
+        <p class="calc-placeholder">Entre ta distance et ton temps, puis clique sur Calculer.</p>
+      </div>
+    </section>
+
+    <!-- Explication SEO -->
+    <section class="calc-info">
+      <h2>Comment calculer son allure de course ?</h2>
+      <p>L'allure de course se mesure en minutes par kilomètre (min/km). Pour la calculer, on divise le temps total par la distance parcourue. Par exemple, si tu cours 10 km en 50 minutes, ton allure est de 5:00 min/km.</p>
+      <p>La vitesse, elle, s'exprime en kilomètres par heure (km/h). Une allure de 5:00 min/km correspond à une vitesse de 12 km/h. Ce calculateur fait les deux conversions automatiquement et te montre tes temps de passage sur les distances classiques : 1 km, 5 km, 10 km, semi-marathon et marathon.</p>
+      <p>Que tu prépares ta première course ou que tu vises un record personnel, connaître ton allure cible est essentiel pour bien gérer ton effort le jour J.</p>
+    </section>
+
+  </main>
+
+  <button id="scrollTopBtn" type="button" aria-label="Retour en haut" style="display:none;">↑</button>
+
+  <script type="module" src="calculateur.js"></script>
+  <script>
+    // Menu hamburger
+    const hamBtn = document.getElementById("hamburgerBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    if (hamBtn && mobileMenu) {
+      hamBtn.addEventListener("click", () => {
+        hamBtn.classList.toggle("active");
+        mobileMenu.classList.toggle("open");
+      });
+    }
+  </script>
+</body>
+</html>
