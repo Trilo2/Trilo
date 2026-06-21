@@ -179,7 +179,7 @@ function appliquerLangue() {
 
   // Mettre à jour le bouton de langue
   const btn = document.getElementById("langueBtn");
-  if (btn) btn.textContent = langue === "fr" ? "🇬🇧 EN" : "🇫🇷 FR";
+  if (btn) btn.textContent = langue === "fr" ? "EN" : "FR";
 
   // Mettre à jour l'attribut lang du HTML
   document.documentElement.lang = langue;
