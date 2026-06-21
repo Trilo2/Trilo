@@ -207,7 +207,11 @@ const TRADUCTIONS = {
 
   // Footer
   "footer.soon":     { fr: "Bientôt", en: "Coming soon" },
-  "footer.soon.txt": { fr: "Nos réseaux sociaux arrivent bientôt ! Reste connecté pour suivre l'aventure Trilo.", en: "Our social media is coming soon! Stay tuned to follow the Trilo adventure." }
+  "footer.soon.txt": { fr: "Nos réseaux sociaux arrivent bientôt ! Reste connecté pour suivre l'aventure Trilo.", en: "Our social media is coming soon! Stay tuned to follow the Trilo adventure." },
+
+  // Carte de progression
+  "prog.title":      { fr: "Ma progression annuelle", en: "My yearly progress" },
+  "prog.sub":        { fr: "Chaque carré représente un jour. Plus tu t'entraînes, plus c'est vert !", en: "Each square is a day. The more you train, the greener it gets!" }
 };
 
 function getLangue() {
@@ -249,6 +253,7 @@ function appliquerLangue() {
   if (typeof window.rafraichirObjectif === "function") window.rafraichirObjectif();
   if (typeof window.rafraichirProfil === "function") window.rafraichirProfil();
   if (typeof window.rafraichirAmis === "function") window.rafraichirAmis();
+  if (typeof window.rafraichirProgression === "function") window.rafraichirProgression();
 }
 
 // Appliquer la langue immédiatement et brancher le bouton
