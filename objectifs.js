@@ -2,6 +2,15 @@
    MODULE OBJECTIF + CALENDRIER COMBINÉ — TRILO
 ========================= */
 
+// Helper langue : retourne fr ou en selon le choix de l'utilisateur
+function objLang() {
+  return localStorage.getItem("triloLangue") || "fr";
+}
+// L(fr, en) → retourne le bon texte
+function L(fr, en) {
+  return objLang() === "en" ? en : fr;
+}
+
 // Programmes d'entraînement par type de course
 const PROGRAMMES = {
   triathlon_xs: {
@@ -376,63 +385,63 @@ function afficherObjectif() {
   if (!obj) {
     // Formulaire complet
     zone.innerHTML = `
-      <p class="objectif-intro">Définis ton objectif et Trilo te crée un plan d'entraînement personnalisé avec un calendrier semaine par semaine.</p>
+      <p class="objectif-intro">${L("Définis ton objectif et Trilo te crée un plan d'entraînement personnalisé avec un calendrier semaine par semaine.", "Set your goal and Trilo creates a personalized training plan with a week-by-week calendar.")}</p>
 
       <div class="objectif-form-complet">
 
         <div class="cal-field">
-          <label>🎯 Type de course visée (facultatif)</label>
+          <label>🎯 ${L("Type de course visée (facultatif)", "Target race type (optional)")}</label>
           <select id="objProgramme">
-            <option value="">— Plan adapté à mon sport —</option>
-            <option value="triathlon_xs">Triathlon XS (Découverte)</option>
+            <option value="">${L("— Plan adapté à mon sport —", "— Plan suited to my sport —")}</option>
+            <option value="triathlon_xs">Triathlon XS (${L("Découverte", "Beginner")})</option>
             <option value="triathlon_s">Triathlon Sprint (S)</option>
-            <option value="triathlon_m">Triathlon Olympique (M)</option>
+            <option value="triathlon_m">${L("Triathlon Olympique (M)", "Olympic Triathlon (M)")}</option>
             <option value="triathlon_half">Half Ironman 70.3</option>
             <option value="triathlon_ironman">Ironman</option>
             <option value="marathon">Marathon (42km)</option>
-            <option value="semi">Semi-Marathon (21km)</option>
+            <option value="semi">${L("Semi-Marathon (21km)", "Half-Marathon (21km)")}</option>
           </select>
         </div>
 
         <div class="cal-field">
-          <label>🏊🚴🏃 Sport à analyser (perf actuelle)</label>
+          <label>🏊🚴🏃 ${L("Sport à analyser (perf actuelle)", "Sport to analyze (current perf)")}</label>
           <select id="objSport">
-            <option value="course">🏃 Course à pied</option>
-            <option value="vélo">🚴 Vélo</option>
-            <option value="natation">🏊 Natation</option>
+            <option value="course">🏃 ${L("Course à pied", "Running")}</option>
+            <option value="vélo">🚴 ${L("Vélo", "Cycling")}</option>
+            <option value="natation">🏊 ${L("Natation", "Swimming")}</option>
           </select>
         </div>
 
         <div class="objectif-fields">
-          <input id="objDistance" type="number" placeholder="Distance" step="0.1">
+          <input id="objDistance" type="number" placeholder="${L("Distance", "Distance")}" step="0.1">
           <span id="objUnite" style="color:var(--text-muted);align-self:center;">km</span>
-          <input id="objTemps" type="text" placeholder="Temps cible (facultatif, ex: 50:00)">
+          <input id="objTemps" type="text" placeholder="${L("Temps cible (facultatif, ex: 50:00)", "Target time (optional, ex: 50:00)")}">
         </div>
 
         <div class="cal-field">
-          <label>👥 Catégorie d'âge (facultatif)</label>
+          <label>👥 ${L("Catégorie d'âge (facultatif)", "Age category (optional)")}</label>
           <select id="objCategorie">
-            <option value="">— Choisis ta catégorie —</option>
-            <option value="Benjamins">Benjamins (12-13 ans)</option>
-            <option value="Minimes">Minimes (14-15 ans)</option>
-            <option value="Cadets">Cadets (16-17 ans)</option>
-            <option value="Juniors">Juniors (18-19 ans)</option>
-            <option value="Seniors">Seniors (20-39 ans)</option>
-            <option value="Masters">Masters (40+ ans)</option>
+            <option value="">${L("— Choisis ta catégorie —", "— Choose your category —")}</option>
+            <option value="Benjamins">${L("Benjamins (12-13 ans)", "U13 (12-13 yrs)")}</option>
+            <option value="Minimes">${L("Minimes (14-15 ans)", "U15 (14-15 yrs)")}</option>
+            <option value="Cadets">${L("Cadets (16-17 ans)", "U17 (16-17 yrs)")}</option>
+            <option value="Juniors">${L("Juniors (18-19 ans)", "Juniors (18-19 yrs)")}</option>
+            <option value="Seniors">${L("Seniors (20-39 ans)", "Seniors (20-39 yrs)")}</option>
+            <option value="Masters">${L("Masters (40+ ans)", "Masters (40+ yrs)")}</option>
           </select>
         </div>
 
         <div class="cal-field">
-          <label>📅 Durée du plan d'entraînement</label>
+          <label>📅 ${L("Durée du plan d'entraînement", "Training plan duration")}</label>
           <select id="objSemaines">
-            <option value="4">4 semaines</option>
-            <option value="8" selected>8 semaines</option>
-            <option value="12">12 semaines (recommandé)</option>
-            <option value="16">16 semaines</option>
+            <option value="4">4 ${L("semaines", "weeks")}</option>
+            <option value="8" selected>8 ${L("semaines", "weeks")}</option>
+            <option value="12">12 ${L("semaines (recommandé)", "weeks (recommended)")}</option>
+            <option value="16">16 ${L("semaines", "weeks")}</option>
           </select>
         </div>
 
-        <button id="objSaveBtn" class="objectif-save-btn">🚀 Générer mon plan</button>
+        <button id="objSaveBtn" class="objectif-save-btn">🚀 ${L("Générer mon plan", "Generate my plan")}</button>
       </div>
     `;
 
@@ -715,16 +724,16 @@ window._triloOuvrirSeance = function(cellId) {
     contenuDetails = `
       ${details.echauffement ? `
       <div class="seance-popup-section">
-        <h4>🔥 Échauffement</h4>
+        <h4>🔥 ${L("Échauffement", "Warm-up")}</h4>
         <p>${details.echauffement}</p>
       </div>` : ""}
       <div class="seance-popup-section">
-        <h4>💪 Corps de séance</h4>
+        <h4>💪 ${L("Corps de séance", "Main set")}</h4>
         <ul>${details.corps.map(c => `<li>${c}</li>`).join("")}</ul>
       </div>
       ${details.retour ? `
       <div class="seance-popup-section">
-        <h4>🧊 Retour au calme</h4>
+        <h4>🧊 ${L("Retour au calme", "Cool-down")}</h4>
         <p>${details.retour}</p>
       </div>` : ""}
     `;
@@ -732,11 +741,11 @@ window._triloOuvrirSeance = function(cellId) {
     // Gratuit : aperçu + teaser premium
     contenuDetails = `
       <div class="seance-popup-section">
-        <h4>💪 Aperçu</h4>
+        <h4>💪 ${L("Aperçu", "Preview")}</h4>
         <p>${seance.premium || seance.libelle}</p>
       </div>
       <div class="seance-popup-premium">
-        🔒 <strong>Passe Premium</strong> pour voir le détail complet : échauffement, séries précises, allures et retour au calme.
+        🔒 <strong>${L("Passe Premium", "Go Premium")}</strong> ${L("pour voir le détail complet : échauffement, séries précises, allures et retour au calme.", "to see the full details: warm-up, precise sets, paces and cool-down.")}
       </div>
     `;
   }
@@ -749,13 +758,13 @@ window._triloOuvrirSeance = function(cellId) {
         <span class="seance-popup-emoji">${seance.libelle.match(/\p{Emoji}/u)?.[0] || "📋"}</span>
         <div>
           <h3>${details.titre}</h3>
-          <p>Jour ${jour} · ${seance.libelle.replace(/\p{Emoji}/u, "").trim()}</p>
+          <p>${L("Jour", "Day")} ${jour} · ${seance.libelle.replace(/\p{Emoji}/u, "").trim()}</p>
         </div>
       </div>
       ${contenuDetails}
       ${details.conseil ? `
       <div class="seance-popup-conseil">
-        <strong>💡 Conseil du coach</strong>
+        <strong>💡 ${L("Conseil du coach", "Coach tip")}</strong>
         <p>${details.conseil}</p>
       </div>` : ""}
     </div>

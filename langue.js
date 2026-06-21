@@ -240,6 +240,9 @@ function appliquerLangue() {
 
   // Mettre à jour l'attribut lang du HTML
   document.documentElement.lang = langue;
+
+  // Régénérer le contenu JS qui dépend de la langue
+  if (typeof window.rafraichirObjectif === "function") window.rafraichirObjectif();
 }
 
 // Appliquer la langue immédiatement et brancher le bouton
