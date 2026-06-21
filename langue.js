@@ -79,7 +79,37 @@ const TRADUCTIONS = {
   "header.objectifs":{ fr: "Mes objectifs",   en: "My goals" },
   "header.dashboard":{ fr: "Mon dashboard",   en: "My dashboard" },
   "header.profil":   { fr: "Mon profil",      en: "My profile" },
-  "header.premium":  { fr: "Trilo Premium",   en: "Trilo Premium" }
+  "header.premium":  { fr: "Trilo Premium",   en: "Trilo Premium" },
+
+  // Page Analyser — complet
+  "an.header.sub":   { fr: "Entre tes temps et distances pour obtenir ton score Trilo", en: "Enter your times and distances to get your Trilo score" },
+  "an.age.info":     { fr: "L'âge permet de te comparer à ta catégorie", en: "Age lets you compare yourself to your category" },
+  "an.format":       { fr: "Format conseillé : 4:30, 20:00 ou 1:15:00", en: "Recommended format: 4:30, 20:00 or 1:15:00" },
+  "an.noscore":      { fr: "Aucun score", en: "No score yet" },
+  "an.message":      { fr: "Entre tes performances puis clique sur analyser.", en: "Enter your performances then click analyze." },
+  "an.coach.title":  { fr: "Coach IA Trilo", en: "Trilo AI Coach" },
+  "an.coach.sub":    { fr: "Analyse intelligente de tes performances.", en: "Smart analysis of your performances." },
+  "an.coach.empty":  { fr: "Fais une analyse pour recevoir ton coaching IA.", en: "Run an analysis to get your AI coaching." },
+  "an.v2.title":     { fr: "Analyse Trilo V2", en: "Trilo Analysis V2" },
+  "an.v2.sub":       { fr: "Tableau de bord complet de ta dernière séance.", en: "Complete dashboard of your last session." },
+  "an.v2.score":     { fr: "🎯 Score Trilo global", en: "🎯 Global Trilo Score" },
+  "an.v2.niveau":    { fr: "Niveau : en attente d'analyse", en: "Level: waiting for analysis" },
+  "an.v2.fort":      { fr: "🟢 Point fort", en: "🟢 Strength" },
+  "an.v2.faible":    { fr: "🟡 À améliorer", en: "🟡 To improve" },
+  "an.v2.nonlance":  { fr: "Analyse non lancée", en: "Analysis not started" },
+  "an.v2.conseil":   { fr: "🧠 Conseil IA", en: "🧠 AI Tip" },
+  "an.v2.conseiltxt":{ fr: "Entre tes performances pour recevoir un conseil.", en: "Enter your performances to get a tip." },
+  "an.v2.records":   { fr: "🏆 Records personnels", en: "🏆 Personal records" },
+  "an.v2.bestsport": { fr: "Meilleur sport :", en: "Best sport:" },
+  "an.v2.disttot":   { fr: "Distance totale :", en: "Total distance:" },
+  "an.v2.bestscore": { fr: "Meilleur score :", en: "Best score:" },
+  "an.v2.prog":      { fr: "📈 Progression", en: "📈 Progress" },
+  "an.v2.progtxt":   { fr: "Progression :", en: "Progress:" },
+  "an.ph.swimdist":  { fr: "Ex : 200", en: "Ex: 200" },
+  "an.ph.swimtime":  { fr: "Ex : 4:30", en: "Ex: 4:30" },
+  "an.ph.bikedist":  { fr: "Ex : 10", en: "Ex: 10" },
+  "an.ph.time2":     { fr: "Ex : 20:00", en: "Ex: 20:00" },
+  "an.ph.rundist":   { fr: "Ex : 5", en: "Ex: 5" }
 };
 
 function getLangue() {
