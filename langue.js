@@ -203,7 +203,11 @@ const TRADUCTIONS = {
   "prem.f6":         { fr: "Détails des séances", en: "Session details" },
   "prem.f6d":        { fr: "Programme jour par jour : séries, allures, récupération", en: "Day-by-day program: sets, paces, recovery" },
   "prem.btn":        { fr: "🚀 Passer à Premium", en: "🚀 Go Premium" },
-  "prem.price":      { fr: "Bientôt disponible · Sans engagement · Annulable à tout moment", en: "Coming soon · No commitment · Cancel anytime" }
+  "prem.price":      { fr: "Bientôt disponible · Sans engagement · Annulable à tout moment", en: "Coming soon · No commitment · Cancel anytime" },
+
+  // Footer
+  "footer.soon":     { fr: "Bientôt", en: "Coming soon" },
+  "footer.soon.txt": { fr: "Nos réseaux sociaux arrivent bientôt ! Reste connecté pour suivre l'aventure Trilo.", en: "Our social media is coming soon! Stay tuned to follow the Trilo adventure." }
 };
 
 function getLangue() {
