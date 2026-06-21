@@ -579,7 +579,8 @@ async function chargerClassement() {
     let html = "<ol class='leaderboard-list'>", rank = 1;
     snap.forEach(d => {
       const data = d.data();
-      html += `<li class="${data.uid === currentUser.uid ? "me" : ""}">${rank++}. <strong>${data.pseudo || data.email || "Anonyme"}</strong> — ${parseFloat(data.globalScore).toFixed(2)} pts</li>`;
+      const legende = data.estLegende ? " 🏆" : "";
+      html += `<li class="${data.uid === currentUser.uid ? "me" : ""}">${rank++}. <strong>${data.pseudo || data.email || "Anonyme"}${legende}</strong> — ${parseFloat(data.globalScore).toFixed(2)} pts</li>`;
     });
     zone.innerHTML = html + "</ol>";
   } catch { zone.innerHTML = "Impossible de charger le classement."; }
@@ -688,6 +689,22 @@ window._triloSupprimerScore = async function() {
   } catch(e) { console.error("Erreur suppression score :", e); }
 };
 
+// Sauvegarder le nombre de badges et le statut légende
+window._triloSauverBadges = async function(nbBadges, estLegende) {
+  if (!currentUser) return;
+  try {
+    const refScore = doc(db, "scores", currentUser.uid);
+    const existing = await getDoc(refScore);
+    if (existing.exists()) {
+      await setDoc(refScore, {
+        ...existing.data(),
+        nbBadges: nbBadges,
+        estLegende: estLegende
+      }, { merge: true });
+    }
+  } catch(e) {}
+};
+
 async function analyser() {
   // Animation de chargement
   const btn = el("analyzeBtn");
@@ -718,6 +735,12 @@ async function analyser() {
     else if (isPremium) zoneCoach.innerHTML = genererCoachPremium(result);
     else                zoneCoach.innerHTML = genererCoachGratuit(result);
   }
+  // Détecter un nouveau record (avant d'ajouter la séance)
+  const ancienMeilleur = sessions.length > 0
+    ? Math.max(...sessions.map(s => s.globalScore || 0))
+    : 0;
+  const estNouveauRecord = sessions.length > 0 && globalScore > ancienMeilleur;
+
   sessions.push({
     globalScore, performances: result.performances,
     swimDist: result.swimDist, bikeDist: result.bikeDist, runDist: result.runDist,
@@ -725,6 +748,12 @@ async function analyser() {
   });
   localStorage.setItem("triloSessions", JSON.stringify(sessions));
   window._triloLastResult = result;
+
+  // Lancer les confettis si nouveau record !
+  if (estNouveauRecord && typeof window.lancerConfettis === "function") {
+    window.lancerConfettis();
+  }
+
   // Afficher le bouton de partage
   const shareBtn = document.getElementById("shareBtn");
   if (shareBtn) shareBtn.style.display = "inline-block";
