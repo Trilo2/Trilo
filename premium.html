@@ -24,12 +24,12 @@
       <span>TRILO</span>
     </a>
     <div class="navbar-links" id="navbar-links">
-      <a href="index.html">🏠 Accueil</a>
-      <a href="analyser.html">📊 Analyser</a>
-      <a href="calculateur.html">🧮 Calculateur</a>
-      <a href="objectifs.html">🎯 Objectifs</a>
-      <a href="dashboard.html">📈 Dashboard</a>
-      <a href="premium.html" class="active">⭐ Premium</a>
+      <a href="index.html" data-i18n="nav.accueil">🏠 Accueil</a>
+      <a href="analyser.html" data-i18n="nav.analyser">📊 Analyser</a>
+      <a href="calculateur.html" data-i18n="nav.calculateur">🧮 Calculateur</a>
+      <a href="objectifs.html" data-i18n="nav.objectifs">🎯 Objectifs</a>
+      <a href="dashboard.html" data-i18n="nav.dashboard">📈 Dashboard</a>
+      <a href="premium.html" class="active" data-i18n="nav.premium">⭐ Premium</a>
     </div>
     <div id="navbar-user"></div>
     <button class="langue-btn" id="langueBtn">EN</button>
@@ -51,88 +51,88 @@
 
     <div class="page-header">
       <span class="page-header-icon">⭐</span>
-      <h1>Trilo Premium</h1>
-      <p>Passe au niveau supérieur et débloque tout le potentiel de Trilo</p>
+      <h1 data-i18n="header.premium">Trilo Premium</h1>
+      <p data-i18n="prem.header.sub">Passe au niveau supérieur et débloque tout le potentiel de Trilo</p>
     </div>
 
     <!-- CONNEXION -->
     <section class="login-card" id="loginCard">
-      <h2>Connexion Trilo</h2>
+      <h2 data-i18n="login.title">Connexion Trilo</h2>
       <div id="user-status" style="margin-bottom:12px;"></div>
       <div id="auth-form">
         <div class="login-grid">
-          <input id="email" type="email" placeholder="Email">
-          <input id="password" type="password" placeholder="Mot de passe">
+          <input id="email" type="email" placeholder="Email" data-i18n-ph="login.email">
+          <input id="password" type="password" placeholder="Mot de passe" data-i18n-ph="login.password">
         </div>
         <div id="pseudo-zone" style="margin-top:12px;display:none;">
-          <input id="pseudo" type="text" placeholder="Ton pseudo" maxlength="20" style="width:100%;margin-bottom:10px;">
-          <input id="age" type="number" placeholder="Ton âge" min="5" max="100" style="width:100%;">
-          <p style="font-size:11px;color:#4a6080;margin-top:6px;">L'âge permet de te comparer à ta catégorie</p>
+          <input id="pseudo" type="text" placeholder="Ton pseudo" data-i18n-ph="login.pseudo" maxlength="20" style="width:100%;margin-bottom:10px;">
+          <input id="age" type="number" placeholder="Ton âge" data-i18n-ph="login.age" min="5" max="100" style="width:100%;">
+          <p style="font-size:11px;color:#4a6080;margin-top:6px;">data-i18n="an.age.info">L'âge permet de te comparer à ta catégorie</p>
         </div>
         <div class="login-actions">
-          <button id="signupBtn" type="button">Créer un compte</button>
-          <button id="loginBtn" type="button">Connexion</button>
+          <button id="signupBtn" type="button" data-i18n="login.signup">Créer un compte</button>
+          <button id="loginBtn" type="button" data-i18n="login.login">Connexion</button>
         </div>
         <div style="margin-top:10px;text-align:center;">
-          <button id="forgotBtn" type="button" style="background:none;border:none;color:#4a6080;font-size:12px;cursor:pointer;text-decoration:underline;padding:0;">Mot de passe oublié ?</button>
+          <button id="forgotBtn" type="button" style="background:none;border:none;color:#4a6080;font-size:12px;cursor:pointer;text-decoration:underline;padding:0;" data-i18n="login.forgot">Mot de passe oublié ?</button>
         </div>
       </div>
-      <button id="logoutBtn" type="button" style="display:none;">Se déconnecter</button>
+      <button id="logoutBtn" type="button" style="display:none;" data-i18n="login.logout">Se déconnecter</button>
     </section>
 
     <!-- PREMIUM -->
     <section class="premium-card">
       <span class="premium-badge">PREMIUM</span>
       <h2>Trilo Premium</h2>
-      <p>Débloque tout le potentiel de Trilo et passe au niveau supérieur.</p>
+      <p data-i18n="prem.desc">Débloque tout le potentiel de Trilo et passe au niveau supérieur.</p>
 
       <div class="premium-features">
         <div class="premium-feature">
           <div class="premium-feature-icon">🏁</div>
           <div>
-            <strong>Mode Race</strong>
-            <span>Compare-toi aux temps des courses officielles</span>
+            <strong data-i18n="prem.f1">Mode Race</strong>
+            <span data-i18n="prem.f1d">Compare-toi aux temps des courses officielles</span>
           </div>
         </div>
         <div class="premium-feature">
           <div class="premium-feature-icon">🤖</div>
           <div>
-            <strong>Coach IA avancé</strong>
-            <span>Analyse détaillée et recommandations personnalisées</span>
+            <strong data-i18n="prem.f2">Coach IA avancé</strong>
+            <span data-i18n="prem.f2d">Analyse détaillée et recommandations personnalisées</span>
           </div>
         </div>
         <div class="premium-feature">
           <div class="premium-feature-icon">📊</div>
           <div>
-            <strong>Dashboard complet</strong>
-            <span>Toutes tes stats avec graphiques par sport</span>
+            <strong data-i18n="prem.f3">Dashboard complet</strong>
+            <span data-i18n="prem.f3d">Toutes tes stats avec graphiques par sport</span>
           </div>
         </div>
         <div class="premium-feature">
           <div class="premium-feature-icon">🏆</div>
           <div>
-            <strong>Classement mondial</strong>
-            <span>Compare-toi à tous les utilisateurs Trilo</span>
+            <strong data-i18n="prem.f4">Classement mondial</strong>
+            <span data-i18n="prem.f4d">Compare-toi à tous les utilisateurs Trilo</span>
           </div>
         </div>
         <div class="premium-feature">
           <div class="premium-feature-icon">⚔️</div>
           <div>
-            <strong>Comparaison par catégorie</strong>
-            <span>Mesure-toi à ta tranche d'âge (Junior, Senior, Master...)</span>
+            <strong data-i18n="prem.f5">Comparaison par catégorie</strong>
+            <span data-i18n="prem.f5d">Mesure-toi à ta tranche d'âge (Junior, Senior, Master...)</span>
           </div>
         </div>
         <div class="premium-feature">
           <div class="premium-feature-icon">📅</div>
           <div>
-            <strong>Détails des séances</strong>
-            <span>Programme jour par jour : séries, allures, récupération</span>
+            <strong data-i18n="prem.f6">Détails des séances</strong>
+            <span data-i18n="prem.f6d">Programme jour par jour : séries, allures, récupération</span>
           </div>
         </div>
       </div>
 
-      <button class="premium-btn" type="button">🚀 Passer à Premium</button>
-      <p class="premium-price-info">Bientôt disponible · Sans engagement · Annulable à tout moment</p>
+      <button class="premium-btn" type="button" data-i18n="prem.btn">🚀 Passer à Premium</button>
+      <p class="premium-price-info" data-i18n="prem.price">Bientôt disponible · Sans engagement · Annulable à tout moment</p>
     </section>
 
     <!-- ZONE PREMIUM -->

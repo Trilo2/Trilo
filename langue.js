@@ -146,7 +146,64 @@ const TRADUCTIONS = {
   "faq.a7":   { fr: "Trilo propose 7 programmes : Triathlon XS/S/M, Half Ironman, Ironman, Marathon et Semi. Chacun a son planning hebdomadaire avec natation, vélo, course et repos adaptés.", en: "Trilo offers 7 programs: Triathlon XS/S/M, Half Ironman, Ironman, Marathon and Half-Marathon. Each has its weekly schedule with adapted swim, bike, run and rest days." },
   "faq.q8":   { fr: "Qui a créé Trilo ?", en: "Who created Trilo?" },
   "faq.a8":   { fr: "Trilo a été créé par Eliott, 13 ans, passionné de triathlon, pour aider les triathlètes de tous niveaux à progresser.", en: "Trilo was created by Eliott, 13 years old, a triathlon enthusiast, to help triathletes of all levels progress." },
-  "faq.title":{ fr: "❓ Questions fréquentes", en: "❓ Frequently asked questions" }
+  "faq.title":{ fr: "❓ Questions fréquentes", en: "❓ Frequently asked questions" },
+
+  // Calculateur — complet
+  "calc.placeholder":{ fr: "Entre ta distance et ton temps, puis clique sur Calculer.", en: "Enter your distance and time, then click Calculate." },
+  "calc.info.title": { fr: "Comment calculer son allure de course ?", en: "How to calculate your running pace?" },
+  "calc.info.p1":    { fr: "L'allure de course se mesure en minutes par kilomètre (min/km). Pour la calculer, on divise le temps total par la distance parcourue. Par exemple, si tu cours 10 km en 50 minutes, ton allure est de 5:00 min/km.", en: "Running pace is measured in minutes per kilometer (min/km). To calculate it, divide the total time by the distance covered. For example, if you run 10 km in 50 minutes, your pace is 5:00 min/km." },
+  "calc.info.p2":    { fr: "La vitesse, elle, s'exprime en kilomètres par heure (km/h). Une allure de 5:00 min/km correspond à une vitesse de 12 km/h. Ce calculateur fait les deux conversions automatiquement et te montre tes temps de passage sur les distances classiques : 1 km, 5 km, 10 km, semi-marathon et marathon.", en: "Speed is expressed in kilometers per hour (km/h). A pace of 5:00 min/km equals a speed of 12 km/h. This calculator does both conversions automatically and shows your split times over classic distances: 1 km, 5 km, 10 km, half-marathon and marathon." },
+  "calc.info.p3":    { fr: "Que tu prépares ta première course ou que tu vises un record personnel, connaître ton allure cible est essentiel pour bien gérer ton effort le jour J.", en: "Whether you're preparing for your first race or aiming for a personal record, knowing your target pace is essential to manage your effort on race day." },
+  "calc.ph.dist":    { fr: "Ex : 10", en: "Ex: 10" },
+  "calc.ph.temps":   { fr: "Ex : 50:00", en: "Ex: 50:00" },
+
+  // Objectifs — complet
+  "obj.header.sub":  { fr: "Définis ton objectif et reçois un plan d'entraînement personnalisé", en: "Set your goal and get a personalized training plan" },
+  "obj.card.title":  { fr: "Mon objectif & plan d'entraînement", en: "My goal & training plan" },
+  "obj.card.sub":    { fr: "Définis ton objectif et reçois un calendrier personnalisé.", en: "Set your goal and get a personalized calendar." },
+
+  // Dashboard — complet
+  "dash.header.sub": { fr: "Suis ta progression, tes stats et tes badges", en: "Track your progress, stats and badges" },
+  "dash.best":       { fr: "🏅 Meilleur score", en: "🏅 Best score" },
+  "dash.avg":        { fr: "📈 Score moyen", en: "📈 Average score" },
+  "dash.sessions":   { fr: "🔥 Séances", en: "🔥 Sessions" },
+  "dash.sport":      { fr: "💪 Sport dominant", en: "💪 Top sport" },
+  "dash.dist.title": { fr: "Distance totale parcourue", en: "Total distance covered" },
+  "dash.dist.sub":   { fr: "Tous tes kilomètres depuis le début sur Trilo.", en: "All your kilometers since the start on Trilo." },
+  "dash.streak.title":{ fr: "Streak d'entraînement", en: "Training streak" },
+  "dash.streak.sub": { fr: "Entraîne-toi chaque jour pour garder ta flamme !", en: "Train every day to keep your flame alive!" },
+  "dash.hist.title": { fr: "Historique des séances", en: "Session history" },
+  "dash.hist.sub":   { fr: "Toutes tes performances enregistrées.", en: "All your recorded performances." },
+  "dash.hist.clear": { fr: "🗑 Vider l'historique", en: "🗑 Clear history" },
+  "dash.gps.title":  { fr: "Parcours GPS", en: "GPS routes" },
+  "dash.gps.sub":    { fr: "Trouve un parcours running ou vélo près de chez toi.", en: "Find a running or cycling route near you." },
+  "dash.gps.pos":    { fr: "📍 Ma position", en: "📍 My location" },
+  "dash.gps.search": { fr: "🔍 Rechercher", en: "🔍 Search" },
+  "dash.badges.title":{ fr: "Badges Trilo", en: "Trilo Badges" },
+  "dash.badges.sub": { fr: "Débloque des badges selon tes performances.", en: "Unlock badges based on your performances." },
+
+  // Profil — complet
+  "prof.header.sub": { fr: "Tes meilleurs temps, tes stats et tes badges", en: "Your best times, stats and badges" },
+  "prof.amis.title": { fr: "Mes amis", en: "My friends" },
+  "prof.amis.sub":   { fr: "Ajoute tes amis et défie-les dans un classement privé !", en: "Add your friends and challenge them in a private leaderboard!" },
+
+  // Premium — complet
+  "prem.header.sub": { fr: "Passe au niveau supérieur et débloque tout le potentiel de Trilo", en: "Level up and unlock Trilo's full potential" },
+  "prem.desc":       { fr: "Débloque tout le potentiel de Trilo et passe au niveau supérieur.", en: "Unlock Trilo's full potential and level up." },
+  "prem.f1":         { fr: "Mode Race", en: "Race Mode" },
+  "prem.f1d":        { fr: "Compare-toi aux temps des courses officielles", en: "Compare yourself to official race times" },
+  "prem.f2":         { fr: "Coach IA avancé", en: "Advanced AI Coach" },
+  "prem.f2d":        { fr: "Analyse détaillée et recommandations personnalisées", en: "Detailed analysis and personalized recommendations" },
+  "prem.f3":         { fr: "Dashboard complet", en: "Full dashboard" },
+  "prem.f3d":        { fr: "Toutes tes stats avec graphiques par sport", en: "All your stats with charts by sport" },
+  "prem.f4":         { fr: "Classement mondial", en: "World leaderboard" },
+  "prem.f4d":        { fr: "Compare-toi à tous les utilisateurs Trilo", en: "Compare yourself to all Trilo users" },
+  "prem.f5":         { fr: "Comparaison par catégorie", en: "Category comparison" },
+  "prem.f5d":        { fr: "Mesure-toi à ta tranche d'âge (Junior, Senior, Master...)", en: "Measure up against your age group (Junior, Senior, Master...)" },
+  "prem.f6":         { fr: "Détails des séances", en: "Session details" },
+  "prem.f6d":        { fr: "Programme jour par jour : séries, allures, récupération", en: "Day-by-day program: sets, paces, recovery" },
+  "prem.btn":        { fr: "🚀 Passer à Premium", en: "🚀 Go Premium" },
+  "prem.price":      { fr: "Bientôt disponible · Sans engagement · Annulable à tout moment", en: "Coming soon · No commitment · Cancel anytime" }
 };
 
 function getLangue() {

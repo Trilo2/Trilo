@@ -24,13 +24,13 @@
       <span>TRILO</span>
     </a>
     <div class="navbar-links" id="navbar-links">
-      <a href="index.html">🏠 Accueil</a>
-      <a href="analyser.html">📊 Analyser</a>
-      <a href="calculateur.html">🧮 Calculateur</a>
-      <a href="objectifs.html">🎯 Objectifs</a>
-      <a href="dashboard.html">📈 Dashboard</a>
-      <a href="profil.html" class="active">👤 Profil</a>
-      <a href="premium.html">⭐ Premium</a>
+      <a href="index.html" data-i18n="nav.accueil">🏠 Accueil</a>
+      <a href="analyser.html" data-i18n="nav.analyser">📊 Analyser</a>
+      <a href="calculateur.html" data-i18n="nav.calculateur">🧮 Calculateur</a>
+      <a href="objectifs.html" data-i18n="nav.objectifs">🎯 Objectifs</a>
+      <a href="dashboard.html" data-i18n="nav.dashboard">📈 Dashboard</a>
+      <a href="profil.html" class="active" data-i18n="nav.profil">👤 Profil</a>
+      <a href="premium.html" data-i18n="nav.premium">⭐ Premium</a>
     </div>
     <div id="navbar-user"></div>
     <button class="langue-btn" id="langueBtn">EN</button>
@@ -53,33 +53,33 @@
 
     <div class="page-header">
       <span class="page-header-icon">👤</span>
-      <h1>Mon profil</h1>
-      <p>Tes meilleurs temps, tes stats et tes badges</p>
+      <h1 data-i18n="header.profil">Mon profil</h1>
+      <p data-i18n="prof.header.sub">Tes meilleurs temps, tes stats et tes badges</p>
     </div>
 
     <!-- CONNEXION -->
     <section class="login-card" id="loginCard">
-      <h2>Connexion Trilo</h2>
+      <h2 data-i18n="login.title">Connexion Trilo</h2>
       <div id="user-status" style="margin-bottom:12px;"></div>
       <div id="auth-form">
         <div class="login-grid">
-          <input id="email" type="email" placeholder="Email">
-          <input id="password" type="password" placeholder="Mot de passe">
+          <input id="email" type="email" placeholder="Email" data-i18n-ph="login.email">
+          <input id="password" type="password" placeholder="Mot de passe" data-i18n-ph="login.password">
         </div>
         <div id="pseudo-zone" style="margin-top:12px;display:none;">
-          <input id="pseudo" type="text" placeholder="Ton pseudo" maxlength="20" style="width:100%;margin-bottom:10px;">
-          <input id="age" type="number" placeholder="Ton âge" min="5" max="100" style="width:100%;">
-          <p style="font-size:11px;color:#4a6080;margin-top:6px;">L'âge permet de te comparer à ta catégorie</p>
+          <input id="pseudo" type="text" placeholder="Ton pseudo" data-i18n-ph="login.pseudo" maxlength="20" style="width:100%;margin-bottom:10px;">
+          <input id="age" type="number" placeholder="Ton âge" data-i18n-ph="login.age" min="5" max="100" style="width:100%;">
+          <p style="font-size:11px;color:#4a6080;margin-top:6px;">data-i18n="an.age.info">L'âge permet de te comparer à ta catégorie</p>
         </div>
         <div class="login-actions">
-          <button id="signupBtn" type="button">Créer un compte</button>
-          <button id="loginBtn" type="button">Connexion</button>
+          <button id="signupBtn" type="button" data-i18n="login.signup">Créer un compte</button>
+          <button id="loginBtn" type="button" data-i18n="login.login">Connexion</button>
         </div>
         <div style="margin-top:10px;text-align:center;">
-          <button id="forgotBtn" type="button" style="background:none;border:none;color:#4a6080;font-size:12px;cursor:pointer;text-decoration:underline;padding:0;">Mot de passe oublié ?</button>
+          <button id="forgotBtn" type="button" style="background:none;border:none;color:#4a6080;font-size:12px;cursor:pointer;text-decoration:underline;padding:0;" data-i18n="login.forgot">Mot de passe oublié ?</button>
         </div>
       </div>
-      <button id="logoutBtn" type="button" style="display:none;">Se déconnecter</button>
+      <button id="logoutBtn" type="button" style="display:none;" data-i18n="login.logout">Se déconnecter</button>
     </section>
 
     <!-- PROFIL -->
@@ -92,8 +92,8 @@
       <div class="amis-head">
         <span>👥</span>
         <div>
-          <h2>Mes amis</h2>
-          <p>Ajoute tes amis et défie-les dans un classement privé !</p>
+          <h2 data-i18n="prof.amis.title">Mes amis</h2>
+          <p data-i18n="prof.amis.sub">Ajoute tes amis et défie-les dans un classement privé !</p>
         </div>
       </div>
       <div id="amisZone"></div>
