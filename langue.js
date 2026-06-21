@@ -118,16 +118,23 @@ function appliquerLangue() {
   document.documentElement.lang = langue;
 }
 
-// Bind le bouton de langue
-document.addEventListener("DOMContentLoaded", () => {
+// Appliquer la langue immédiatement et brancher le bouton
+function initLangue() {
   appliquerLangue();
   const btn = document.getElementById("langueBtn");
-  if (btn) {
+  if (btn && !btn._triloBound) {
+    btn._triloBound = true;
     btn.addEventListener("click", () => {
       const nouvelle = getLangue() === "fr" ? "en" : "fr";
       setLangue(nouvelle);
     });
   }
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initLangue);
+} else {
+  initLangue();
+}
 
 window.appliquerLangue = appliquerLangue;
