@@ -11,6 +11,32 @@ function L(fr, en) {
   return objLang() === "en" ? en : fr;
 }
 
+// Traduit les libellés de séance courants à l'affichage (EN seulement)
+function trad_libelle(txt) {
+  if (objLang() !== "en") return txt;
+  const dico = {
+    "Repos": "Rest",
+    "Repos / Étirements": "Rest / Stretching",
+    "Repos actif": "Active rest",
+    "Natation": "Swimming",
+    "Course": "Running",
+    "Vélo": "Cycling",
+    "Footing": "Easy run",
+    "Fractionné": "Intervals",
+    "Tempo": "Tempo",
+    "Sortie longue": "Long ride/run",
+    "Technique": "Technique",
+    "Intervalles": "Intervals",
+    "Brique": "Brick",
+    "min": "min"
+  };
+  let out = txt;
+  for (const [fr, en] of Object.entries(dico)) {
+    out = out.replace(new RegExp(fr, "g"), en);
+  }
+  return out;
+}
+
 // Programmes d'entraînement par type de course
 const PROGRAMMES = {
   triathlon_xs: {
@@ -608,8 +634,12 @@ function afficherObjectif() {
 
 function genererHTMLCalendrier(obj) {
   const isPremium = window._triloIsPremium === true;
-  const moisNoms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-  const jourNoms = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+  const moisNoms = objLang() === "en"
+    ? ["January","February","March","April","May","June","July","August","September","October","November","December"]
+    : ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+  const jourNoms = objLang() === "en"
+    ? ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+    : ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
 
   const mois  = obj.moisAffiche;
   const annee = obj.anneeAffichee;
@@ -633,7 +663,7 @@ function genererHTMLCalendrier(obj) {
 
   let html = `
     <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
-      <h4 style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--text-muted);margin-bottom:14px;">📅 CALENDRIER D'ENTRAÎNEMENT</h4>
+      <h4 style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--text-muted);margin-bottom:14px;">📅 ${L("CALENDRIER D'ENTRAÎNEMENT", "TRAINING CALENDAR")}</h4>
 
       <div class="cal-header">
         <button id="calPrevBtn" class="cal-nav-btn">←</button>
@@ -670,7 +700,7 @@ function genererHTMLCalendrier(obj) {
       html += `
         <div class="cal-cell cal-cell-clickable ${isToday ? "cal-today" : ""} ${reposClass}" style="border-left:3px solid ${color};" onclick="window._triloOuvrirSeance('${cellId}')">
           <div class="cal-cell-day">${d}</div>
-          <div class="cal-cell-label">${seance.libelle}</div>
+          <div class="cal-cell-label">${trad_libelle(seance.libelle)}</div>
           ${detail}
         </div>
       `;
@@ -758,7 +788,7 @@ window._triloOuvrirSeance = function(cellId) {
         <span class="seance-popup-emoji">${seance.libelle.match(/\p{Emoji}/u)?.[0] || "📋"}</span>
         <div>
           <h3>${details.titre}</h3>
-          <p>${L("Jour", "Day")} ${jour} · ${seance.libelle.replace(/\p{Emoji}/u, "").trim()}</p>
+          <p>${L("Jour", "Day")} ${jour} · ${trad_libelle(seance.libelle.replace(/\p{Emoji}/u, "").trim())}</p>
         </div>
       </div>
       ${contenuDetails}
