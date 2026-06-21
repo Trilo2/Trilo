@@ -41,6 +41,10 @@ let chart       = null;
 let sessions    = JSON.parse(localStorage.getItem("triloSessions")) || [];
 window.sessions = sessions;
 
+// Helper langue : L(fr, en) retourne le bon texte selon le choix utilisateur
+function scLang() { return localStorage.getItem("triloLangue") || "fr"; }
+function L(fr, en) { return scLang() === "en" ? en : fr; }
+
 function el(id) { return document.getElementById(id); }
 
 function convertirTempsEnMinutes(temps) {
@@ -295,12 +299,12 @@ function genererCoachGratuit(result) {
   const { level, intro } = obtenirNiveau(globalScore);
   const meilleur = [...performances].sort((a, b) => b.score - a.score)[0];
   let html = `<strong>${level}</strong><br>${intro}<br><br>`;
-  html += `<strong>Score global : ${globalScore.toFixed(0)} / 100</strong><br><br>`;
-  if (meilleur) html += `💚 Sport dominant : <strong>${meilleur.sport}</strong><br><br>`;
-  html += `<strong>Conseils généraux :</strong><br>`;
+  html += `<strong>${L("Score global", "Global score")} : ${globalScore.toFixed(0)} / 100</strong><br><br>`;
+  if (meilleur) html += `💚 ${L("Sport dominant", "Top sport")} : <strong>${meilleur.sport}</strong><br><br>`;
+  html += `<strong>${L("Conseils généraux", "General tips")} :</strong><br>`;
   performances.forEach(p => { html += `${randElement(conseilsGeneraux[p.sport] || [])}<br>`; });
   html += `<br>` + genererRecuperation(result);
-  html += `<br><div class="premium-teaser">🔒 <strong>Premium</strong> : vitesses km/h, conseils personnalisés, prochaine séance, Mode Race</div>`;
+  html += `<br><div class="premium-teaser">🔒 <strong>Premium</strong> : ${L("vitesses km/h, conseils personnalisés, prochaine séance, Mode Race", "km/h speeds, personalized tips, next session, Race Mode")}</div>`;
   return html;
 }
 
@@ -321,8 +325,8 @@ function genererCoachPremium(result) {
   });
 
   let html = `<strong>${level}</strong><br>${intro}<br><br>`;
-  html += `<strong>Score global : ${globalScore.toFixed(0)} / 100</strong><br><br>`;
-  html += `<strong>📊 Détail des performances :</strong><br>`;
+  html += `<strong>${L("Score global", "Global score")} : ${globalScore.toFixed(0)} / 100</strong><br><br>`;
+  html += `<strong>📊 ${L("Détail des performances", "Performance details")} :</strong><br>`;
   performances.forEach(p => {
     const v = p.sport === "natation"
       ? `${p.speed.toFixed(1)} m/min (${(p.speed * 60 / 1000).toFixed(2)} km/h)`
@@ -330,8 +334,8 @@ function genererCoachPremium(result) {
     html += `${p.sport.charAt(0).toUpperCase() + p.sport.slice(1)} : ${v} — <strong>${p.score.toFixed(0)}/100</strong><br>`;
   });
   html += `<br>`;
-  if (meilleur) html += `💚 Point fort : <strong>${meilleur.sport}</strong><br>`;
-  if (pointFaible && pointFaible.sport !== meilleur?.sport) html += `⚠️ À travailler : <strong>${pointFaible.sport}</strong><br>`;
+  if (meilleur) html += `💚 ${L("Point fort", "Strength")} : <strong>${meilleur.sport}</strong><br>`;
+  if (pointFaible && pointFaible.sport !== meilleur?.sport) html += `⚠️ ${L("À travailler", "To work on")} : <strong>${pointFaible.sport}</strong><br>`;
   html += `<br>` + genererRecuperation(result);
   html += `<br>` + genererProchaineSéance(result);
   html += `<br>` + genererModeRace(result);

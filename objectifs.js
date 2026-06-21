@@ -11,6 +11,32 @@ function L(fr, en) {
   return objLang() === "en" ? en : fr;
 }
 
+// Traduit les libellés de séance courants à l'affichage (EN seulement)
+function trad_libelle(txt) {
+  if (objLang() !== "en") return txt;
+  const dico = {
+    "Repos": "Rest",
+    "Repos / Étirements": "Rest / Stretching",
+    "Repos actif": "Active rest",
+    "Natation": "Swimming",
+    "Course": "Running",
+    "Vélo": "Cycling",
+    "Footing": "Easy run",
+    "Fractionné": "Intervals",
+    "Tempo": "Tempo",
+    "Sortie longue": "Long ride/run",
+    "Technique": "Technique",
+    "Intervalles": "Intervals",
+    "Brique": "Brick",
+    "min": "min"
+  };
+  let out = txt;
+  for (const [fr, en] of Object.entries(dico)) {
+    out = out.replace(new RegExp(fr, "g"), en);
+  }
+  return out;
+}
+
 // Programmes d'entraînement par type de course
 const PROGRAMMES = {
   triathlon_xs: {
@@ -144,187 +170,188 @@ const TYPES_COULEURS = {
 };
 
 // Génère les détails précis d'une séance selon son type et son libellé
+// Génère les détails précis d'une séance selon son type et son libellé (bilingue)
 function genererDetailsSeance(seance) {
   const type = seance.type;
   const libelle = seance.libelle || "";
 
   if (type === "repos") {
     return {
-      titre: "Jour de repos",
+      titre: L("Jour de repos", "Rest day"),
       echauffement: null,
       corps: [
-        "Repos complet ou récupération active",
-        "Étirements doux 10-15 min si tu veux",
-        "Hydratation et bonne alimentation",
-        "Dors suffisamment (8h+) pour récupérer"
+        L("Repos complet ou récupération active", "Complete rest or active recovery"),
+        L("Étirements doux 10-15 min si tu veux", "Gentle stretching 10-15 min if you want"),
+        L("Hydratation et bonne alimentation", "Hydration and good nutrition"),
+        L("Dors suffisamment (8h+) pour récupérer", "Sleep enough (8h+) to recover")
       ],
       retour: null,
-      conseil: "Le repos fait partie de l'entraînement ! C'est pendant le repos que ton corps progresse."
+      conseil: L("Le repos fait partie de l'entraînement ! C'est pendant le repos que ton corps progresse.", "Rest is part of training! Your body improves during rest.")
     };
   }
 
   if (type === "natation") {
     if (libelle.includes("Technique")) {
       return {
-        titre: "Séance technique natation",
-        echauffement: "200m nage souple (crawl/dos alterné)",
+        titre: L("Séance technique natation", "Swimming technique session"),
+        echauffement: L("200m nage souple (crawl/dos alterné)", "200m easy swim (alternate freestyle/backstroke)"),
         corps: [
-          "4×50m éducatif rattrapé (récup 20s)",
-          "4×50m éducatif doigts traînés (récup 20s)",
-          "4×50m battements avec planche (récup 20s)",
-          "4×50m pull-buoy bras seuls (récup 20s)",
-          "200m nage complète en appliquant la technique"
+          L("4×50m éducatif rattrapé (récup 20s)", "4×50m catch-up drill (20s rest)"),
+          L("4×50m éducatif doigts traînés (récup 20s)", "4×50m finger-drag drill (20s rest)"),
+          L("4×50m battements avec planche (récup 20s)", "4×50m kick with board (20s rest)"),
+          L("4×50m pull-buoy bras seuls (récup 20s)", "4×50m pull-buoy arms only (20s rest)"),
+          L("200m nage complète en appliquant la technique", "200m full swim applying the technique")
         ],
-        retour: "100m nage très souple, respiration calme",
-        conseil: "Concentre-toi sur la qualité du geste, pas la vitesse. Allonge ton mouvement."
+        retour: L("100m nage très souple, respiration calme", "100m very easy swim, calm breathing"),
+        conseil: L("Concentre-toi sur la qualité du geste, pas la vitesse. Allonge ton mouvement.", "Focus on stroke quality, not speed. Lengthen your movement.")
       };
     }
     if (libelle.includes("Fractionné")) {
       return {
-        titre: "Fractionné natation",
-        echauffement: "300m progressif + 4×25m accélérations",
+        titre: L("Fractionné natation", "Swimming intervals"),
+        echauffement: L("300m progressif + 4×25m accélérations", "300m progressive + 4×25m accelerations"),
         corps: [
-          "10×100m à allure cible (récup 20s entre chaque)",
-          "Garde un rythme régulier sur chaque 100m",
-          "Si trop dur : 8×100m avec récup 30s"
+          L("10×100m à allure cible (récup 20s entre chaque)", "10×100m at target pace (20s rest between each)"),
+          L("Garde un rythme régulier sur chaque 100m", "Keep a steady rhythm on each 100m"),
+          L("Si trop dur : 8×100m avec récup 30s", "If too hard: 8×100m with 30s rest")
         ],
-        retour: "200m nage souple en dos",
-        conseil: "Vise une vitesse constante. Mieux vaut finir fort que partir trop vite."
+        retour: L("200m nage souple en dos", "200m easy backstroke"),
+        conseil: L("Vise une vitesse constante. Mieux vaut finir fort que partir trop vite.", "Aim for steady speed. Better to finish strong than start too fast.")
       };
     }
     return {
-      titre: "Endurance natation",
-      echauffement: "200m souple + 4×50m progressifs",
+      titre: L("Endurance natation", "Swimming endurance"),
+      echauffement: L("200m souple + 4×50m progressifs", "200m easy + 4×50m progressive"),
       corps: [
-        "Nage continue à allure modérée",
-        "Respiration tous les 3 mouvements (bilatérale)",
-        "Reste régulier, sensation 'je pourrais tenir longtemps'",
-        "Alterne 200m crawl / 100m dos si tu fatigues"
+        L("Nage continue à allure modérée", "Continuous swim at moderate pace"),
+        L("Respiration tous les 3 mouvements (bilatérale)", "Breathe every 3 strokes (bilateral)"),
+        L("Reste régulier, sensation 'je pourrais tenir longtemps'", "Stay steady, feel like 'I could hold this for a long time'"),
+        L("Alterne 200m crawl / 100m dos si tu fatigues", "Alternate 200m freestyle / 100m backstroke if you tire")
       ],
-      retour: "100m nage très souple",
-      conseil: "L'endurance se construit à allure facile. Tu dois pouvoir parler en nageant (presque !)."
+      retour: L("100m nage très souple", "100m very easy swim"),
+      conseil: L("L'endurance se construit à allure facile. Tu dois pouvoir parler en nageant (presque !).", "Endurance builds at easy pace. You should almost be able to talk while swimming!")
     };
   }
 
   if (type === "vélo") {
     if (libelle.includes("Intervalles") || libelle.includes("Seuil")) {
       return {
-        titre: "Vélo intervalles / seuil",
-        echauffement: "15 min progressif, cadence 90 rpm",
+        titre: L("Vélo intervalles / seuil", "Cycling intervals / threshold"),
+        echauffement: L("15 min progressif, cadence 90 rpm", "15 min progressive, cadence 90 rpm"),
         corps: [
-          "Bloc principal : efforts soutenus à allure course",
-          "Ex : 5×4 min en zone 4 (essoufflé mais contrôlé)",
-          "Récupération 3 min en roulant souple entre chaque",
-          "Reste assis, cadence régulière 85-95 rpm"
+          L("Bloc principal : efforts soutenus à allure course", "Main block: sustained efforts at race pace"),
+          L("Ex : 5×4 min en zone 4 (essoufflé mais contrôlé)", "Ex: 5×4 min in zone 4 (breathless but controlled)"),
+          L("Récupération 3 min en roulant souple entre chaque", "Recovery 3 min easy spinning between each"),
+          L("Reste assis, cadence régulière 85-95 rpm", "Stay seated, steady cadence 85-95 rpm")
         ],
-        retour: "10 min très souple, petit braquet",
-        conseil: "Pendant les efforts tu dois être à ~85% de ton max. Tu peux dire 2-3 mots, pas plus."
+        retour: L("10 min très souple, petit braquet", "10 min very easy, small gear"),
+        conseil: L("Pendant les efforts tu dois être à ~85% de ton max. Tu peux dire 2-3 mots, pas plus.", "During efforts you should be at ~85% of your max. You can say 2-3 words, no more.")
       };
     }
     if (libelle.includes("longue") || libelle.includes("Longue")) {
       return {
-        titre: "Sortie longue vélo",
-        echauffement: "20 min tranquille pour chauffer les jambes",
+        titre: L("Sortie longue vélo", "Long bike ride"),
+        echauffement: L("20 min tranquille pour chauffer les jambes", "20 min easy to warm up the legs"),
         corps: [
-          "Roule à allure endurance (zone 2, conversation possible)",
-          "Garde une cadence fluide 85-90 rpm",
-          "Mange/bois régulièrement (toutes les 30-45 min)",
-          "Ajoute 2-3 accélérations de 3 min si tu te sens bien"
+          L("Roule à allure endurance (zone 2, conversation possible)", "Ride at endurance pace (zone 2, conversation possible)"),
+          L("Garde une cadence fluide 85-90 rpm", "Keep a fluid cadence 85-90 rpm"),
+          L("Mange/bois régulièrement (toutes les 30-45 min)", "Eat/drink regularly (every 30-45 min)"),
+          L("Ajoute 2-3 accélérations de 3 min si tu te sens bien", "Add 2-3 accelerations of 3 min if you feel good")
         ],
-        retour: "10 min roulage souple",
-        conseil: "L'objectif est l'endurance, pas la vitesse. Emporte de l'eau et un en-cas !"
+        retour: L("10 min roulage souple", "10 min easy spinning"),
+        conseil: L("L'objectif est l'endurance, pas la vitesse. Emporte de l'eau et un en-cas !", "The goal is endurance, not speed. Bring water and a snack!")
       };
     }
     return {
-      titre: "Endurance vélo",
-      echauffement: "10 min progressif",
+      titre: L("Endurance vélo", "Cycling endurance"),
+      echauffement: L("10 min progressif", "10 min progressive"),
       corps: [
-        "Roule à allure régulière, zone 2-3",
-        "Cadence confortable autour de 90 rpm",
-        "Travaille ta position aérodynamique",
-        "Quelques sprints de 30s en fin si tu veux"
+        L("Roule à allure régulière, zone 2-3", "Ride at steady pace, zone 2-3"),
+        L("Cadence confortable autour de 90 rpm", "Comfortable cadence around 90 rpm"),
+        L("Travaille ta position aérodynamique", "Work on your aero position"),
+        L("Quelques sprints de 30s en fin si tu veux", "A few 30s sprints at the end if you want")
       ],
-      retour: "5 min souple",
-      conseil: "Garde une respiration régulière. Tu construis ta base d'endurance."
+      retour: L("5 min souple", "5 min easy"),
+      conseil: L("Garde une respiration régulière. Tu construis ta base d'endurance.", "Keep steady breathing. You're building your endurance base.")
     };
   }
 
   if (type === "course") {
     if (libelle.includes("Fractionné") || libelle.includes("VMA")) {
       return {
-        titre: "Fractionné course (VMA)",
-        echauffement: "15 min footing lent + 4 lignes droites + gammes",
+        titre: L("Fractionné course (VMA)", "Running intervals (VO2max)"),
+        echauffement: L("15 min footing lent + 4 lignes droites + gammes", "15 min easy jog + 4 strides + drills"),
         corps: [
-          "Bloc rapide : ex 8×400m à allure 5km",
-          "Récup : 1 min de marche/trot lent entre chaque",
-          "Garde la même vitesse sur toutes les répétitions",
-          "Si trop dur : réduis à 6×400m"
+          L("Bloc rapide : ex 8×400m à allure 5km", "Fast block: ex 8×400m at 5km pace"),
+          L("Récup : 1 min de marche/trot lent entre chaque", "Recovery: 1 min walk/slow jog between each"),
+          L("Garde la même vitesse sur toutes les répétitions", "Keep the same speed on all reps"),
+          L("Si trop dur : réduis à 6×400m", "If too hard: reduce to 6×400m")
         ],
-        retour: "10 min footing très lent",
-        conseil: "Les fractionnés développent ta vitesse. Cours vite mais reste relâché dans le haut du corps."
+        retour: L("10 min footing très lent", "10 min very slow jog"),
+        conseil: L("Les fractionnés développent ta vitesse. Cours vite mais reste relâché dans le haut du corps.", "Intervals develop your speed. Run fast but stay relaxed in your upper body.")
       };
     }
     if (libelle.includes("Tempo")) {
       return {
-        titre: "Séance tempo course",
-        echauffement: "15-20 min footing tranquille",
+        titre: L("Séance tempo course", "Running tempo session"),
+        echauffement: L("15-20 min footing tranquille", "15-20 min easy jog"),
         corps: [
-          "Bloc tempo : 25-45 min à allure soutenue",
-          "Allure 'confortablement dure' (tu peux dire 1 phrase courte)",
-          "Reste régulier, ne pars pas trop vite",
-          "C'est l'allure que tu pourrais tenir ~1h en course"
+          L("Bloc tempo : 25-45 min à allure soutenue", "Tempo block: 25-45 min at sustained pace"),
+          L("Allure 'confortablement dure' (tu peux dire 1 phrase courte)", "'Comfortably hard' pace (you can say one short sentence)"),
+          L("Reste régulier, ne pars pas trop vite", "Stay steady, don't start too fast"),
+          L("C'est l'allure que tu pourrais tenir ~1h en course", "It's the pace you could hold for ~1h in a race")
         ],
-        retour: "10 min footing lent",
-        conseil: "Le tempo améliore ton seuil. Tu dois finir en te disant 'j'aurais pu tenir un peu plus'."
+        retour: L("10 min footing lent", "10 min slow jog"),
+        conseil: L("Le tempo améliore ton seuil. Tu dois finir en te disant 'j'aurais pu tenir un peu plus'.", "Tempo improves your threshold. You should finish thinking 'I could have held a bit longer'.")
       };
     }
     if (libelle.includes("Longue") || libelle.includes("longue")) {
       return {
-        titre: "Sortie longue course",
-        echauffement: "Commence directement en footing très lent",
+        titre: L("Sortie longue course", "Long run"),
+        echauffement: L("Commence directement en footing très lent", "Start directly with a very slow jog"),
         corps: [
-          "Cours à allure endurance fondamentale (lente !)",
-          "Tu dois pouvoir parler facilement tout du long",
-          "Augmente la durée progressivement chaque semaine",
-          "Dernière partie : accélère légèrement si tu te sens bien"
+          L("Cours à allure endurance fondamentale (lente !)", "Run at base endurance pace (slow!)"),
+          L("Tu dois pouvoir parler facilement tout du long", "You should be able to talk easily throughout"),
+          L("Augmente la durée progressivement chaque semaine", "Increase duration progressively each week"),
+          L("Dernière partie : accélère légèrement si tu te sens bien", "Last part: speed up slightly if you feel good")
         ],
-        retour: "5 min marche + étirements",
-        conseil: "La sortie longue se court LENTEMENT. C'est la durée qui compte, pas la vitesse."
+        retour: L("5 min marche + étirements", "5 min walk + stretching"),
+        conseil: L("La sortie longue se court LENTEMENT. C'est la durée qui compte, pas la vitesse.", "The long run is run SLOWLY. It's the duration that counts, not the speed.")
       };
     }
     return {
-      titre: "Footing endurance",
-      echauffement: "5 min marche rapide",
+      titre: L("Footing endurance", "Endurance jog"),
+      echauffement: L("5 min marche rapide", "5 min brisk walk"),
       corps: [
-        "Footing à allure tranquille (zone 2)",
-        "Respiration régulière, sans forcer",
-        "Foulée souple et relâchée",
-        "Tu dois pouvoir tenir une conversation"
+        L("Footing à allure tranquille (zone 2)", "Easy-paced jog (zone 2)"),
+        L("Respiration régulière, sans forcer", "Steady breathing, no strain"),
+        L("Foulée souple et relâchée", "Smooth and relaxed stride"),
+        L("Tu dois pouvoir tenir une conversation", "You should be able to hold a conversation")
       ],
-      retour: "Étirements légers 5-10 min",
-      conseil: "Le footing facile construit ta base. Ne te laisse pas tenter d'aller trop vite !"
+      retour: L("Étirements légers 5-10 min", "Light stretching 5-10 min"),
+      conseil: L("Le footing facile construit ta base. Ne te laisse pas tenter d'aller trop vite !", "Easy jogging builds your base. Don't be tempted to go too fast!")
     };
   }
 
   if (type === "brique") {
     return {
-      titre: "Séance brique (enchaînement)",
-      echauffement: "10 min vélo progressif",
+      titre: L("Séance brique (enchaînement)", "Brick session (back-to-back)"),
+      echauffement: L("10 min vélo progressif", "10 min progressive cycling"),
       corps: [
-        "Partie vélo : roule à allure course",
-        "Transition rapide : pose le vélo, mets tes baskets vite",
-        "Partie course : pars immédiatement courir",
-        "Tes jambes seront lourdes au début, c'est normal et voulu !"
+        L("Partie vélo : roule à allure course", "Bike part: ride at race pace"),
+        L("Transition rapide : pose le vélo, mets tes baskets vite", "Quick transition: drop the bike, get your shoes on fast"),
+        L("Partie course : pars immédiatement courir", "Run part: start running immediately"),
+        L("Tes jambes seront lourdes au début, c'est normal et voulu !", "Your legs will feel heavy at first, that's normal and intended!")
       ],
-      retour: "5 min marche + étirements",
-      conseil: "La brique habitue ton corps à courir après le vélo. C'est LA séance clé du triathlon."
+      retour: L("5 min marche + étirements", "5 min walk + stretching"),
+      conseil: L("La brique habitue ton corps à courir après le vélo. C'est LA séance clé du triathlon.", "The brick gets your body used to running after cycling. It's THE key triathlon session.")
     };
   }
 
   return {
     titre: seance.libelle,
     echauffement: null,
-    corps: ["Séance d'entraînement"],
+    corps: [L("Séance d'entraînement", "Training session")],
     retour: null,
     conseil: ""
   };
@@ -608,8 +635,12 @@ function afficherObjectif() {
 
 function genererHTMLCalendrier(obj) {
   const isPremium = window._triloIsPremium === true;
-  const moisNoms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-  const jourNoms = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+  const moisNoms = objLang() === "en"
+    ? ["January","February","March","April","May","June","July","August","September","October","November","December"]
+    : ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+  const jourNoms = objLang() === "en"
+    ? ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+    : ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
 
   const mois  = obj.moisAffiche;
   const annee = obj.anneeAffichee;
@@ -633,7 +664,7 @@ function genererHTMLCalendrier(obj) {
 
   let html = `
     <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
-      <h4 style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--text-muted);margin-bottom:14px;">📅 CALENDRIER D'ENTRAÎNEMENT</h4>
+      <h4 style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--text-muted);margin-bottom:14px;">📅 ${L("CALENDRIER D'ENTRAÎNEMENT", "TRAINING CALENDAR")}</h4>
 
       <div class="cal-header">
         <button id="calPrevBtn" class="cal-nav-btn">←</button>
@@ -670,7 +701,7 @@ function genererHTMLCalendrier(obj) {
       html += `
         <div class="cal-cell cal-cell-clickable ${isToday ? "cal-today" : ""} ${reposClass}" style="border-left:3px solid ${color};" onclick="window._triloOuvrirSeance('${cellId}')">
           <div class="cal-cell-day">${d}</div>
-          <div class="cal-cell-label">${seance.libelle}</div>
+          <div class="cal-cell-label">${trad_libelle(seance.libelle)}</div>
           ${detail}
         </div>
       `;
@@ -758,7 +789,7 @@ window._triloOuvrirSeance = function(cellId) {
         <span class="seance-popup-emoji">${seance.libelle.match(/\p{Emoji}/u)?.[0] || "📋"}</span>
         <div>
           <h3>${details.titre}</h3>
-          <p>${L("Jour", "Day")} ${jour} · ${seance.libelle.replace(/\p{Emoji}/u, "").trim()}</p>
+          <p>${L("Jour", "Day")} ${jour} · ${trad_libelle(seance.libelle.replace(/\p{Emoji}/u, "").trim())}</p>
         </div>
       </div>
       ${contenuDetails}
