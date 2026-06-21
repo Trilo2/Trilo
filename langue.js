@@ -109,7 +109,44 @@ const TRADUCTIONS = {
   "an.ph.swimtime":  { fr: "Ex : 4:30", en: "Ex: 4:30" },
   "an.ph.bikedist":  { fr: "Ex : 10", en: "Ex: 10" },
   "an.ph.time2":     { fr: "Ex : 20:00", en: "Ex: 20:00" },
-  "an.ph.rundist":   { fr: "Ex : 5", en: "Ex: 5" }
+  "an.ph.rundist":   { fr: "Ex : 5", en: "Ex: 5" },
+
+  // Landing — Features
+  "feat.free":         { fr: "GRATUIT", en: "FREE" },
+  "feat.premium":      { fr: "PREMIUM", en: "PREMIUM" },
+  "feat.analyse":      { fr: "Analyse des perfs", en: "Performance analysis" },
+  "feat.analyse.d":    { fr: "Score détaillé sur 100 pour chaque discipline", en: "Detailed score out of 100 for each discipline" },
+  "feat.streaks":      { fr: "Streaks", en: "Streaks" },
+  "feat.streaks.d":    { fr: "Garde ta motivation chaque jour", en: "Keep your motivation every day" },
+  "feat.gps":          { fr: "Parcours GPS", en: "GPS routes" },
+  "feat.gps.d":        { fr: "Trouve des itinéraires près de chez toi", en: "Find routes near you" },
+  "feat.coach":        { fr: "Coach IA", en: "AI Coach" },
+  "feat.coach.d":      { fr: "Analyse intelligente et conseils personnalisés", en: "Smart analysis and personalized tips" },
+  "feat.race":         { fr: "Mode Race", en: "Race Mode" },
+  "feat.race.d":       { fr: "Compare-toi aux courses officielles", en: "Compare yourself to official races" },
+  "feat.dash":         { fr: "Dashboard avancé", en: "Advanced dashboard" },
+  "feat.dash.d":       { fr: "Stats complètes et graphique d'évolution", en: "Full stats and progress chart" },
+  "feat.rank":         { fr: "Classement mondial", en: "World leaderboard" },
+  "feat.rank.d":       { fr: "Compare-toi aux meilleurs triathlètes Trilo", en: "Compare yourself to the best Trilo triathletes" },
+
+  // FAQ
+  "faq.q1":   { fr: "Trilo est-il vraiment gratuit ?", en: "Is Trilo really free?" },
+  "faq.a1":   { fr: "Oui ! Toutes les fonctionnalités principales sont gratuites : analyse des perfs, score sur 100, Coach IA basique, badges, streak, parcours GPS, calendrier d'entraînement, historique. Seules quelques fonctionnalités avancées nécessitent l'abonnement Premium.", en: "Yes! All main features are free: performance analysis, score out of 100, basic AI Coach, badges, streak, GPS routes, training calendar, history. Only a few advanced features require the Premium subscription." },
+  "faq.q2":   { fr: "Comment fonctionne le score sur 100 ?", en: "How does the score out of 100 work?" },
+  "faq.a2":   { fr: "Le score Trilo est calculé en comparant ta vitesse à des références : 45 m/min pour la natation, 22 km/h pour le vélo, 12 km/h pour la course. Plus tu es proche ou au-dessus, plus ton score est élevé. Au-dessus de 80, tu es Élite !", en: "The Trilo score compares your speed to references: 45 m/min for swimming, 22 km/h for cycling, 12 km/h for running. The closer or higher you are, the higher your score. Above 80, you're Elite!" },
+  "faq.q3":   { fr: "Mes données sont-elles en sécurité ?", en: "Is my data safe?" },
+  "faq.a3":   { fr: "Oui. Tes données sont stockées chez Google Firebase (serveurs sécurisés conformes RGPD). Trilo ne vend jamais tes données. Tu peux demander leur suppression à tout moment.", en: "Yes. Your data is stored on Google Firebase (secure GDPR-compliant servers). Trilo never sells your data. You can request deletion at any time." },
+  "faq.q4":   { fr: "Le coach IA est-il vraiment intelligent ?", en: "Is the AI coach really smart?" },
+  "faq.a4":   { fr: "Le Coach IA analyse tes performances et te donne des conseils adaptés à ton niveau et à tes points forts/faibles. Le mode Premium offre une analyse encore plus détaillée.", en: "The AI Coach analyzes your performances and gives tips suited to your level and strengths/weaknesses. Premium offers even more detailed analysis." },
+  "faq.q5":   { fr: "Puis-je utiliser Trilo sur mon téléphone ?", en: "Can I use Trilo on my phone?" },
+  "faq.a5":   { fr: "Oui ! Trilo est une PWA, tu peux l'installer sur ton téléphone comme une vraie app. Va sur le site depuis ton mobile et clique sur 'Ajouter à l'écran d'accueil'.", en: "Yes! Trilo is a PWA, you can install it on your phone like a real app. Go to the site from your mobile and click 'Add to home screen'." },
+  "faq.q6":   { fr: "Comment fonctionne le classement mondial ?", en: "How does the world leaderboard work?" },
+  "faq.a6":   { fr: "Le classement mondial compare ton meilleur score à celui de tous les autres utilisateurs. Avec Premium, tu peux te comparer à ta catégorie d'âge.", en: "The world leaderboard compares your best score to all other users. With Premium, you can compare yourself to your age category." },
+  "faq.q7":   { fr: "Quelle est la différence entre les programmes d'entraînement ?", en: "What's the difference between training programs?" },
+  "faq.a7":   { fr: "Trilo propose 7 programmes : Triathlon XS/S/M, Half Ironman, Ironman, Marathon et Semi. Chacun a son planning hebdomadaire avec natation, vélo, course et repos adaptés.", en: "Trilo offers 7 programs: Triathlon XS/S/M, Half Ironman, Ironman, Marathon and Half-Marathon. Each has its weekly schedule with adapted swim, bike, run and rest days." },
+  "faq.q8":   { fr: "Qui a créé Trilo ?", en: "Who created Trilo?" },
+  "faq.a8":   { fr: "Trilo a été créé par Eliott, 13 ans, passionné de triathlon, pour aider les triathlètes de tous niveaux à progresser.", en: "Trilo was created by Eliott, 13 years old, a triathlon enthusiast, to help triathletes of all levels progress." },
+  "faq.title":{ fr: "❓ Questions fréquentes", en: "❓ Frequently asked questions" }
 };
 
 function getLangue() {
