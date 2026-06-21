@@ -79,42 +79,42 @@ function genererModeRace(result) {
   const bikePerf = result.performances.find(p => p.sport === "vélo");
   const runPerf  = result.performances.find(p => p.sport === "course");
 
-  // Si l'utilisateur n'a pas fait les 3 disciplines, on prévient
   const nbDisciplines = result.performances.length;
   if (nbDisciplines < 3) {
+    const discTxt = scLang() === "en" ? (nbDisciplines > 1 ? "disciplines" : "discipline") : (nbDisciplines > 1 ? "disciplines" : "discipline");
     return `<div class="race-section">
-      <h3>🏁 Mode Race</h3>
+      <h3>🏁 ${L("Mode Race", "Race Mode")}</h3>
       <div class="race-card">
         <p style="color:var(--text-muted);font-size:14px;">
-          ⚠️ Le mode Race nécessite les <strong>3 disciplines</strong> (natation, vélo, course) pour estimer ton temps total sur une course officielle.
+          ⚠️ ${L("Le mode Race nécessite les", "Race Mode requires all")} <strong>${L("3 disciplines", "3 disciplines")}</strong> ${L("(natation, vélo, course) pour estimer ton temps total sur une course officielle.", "(swim, bike, run) to estimate your total time on an official race.")}
         </p>
         <p style="color:var(--text-muted);font-size:13px;margin-top:8px;">
-          Tu as renseigné ${nbDisciplines} discipline${nbDisciplines > 1 ? "s" : ""}. Refais une analyse avec les 3 sports pour débloquer cette fonctionnalité !
+          ${L("Tu as renseigné", "You entered")} ${nbDisciplines} ${discTxt}. ${L("Refais une analyse avec les 3 sports pour débloquer cette fonctionnalité !", "Run an analysis with all 3 sports to unlock this feature!")}
         </p>
       </div>
     </div>`;
   }
 
-  let html = `<div class="race-section"><h3>🏁 Mode Race — Comparaison officielle</h3>`;
+  let html = `<div class="race-section"><h3>🏁 ${L("Mode Race — Comparaison officielle", "Race Mode — Official comparison")}</h3>`;
   Object.values(RACES).forEach(race => {
     html += `<div class="race-card"><strong>${race.label}</strong><br>`;
     const tSwim = Math.round(race.swim / swimPerf.speed);
     const eSwim = (tSwim - race.tempsRef.swim) <= 0 ? "✅" : (tSwim - race.tempsRef.swim) <= 5 ? "🟡" : "🔴";
-    html += `🏊 Natation (${race.swim}m) : ~${tSwim} min ${eSwim} (ref: ${race.tempsRef.swim} min)<br>`;
+    html += `🏊 ${L("Natation", "Swim")} (${race.swim}m) : ~${tSwim} min ${eSwim} (ref: ${race.tempsRef.swim} min)<br>`;
 
     const tBike = Math.round((race.bike / bikePerf.speed) * 60);
     const eBike = (tBike - race.tempsRef.bike) <= 0 ? "✅" : (tBike - race.tempsRef.bike) <= 10 ? "🟡" : "🔴";
-    html += `🚴 Vélo (${race.bike}km) : ~${tBike} min ${eBike} (ref: ${race.tempsRef.bike} min)<br>`;
+    html += `🚴 ${L("Vélo", "Bike")} (${race.bike}km) : ~${tBike} min ${eBike} (ref: ${race.tempsRef.bike} min)<br>`;
 
     const tRun = Math.round((race.run / runPerf.speed) * 60);
     const eRun = (tRun - race.tempsRef.run) <= 0 ? "✅" : (tRun - race.tempsRef.run) <= 10 ? "🟡" : "🔴";
-    html += `🏃 Course (${race.run}km) : ~${tRun} min ${eRun} (ref: ${race.tempsRef.run} min)<br>`;
+    html += `🏃 ${L("Course", "Run")} (${race.run}km) : ~${tRun} min ${eRun} (ref: ${race.tempsRef.run} min)<br>`;
 
     const total = tSwim + tBike + tRun + 5;
     const h = Math.floor(total / 60), m = total % 60;
-    html += `⏱️ Total estimé : <strong>${h > 0 ? h + "h" : ""}${m}min</strong> (avec transitions)<br></div>`;
+    html += `⏱️ ${L("Total estimé", "Estimated total")} : <strong>${h > 0 ? h + "h" : ""}${m}min</strong> ${L("(avec transitions)", "(with transitions)")}<br></div>`;
   });
-  html += `<p class="race-note">* Estimations hors fatigue cumulée.</p></div>`;
+  html += `<p class="race-note">* ${L("Estimations hors fatigue cumulée.", "Estimates excluding cumulative fatigue.")}</p></div>`;
   return html;
 }
 
@@ -122,23 +122,28 @@ function genererRecuperation(result) {
   let charge = 0;
   result.performances.forEach(p => { charge += p.dist * (100 - p.score) / 50; });
   const jours = charge < 5 ? 1 : charge < 30 ? 2 : 3;
-  const texte = charge < 5  ? "Séance légère — tu peux t'entraîner demain."
-    : charge < 15 ? "Séance modérée — 1 à 2 jours de récupération active."
-    : charge < 30 ? "Séance intense — 2 jours de repos. Dors bien et hydrate-toi."
-    :               "Séance très intense — 3 jours minimum. Favorise la natation douce.";
-  return `<div class="recup-block"><strong>🛌 Récupération : ${jours} jour${jours > 1 ? "s" : ""}</strong><br><span>${texte}</span></div>`;
+  const texte = charge < 5  ? L("Séance légère — tu peux t'entraîner demain.", "Light session — you can train tomorrow.")
+    : charge < 15 ? L("Séance modérée — 1 à 2 jours de récupération active.", "Moderate session — 1 to 2 days of active recovery.")
+    : charge < 30 ? L("Séance intense — 2 jours de repos. Dors bien et hydrate-toi.", "Intense session — 2 rest days. Sleep well and hydrate.")
+    :               L("Séance très intense — 3 jours minimum. Favorise la natation douce.", "Very intense session — 3 days minimum. Favor easy swimming.");
+  const jourTxt = scLang() === "en" ? (jours > 1 ? "days" : "day") : (jours > 1 ? "jours" : "jour");
+  return `<div class="recup-block"><strong>🛌 ${L("Récupération", "Recovery")} : ${jours} ${jourTxt}</strong><br><span>${texte}</span></div>`;
 }
 
 function genererProchaineSéance(result) {
   const sorted = [...result.performances].sort((a, b) => a.score - b.score);
   const pf = sorted[0];
   if (!pf) return "";
-  const seances = {
+  const seances = scLang() === "en" ? {
+    natation: ["🏊 4×200m freestyle, 30s rest", "🏊 10×50m technique sprints", "🏊 800m continuous moderate pace", "🏊 6×100m with pull buoy"],
+    "vélo":   ["🚴 45min endurance 70% HRmax", "🚴 5×5min high resistance", "🚴 1h comfortable long ride", "🚴 10×1min intervals"],
+    course:   ["🏃 30min slow jog", "🏃 5×1km above your average", "🏃 Fartlek 20min: 2min fast/2min slow", "🏃 45-60min conversational pace"]
+  } : {
     natation: ["🏊 4×200m crawl, 30s récup", "🏊 10×50m sprints technique", "🏊 800m continu allure modérée", "🏊 6×100m avec pull buoy"],
     "vélo":   ["🚴 45min endurance 70% FCmax", "🚴 5×5min résistance élevée", "🚴 1h sortie longue confortable", "🚴 10×1min intervalles"],
     course:   ["🏃 30min footing lent", "🏃 5×1km au-dessus de ta moyenne", "🏃 Fartlek 20min : 2min vite/2min lent", "🏃 45-60min allure conversationnelle"]
   };
-  return `<div class="next-session-block"><strong>📅 Prochaine séance recommandée</strong><br>Focus : <strong>${pf.sport}</strong><br>${randElement(seances[pf.sport] || [])}</div>`;
+  return `<div class="next-session-block"><strong>📅 ${L("Prochaine séance recommandée", "Recommended next session")}</strong><br>Focus : <strong>${pf.sport}</strong><br>${randElement(seances[pf.sport] || [])}</div>`;
 }
 
 const conseilsGeneraux = {
@@ -286,12 +291,12 @@ function obtenirCategorie(age) {
 }
 
 function obtenirNiveau(score) {
-  if (score < 20) return { level: "Niveau 1 😐 Débutant",   intro: "Tu construis ta base, continue !" };
-  if (score < 35) return { level: "Niveau 2 👍 En progrès", intro: "Bonne progression, tu t'améliores." };
-  if (score < 50) return { level: "Niveau 3 🔥 Bon niveau", intro: "Très solide, bonne dynamique." };
-  if (score < 65) return { level: "Niveau 4 💪 Très bon",   intro: "Excellent rythme, tu domines." };
-  if (score < 80) return { level: "Niveau 5 🚀 Expert",     intro: "Performance de haut niveau !" };
-  return           { level: "Niveau 6 🏆 Élite",            intro: "Tu es dans l'élite du triathlon !" };
+  if (score < 20) return { level: L("Niveau 1 😐 Débutant", "Level 1 😐 Beginner"),   intro: L("Tu construis ta base, continue !", "You're building your base, keep going!") };
+  if (score < 35) return { level: L("Niveau 2 👍 En progrès", "Level 2 👍 Improving"), intro: L("Bonne progression, tu t'améliores.", "Good progress, you're getting better.") };
+  if (score < 50) return { level: L("Niveau 3 🔥 Bon niveau", "Level 3 🔥 Good level"), intro: L("Très solide, bonne dynamique.", "Very solid, good momentum.") };
+  if (score < 65) return { level: L("Niveau 4 💪 Très bon", "Level 4 💪 Very good"),   intro: L("Excellent rythme, tu domines.", "Excellent pace, you're dominating.") };
+  if (score < 80) return { level: L("Niveau 5 🚀 Expert", "Level 5 🚀 Expert"),     intro: L("Performance de haut niveau !", "High-level performance!") };
+  return           { level: L("Niveau 6 🏆 Élite", "Level 6 🏆 Elite"),            intro: L("Tu es dans l'élite du triathlon !", "You're in the triathlon elite!") };
 }
 
 function genererCoachGratuit(result) {
@@ -355,23 +360,45 @@ function genererAnalyseIA(result) {
   const nbSports = performances.length;
 
   // Analyse selon le score
+  const EN = scLang() === "en";
   let intro = "";
   if (globalScore >= 80) {
-    intro = `Ton score de ${globalScore.toFixed(0)}/100 te place dans l'élite mondiale du triathlon. Tu as atteint un niveau exceptionnel qui demande une planification d'entraînement très précise pour continuer à progresser.`;
+    intro = EN ? `Your score of ${globalScore.toFixed(0)}/100 places you in the world elite of triathlon. You've reached an exceptional level that requires very precise training planning to keep progressing.`
+      : `Ton score de ${globalScore.toFixed(0)}/100 te place dans l'élite mondiale du triathlon. Tu as atteint un niveau exceptionnel qui demande une planification d'entraînement très précise pour continuer à progresser.`;
   } else if (globalScore >= 65) {
-    intro = `Avec ${globalScore.toFixed(0)}/100, tu es clairement au-dessus de la moyenne des triathlètes. Ton profil montre une vraie maîtrise des disciplines — il s'agit maintenant d'optimiser les détails.`;
+    intro = EN ? `With ${globalScore.toFixed(0)}/100, you're clearly above the average triathlete. Your profile shows real mastery of the disciplines — now it's about optimizing the details.`
+      : `Avec ${globalScore.toFixed(0)}/100, tu es clairement au-dessus de la moyenne des triathlètes. Ton profil montre une vraie maîtrise des disciplines — il s'agit maintenant d'optimiser les détails.`;
   } else if (globalScore >= 50) {
-    intro = `${globalScore.toFixed(0)}/100 est un bon score solide. Tu as les bases bien établies, et avec un travail ciblé tu peux facilement passer au niveau supérieur dans les prochains mois.`;
+    intro = EN ? `${globalScore.toFixed(0)}/100 is a good solid score. You have well-established foundations, and with targeted work you can easily move up to the next level in the coming months.`
+      : `${globalScore.toFixed(0)}/100 est un bon score solide. Tu as les bases bien établies, et avec un travail ciblé tu peux facilement passer au niveau supérieur dans les prochains mois.`;
   } else if (globalScore >= 35) {
-    intro = `Ton score de ${globalScore.toFixed(0)}/100 montre une progression encourageante. Tu construis ta base aérobie — c'est la phase la plus importante et la plus formatrice.`;
+    intro = EN ? `Your score of ${globalScore.toFixed(0)}/100 shows encouraging progress. You're building your aerobic base — it's the most important and formative phase.`
+      : `Ton score de ${globalScore.toFixed(0)}/100 montre une progression encourageante. Tu construis ta base aérobie — c'est la phase la plus importante et la plus formatrice.`;
   } else {
-    intro = `${globalScore.toFixed(0)}/100 : tu es au début de ton parcours triathlon. C'est le moment idéal pour construire des bases solides qui te serviront toute ta carrière sportive.`;
+    intro = EN ? `${globalScore.toFixed(0)}/100: you're at the start of your triathlon journey. It's the ideal time to build solid foundations that will serve you throughout your sporting career.`
+      : `${globalScore.toFixed(0)}/100 : tu es au début de ton parcours triathlon. C'est le moment idéal pour construire des bases solides qui te serviront toute ta carrière sportive.`;
   }
 
   // Analyse du point faible
   let conseilFaible = "";
   if (faible) {
-    const vitesses = {
+    const vitesses = EN ? {
+      natation: [
+        `Your swimming (${faible.speed?.toFixed(1)} m/min) is your priority area to improve. Aim for 3 pool sessions per week with short intense sets rather than one long swim.`,
+        `To improve in swimming, focus on technique before speed: work on your catch and hip rotation with a coach if possible.`,
+        `Swimming is only 10-15% of race time but can cost you a lot of energy. Optimize your technique to arrive fresh on the bike.`
+      ],
+      "vélo": [
+        `Cycling (${faible.speed?.toFixed(1)} km/h) is your discipline to target. Two bike workouts a week is enough: one long endurance, one power intervals.`,
+        `To improve on the bike, work on your base endurance: 1h30-2h rides at moderate pace (70% HRmax) to build your aerobic engine.`,
+        `Your position on the bike has a huge impact on performance. Check your fitting and work on flexibility for better aerodynamic efficiency.`
+      ],
+      course: [
+        `Your running (${faible.speed?.toFixed(1)} km/h) has the greatest improvement potential. Increase your volume progressively, max 10% per week, to avoid injuries.`,
+        `To improve your running, include long slow runs (65% HRmax) and short interval sessions (10x400m). This combo is the most effective for fast progress.`,
+        `Running after cycling is specific — train with "bricks" (bike + run back-to-back) at least once a week to get your legs used to the transition.`
+      ]
+    } : {
       natation: [
         `Ta natation (${faible.speed?.toFixed(1)} m/min) est ton point à améliorer en priorité. Vise 3 séances piscine par semaine avec des séries courtes et intenses plutôt qu'une longue sortie.`,
         `Pour progresser en natation, concentre-toi sur la technique avant la vitesse : travaille le catch (prise d'eau) et la rotation des hanches avec un coach si possible.`,
@@ -395,17 +422,21 @@ function genererAnalyseIA(result) {
   // Conseil selon le nombre de disciplines
   let conseilGlobal = "";
   if (nbSports === 3) {
-    conseilGlobal = `Tu as pratiqué les 3 disciplines — c'est parfait pour un entraînement complet. Veille à bien planifier tes récupérations entre les séances pour éviter le surmenage.`;
+    conseilGlobal = EN ? `You practiced all 3 disciplines — perfect for complete training. Make sure to plan your recovery between sessions to avoid overtraining.`
+      : `Tu as pratiqué les 3 disciplines — c'est parfait pour un entraînement complet. Veille à bien planifier tes récupérations entre les séances pour éviter le surmenage.`;
   } else if (nbSports === 1) {
-    conseilGlobal = `Tu t'es concentré sur une seule discipline aujourd'hui. Pour progresser en triathlon, essaie d'intégrer les 3 sports dans ta semaine d'entraînement.`;
+    conseilGlobal = EN ? `You focused on a single discipline today. To progress in triathlon, try to include all 3 sports in your training week.`
+      : `Tu t'es concentré sur une seule discipline aujourd'hui. Pour progresser en triathlon, essaie d'intégrer les 3 sports dans ta semaine d'entraînement.`;
   }
 
   // Conseil nutrition/récupération selon l'intensité
   let conseilRecup = "";
   if (globalScore >= 65) {
-    conseilRecup = `À ton niveau, la nutrition et le sommeil sont aussi importants que l'entraînement : 7-9h de sommeil, 1.6-2g de protéines/kg et une bonne hydratation sont non-négociables.`;
+    conseilRecup = EN ? `At your level, nutrition and sleep are as important as training: 7-9h of sleep, 1.6-2g of protein/kg and good hydration are non-negotiable.`
+      : `À ton niveau, la nutrition et le sommeil sont aussi importants que l'entraînement : 7-9h de sommeil, 1.6-2g de protéines/kg et une bonne hydratation sont non-négociables.`;
   } else {
-    conseilRecup = `Pense à bien t'hydrater avant, pendant et après l'effort. Une bonne récupération (sommeil, alimentation) vaut autant que l'entraînement lui-même.`;
+    conseilRecup = EN ? `Remember to hydrate well before, during and after exercise. Good recovery (sleep, nutrition) is worth as much as the training itself.`
+      : `Pense à bien t'hydrater avant, pendant et après l'effort. Une bonne récupération (sommeil, alimentation) vaut autant que l'entraînement lui-même.`;
   }
 
   const analyse = [intro, conseilFaible, conseilGlobal, conseilRecup]
@@ -413,7 +444,7 @@ function genererAnalyseIA(result) {
     .join(" ");
 
   return `<div class="claude-ia-block">
-    <strong>🤖 Analyse Coach IA :</strong><br>
+    <strong>🤖 ${L("Analyse Coach IA", "AI Coach Analysis")} :</strong><br>
     ${analyse}
   </div>`;
 }
