@@ -244,6 +244,7 @@ function appliquerLangue() {
   // Régénérer le contenu JS qui dépend de la langue
   if (typeof window.rafraichirObjectif === "function") window.rafraichirObjectif();
   if (typeof window.rafraichirProfil === "function") window.rafraichirProfil();
+  if (typeof window.rafraichirAmis === "function") window.rafraichirAmis();
 }
 
 // Appliquer la langue immédiatement et brancher le bouton

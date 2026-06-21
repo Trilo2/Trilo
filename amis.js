@@ -101,7 +101,7 @@ async function afficherAmis() {
   `;
 
   if (mesAmis.length === 0) {
-    html += `<p class="amis-vide">Tu n'as pas encore d'amis sur Trilo. Ajoute-les par leur pseudo ! 👆</p>`;
+    html += `<p class="amis-vide">${L("Tu n'as pas encore d'amis sur Trilo. Ajoute-les par leur pseudo ! 👆", "You don't have any friends on Trilo yet. Add them by username! 👆")}</p>`;
     zone.innerHTML = html;
     document.getElementById("amiAjoutBtn")?.addEventListener("click", () => {
       ajouterAmi(document.getElementById("amiPseudo").value.trim());
@@ -144,7 +144,7 @@ async function afficherAmis() {
   participants.sort((a, b) => b.score - a.score);
 
   // Classement privé
-  html += `<h3 class="amis-section-titre">🏆 Classement entre amis</h3>`;
+  html += `<h3 class="amis-section-titre">🏆 ${L("Classement entre amis", "Friends leaderboard")}</h3>`;
   html += `<ol class="amis-classement">`;
   participants.forEach((p, i) => {
     const medaille = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}.`;
@@ -152,7 +152,7 @@ async function afficherAmis() {
     html += `
       <li class="amis-rang ${p.moi ? "amis-moi" : ""}">
         <span class="amis-medaille">${medaille}</span>
-        <span class="amis-nom">${p.pseudo}${legende}${p.moi ? " (toi)" : ""}</span>
+        <span class="amis-nom">${p.pseudo}${legende}${p.moi ? L(" (toi)", " (you)") : ""}</span>
         <span class="amis-score">${p.score.toFixed(0)}/100</span>
         ${!p.moi ? `<button class="amis-retirer" onclick="window._triloRetirerAmi('${p.uid}')" title="Retirer">✕</button>` : ""}
       </li>
