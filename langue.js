@@ -8,6 +8,7 @@ const TRADUCTIONS = {
   "nav.accueil":     { fr: "🏠 Accueil",     en: "🏠 Home" },
   "nav.analyser":    { fr: "📊 Analyser",    en: "📊 Analyze" },
   "nav.calculateur": { fr: "🧮 Calculateur", en: "🧮 Calculator" },
+  "nav.blog":        { fr: "📝 Blog",        en: "📝 Blog" },
   "nav.objectifs":   { fr: "🎯 Objectifs",   en: "🎯 Goals" },
   "nav.dashboard":   { fr: "📈 Dashboard",   en: "📈 Dashboard" },
   "nav.profil":      { fr: "👤 Profil",      en: "👤 Profile" },
