@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Triathlon : comment équilibrer les 3 disciplines ? | Trilo</title>
+  <meta name="description" content="Natation, vélo, course : comment répartir son entraînement entre les 3 disciplines du triathlon sans se surmener ? Conseils pour un entraînement équilibré.">
+  <meta name="keywords" content="entraînement triathlon, 3 disciplines triathlon, équilibrer natation vélo course, plan entraînement triathlon, répartition entraînement">
+  <link rel="icon" type="image/png" href="logo-trilo.png">
+  <link rel="stylesheet" href="style.css">
+  <meta property="og:title" content="Triathlon : comment équilibrer les 3 disciplines ?">
+  <meta property="og:url" content="https://trilo2.github.io/Trilo/blog-3-disciplines.html">
+  <meta property="og:type" content="article">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY73QCQGWZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZY73QCQGWZ');
+  </script>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-logo" style="text-decoration:none;">
+      <img src="logo-trilo.png" alt="Trilo" class="navbar-logo-img"><span>TRILO</span>
+    </a>
+    <div class="navbar-links" id="navbar-links">
+      <a href="index.html">🏠 Accueil</a>
+      <a href="analyser.html">📊 Analyser</a>
+      <a href="calculateur.html">🧮 Calculateur</a>
+      <a href="blog.html">📝 Blog</a>
+      <a href="premium.html">⭐ Premium</a>
+    </div>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-link">🏠 Accueil</a>
+    <a href="analyser.html" class="mobile-link">📊 Analyser</a>
+    <a href="calculateur.html" class="mobile-link">🧮 Calculateur</a>
+    <a href="blog.html" class="mobile-link">📝 Blog</a>
+    <a href="premium.html" class="mobile-link">⭐ Premium</a>
+  </div>
+  <main class="app">
+    <article class="blog-article">
+      <a href="blog.html" class="blog-back">← Retour au blog</a>
+      <span class="blog-article-tag">Entraînement</span>
+      <h1>Triathlon : comment équilibrer les 3 disciplines ?</h1>
+      <p class="blog-article-intro">Le triathlon a une difficulté unique : il faut progresser dans trois sports en même temps, sans se blesser ni s'épuiser. Voici comment trouver le bon équilibre.</p>
+      <h2>Pourquoi l'équilibre est crucial</h2>
+      <p>Beaucoup de triathlètes débutants tombent dans un piège : ils s'entraînent surtout dans leur discipline préférée et négligent les autres. Résultat, ils stagnent sur leur point faible, qui devient un vrai frein le jour de la course.</p>
+      <p>L'idéal est de travailler les trois disciplines chaque semaine, en accordant un peu plus d'attention à ton point faible.</p>
+      <h2>Comment répartir son temps ?</h2>
+      <p>Une bonne base pour débuter : 2 à 3 séances par discipline et par semaine, soit 6 à 9 séances. Mais la qualité prime sur la quantité ! Mieux vaut 6 séances bien faites que 9 séances bâclées.</p>
+      <p>Adapte la répartition à tes points faibles. Si tu nages mal, ajoute une séance de natation. Si tu es fort à vélo, tu peux y consacrer un peu moins de temps.</p>
+      <h2>Ne pas oublier la récupération</h2>
+      <p>Le repos fait partie de l'entraînement ! C'est pendant la récupération que ton corps se renforce. Prévois au moins 1 à 2 jours de repos complet par semaine, et dors suffisamment (7 à 9 heures par nuit).</p>
+      <h2>La séance "brique" : l'arme secrète</h2>
+      <p>L'enchaînement vélo-course, appelé "brique", est spécifique au triathlon. Tes jambes sont lourdes au début de la course après le vélo. Entraîne-toi à cet enchaînement une fois par semaine pour habituer ton corps à cette transition difficile.</p>
+      <h2>Mesurer son équilibre avec Trilo</h2>
+      <p>Comment savoir si tu es équilibré ? <a href="index.html">Trilo</a> analyse tes performances dans les 3 disciplines et te montre ton point fort et ton point faible. Tu sais ainsi exactement où concentrer tes efforts pour progresser.</p>
+      <p class="blog-article-cta">Découvre ton point faible : <a href="analyser.html">Analyse tes 3 disciplines sur Trilo →</a></p>
+    </article>
+  </main>
+  <button id="scrollTopBtn" type="button" aria-label="Retour en haut" style="display:none;">↑</button>
+  <script>
+    const hamBtn = document.getElementById("hamburgerBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    if (hamBtn && mobileMenu) { hamBtn.addEventListener("click", () => { hamBtn.classList.toggle("active"); mobileMenu.classList.toggle("open"); }); }
+  </script>
+</body>
+</html>

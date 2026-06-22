@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comment calculer et améliorer son allure de course ? | Trilo</title>
+  <meta name="description" content="Apprends à calculer ton allure de course à pied (min/km), à la convertir en vitesse et à l'utiliser pour progresser. Guide complet + calculateur gratuit.">
+  <meta name="keywords" content="calculer allure course, allure min/km, vitesse course à pied, améliorer allure, allure marathon, allure 10km">
+  <link rel="icon" type="image/png" href="logo-trilo.png">
+  <link rel="stylesheet" href="style.css">
+  <meta property="og:title" content="Comment calculer et améliorer son allure de course ?">
+  <meta property="og:url" content="https://trilo2.github.io/Trilo/blog-calculer-allure.html">
+  <meta property="og:type" content="article">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY73QCQGWZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZY73QCQGWZ');
+  </script>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-logo" style="text-decoration:none;">
+      <img src="logo-trilo.png" alt="Trilo" class="navbar-logo-img"><span>TRILO</span>
+    </a>
+    <div class="navbar-links" id="navbar-links">
+      <a href="index.html">🏠 Accueil</a>
+      <a href="analyser.html">📊 Analyser</a>
+      <a href="calculateur.html">🧮 Calculateur</a>
+      <a href="blog.html">📝 Blog</a>
+      <a href="premium.html">⭐ Premium</a>
+    </div>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-link">🏠 Accueil</a>
+    <a href="analyser.html" class="mobile-link">📊 Analyser</a>
+    <a href="calculateur.html" class="mobile-link">🧮 Calculateur</a>
+    <a href="blog.html" class="mobile-link">📝 Blog</a>
+    <a href="premium.html" class="mobile-link">⭐ Premium</a>
+  </div>
+  <main class="app">
+    <article class="blog-article">
+      <a href="blog.html" class="blog-back">← Retour au blog</a>
+      <span class="blog-article-tag">Course à pied</span>
+      <h1>Comment calculer et améliorer son allure de course ?</h1>
+      <p class="blog-article-intro">L'allure est la donnée reine du coureur. La comprendre et la maîtriser, c'est la clé pour progresser et réussir ses courses. Voici tout ce qu'il faut savoir.</p>
+      <h2>Qu'est-ce que l'allure de course ?</h2>
+      <p>L'allure de course se mesure en minutes par kilomètre (min/km). Elle indique le temps que tu mets pour parcourir un kilomètre. Par exemple, une allure de 5:00 min/km signifie que tu cours 1 km en 5 minutes.</p>
+      <p>C'est différent de la vitesse, qui s'exprime en kilomètres par heure (km/h). Les deux mesurent la même chose, mais les coureurs préfèrent l'allure car elle est plus parlante sur le terrain.</p>
+      <h2>Comment calculer son allure ?</h2>
+      <p>Le calcul est simple : tu divises ton temps total par la distance parcourue. Si tu cours 10 km en 50 minutes, ton allure est de 50 ÷ 10 = 5:00 min/km.</p>
+      <p>Pour t'éviter les calculs, utilise notre <a href="calculateur.html">calculateur d'allure gratuit</a> : tu entres ta distance et ton temps, et il te donne instantanément ton allure, ta vitesse et tes temps de passage sur toutes les distances.</p>
+      <h2>Comment améliorer son allure ?</h2>
+      <p>Pour courir plus vite, plusieurs méthodes complémentaires existent. Le <strong>fractionné</strong> (alterner phases rapides et récupération) développe ta vitesse. Les <strong>sorties longues lentes</strong> construisent ton endurance de base. Le travail au <strong>seuil</strong> (allure soutenue mais tenable) améliore ta capacité à maintenir un bon rythme.</p>
+      <p>La clé est la régularité et la progressivité : augmente ton volume de 10% maximum par semaine pour éviter les blessures.</p>
+      <h2>Suivre sa progression</h2>
+      <p>Avec <a href="index.html">Trilo</a>, tu peux enregistrer tes performances et suivre l'évolution de ton allure dans le temps. Tu obtiens un score sur 100 et des conseils personnalisés pour progresser plus vite.</p>
+      <p class="blog-article-cta">Calcule ton allure maintenant : <a href="calculateur.html">Calculateur d'allure gratuit →</a></p>
+    </article>
+  </main>
+  <button id="scrollTopBtn" type="button" aria-label="Retour en haut" style="display:none;">↑</button>
+  <script>
+    const hamBtn = document.getElementById("hamburgerBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    if (hamBtn && mobileMenu) { hamBtn.addEventListener("click", () => { hamBtn.classList.toggle("active"); mobileMenu.classList.toggle("open"); }); }
+  </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog triathlon — Conseils d'entraînement | Trilo</title>
+  <meta name="description" content="Conseils, guides et astuces pour progresser en triathlon, natation, vélo et course à pied. Articles gratuits pour débutants et confirmés.">
+  <meta name="keywords" content="blog triathlon, conseils triathlon, débuter triathlon, entraînement triathlon, plan entraînement, conseils course à pied">
+  <link rel="icon" type="image/png" href="logo-trilo.png">
+  <link rel="stylesheet" href="style.css">
+
+  <meta property="og:title" content="Blog triathlon — Conseils d'entraînement Trilo">
+  <meta property="og:description" content="Guides et astuces gratuits pour progresser en triathlon.">
+  <meta property="og:url" content="https://trilo2.github.io/Trilo/blog.html">
+  <meta property="og:type" content="website">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY73QCQGWZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZY73QCQGWZ');
+  </script>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="navbar-logo" style="text-decoration:none;">
+      <img src="logo-trilo.png" alt="Trilo" class="navbar-logo-img">
+      <span>TRILO</span>
+    </a>
+    <div class="navbar-links" id="navbar-links">
+      <a href="index.html">🏠 Accueil</a>
+      <a href="analyser.html">📊 Analyser</a>
+      <a href="calculateur.html">🧮 Calculateur</a>
+      <a href="blog.html" class="active">📝 Blog</a>
+      <a href="premium.html">⭐ Premium</a>
+    </div>
+    <button class="langue-btn" id="langueBtn">EN</button>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-link">🏠 Accueil</a>
+    <a href="analyser.html" class="mobile-link">📊 Analyser</a>
+    <a href="calculateur.html" class="mobile-link">🧮 Calculateur</a>
+    <a href="blog.html" class="mobile-link active">📝 Blog</a>
+    <a href="premium.html" class="mobile-link">⭐ Premium</a>
+  </div>
+
+  <main class="app">
+
+    <div class="page-header">
+      <span class="page-header-icon">📝</span>
+      <h1>Le Blog Trilo</h1>
+      <p>Conseils et guides pour progresser en triathlon</p>
+    </div>
+
+    <section class="blog-list">
+
+      <a href="blog-debuter-triathlon.html" class="blog-card">
+        <div class="blog-card-emoji">🏊🚴🏃</div>
+        <div class="blog-card-content">
+          <span class="blog-card-tag">Débutant</span>
+          <h2>Comment débuter le triathlon ? Le guide complet</h2>
+          <p>Tu veux te lancer dans le triathlon mais tu ne sais pas par où commencer ? Voici tout ce qu'il faut savoir pour ta première course.</p>
+          <span class="blog-card-read">Lire l'article →</span>
+        </div>
+      </a>
+
+      <a href="blog-calculer-allure.html" class="blog-card">
+        <div class="blog-card-emoji">⏱️</div>
+        <div class="blog-card-content">
+          <span class="blog-card-tag">Course à pied</span>
+          <h2>Comment calculer et améliorer son allure de course ?</h2>
+          <p>Comprendre son allure est essentiel pour progresser. Apprends à la calculer et à l'utiliser pour mieux t'entraîner.</p>
+          <span class="blog-card-read">Lire l'article →</span>
+        </div>
+      </a>
+
+      <a href="blog-3-disciplines.html" class="blog-card">
+        <div class="blog-card-emoji">💪</div>
+        <div class="blog-card-content">
+          <span class="blog-card-tag">Entraînement</span>
+          <h2>Triathlon : comment équilibrer les 3 disciplines ?</h2>
+          <p>Natation, vélo, course : comment répartir ton entraînement entre les trois sports sans te surmener ? Nos conseils.</p>
+          <span class="blog-card-read">Lire l'article →</span>
+        </div>
+      </a>
+
+    </section>
+
+  </main>
+
+  <button id="scrollTopBtn" type="button" aria-label="Retour en haut" style="display:none;">↑</button>
+
+  <script src="langue.js"></script>
+  <script>
+    const hamBtn = document.getElementById("hamburgerBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    if (hamBtn && mobileMenu) {
+      hamBtn.addEventListener("click", () => {
+        hamBtn.classList.toggle("active");
+        mobileMenu.classList.toggle("open");
+      });
+    }
+  </script>
+</body>
+</html>
