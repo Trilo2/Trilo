@@ -4924,3 +4924,54 @@ body {
   .blog-article h1 { font-size: 30px; }
   .blog-article-intro { font-size: 16px; }
 }
+
+/* =========================
+   INVITATION À S'INSCRIRE (conversion)
+========================= */
+
+.signup-invite {
+  margin-top: 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,153,204,0.05));
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 24px rgba(0,212,255,0.15);
+}
+
+.signup-invite > strong {
+  display: block;
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.signup-invite ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+}
+
+.signup-invite ul li {
+  font-size: 14px;
+  color: var(--text);
+  padding: 6px 0;
+  line-height: 1.4;
+}
+
+.signup-invite-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  color: #021018;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.signup-invite-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0,212,255,0.4);
+}

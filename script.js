@@ -299,6 +299,16 @@ function obtenirNiveau(score) {
   return           { level: L("Niveau 6 🏆 Élite", "Level 6 🏆 Elite"),            intro: L("Tu es dans l'élite du triathlon !", "You're in the triathlon elite!") };
 }
 
+function genererCoachApercu(result) {
+  const { globalScore, performances } = result;
+  const { level, intro } = obtenirNiveau(globalScore);
+  const meilleur = [...performances].sort((a, b) => b.score - a.score)[0];
+  let html = `<strong>${level}</strong><br>${intro}<br><br>`;
+  html += `<strong>${L("Ton score", "Your score")} : ${globalScore.toFixed(0)} / 100</strong><br><br>`;
+  if (meilleur) html += `💚 ${L("Ton sport dominant", "Your top sport")} : <strong>${meilleur.sport}</strong><br>`;
+  return html;
+}
+
 function genererCoachGratuit(result) {
   const { globalScore, performances } = result;
   const { level, intro } = obtenirNiveau(globalScore);
@@ -766,7 +776,22 @@ async function analyser() {
   el("message").innerHTML = `Score global : <strong>${globalScore.toFixed(0)} / 100</strong>`;
   const zoneCoach = el("aiAnalysis");
   if (zoneCoach) {
-    if (!currentUser)   zoneCoach.innerHTML = "🔒 Connecte-toi pour accéder au Coach IA.";
+    if (!currentUser) {
+      // Aperçu gratuit + invitation à créer un compte
+      const apercu = genererCoachApercu(result);
+      zoneCoach.innerHTML = apercu + `
+        <div class="signup-invite">
+          <strong>${L("🎯 Crée ton compte gratuit pour débloquer :", "🎯 Create your free account to unlock:")}</strong>
+          <ul>
+            <li>${L("💾 Sauvegarder ton score et ta progression", "💾 Save your score and progress")}</li>
+            <li>${L("🤖 Le Coach IA complet avec conseils personnalisés", "🤖 The full AI Coach with personalized tips")}</li>
+            <li>${L("🏅 Débloquer des badges et un calendrier d'entraînement", "🏅 Unlock badges and a training calendar")}</li>
+            <li>${L("🏆 Te comparer aux autres dans le classement", "🏆 Compare yourself to others in the leaderboard")}</li>
+          </ul>
+          <button class="signup-invite-btn" onclick="document.getElementById('loginCard')?.scrollIntoView({behavior:'smooth'});document.getElementById('email')?.focus();">${L("🚀 Créer mon compte gratuit", "🚀 Create my free account")}</button>
+        </div>
+      `;
+    }
     else if (isPremium) zoneCoach.innerHTML = genererCoachPremium(result);
     else                zoneCoach.innerHTML = genererCoachGratuit(result);
   }
