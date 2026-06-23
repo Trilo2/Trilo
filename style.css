@@ -4975,3 +4975,56 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(0,212,255,0.4);
 }
+
+/* =========================
+   PRIX PREMIUM + OFFRE LANCEMENT
+========================= */
+
+.premium-prix {
+  text-align: center;
+  margin: 24px 0 16px;
+}
+
+.premium-prix-montant {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  letter-spacing: 1px;
+  color: var(--gold, #f59e0b);
+  filter: drop-shadow(0 0 16px rgba(245,158,11,0.4));
+}
+
+.premium-prix-periode {
+  font-size: 18px;
+  color: var(--text-muted);
+}
+
+.premium-offre {
+  background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.05));
+  border: 1px dashed #f59e0b;
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.premium-offre-badge {
+  display: inline-block;
+  background: #f59e0b;
+  color: #021018;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.premium-offre p {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.premium-offre strong {
+  color: #f59e0b;
+}

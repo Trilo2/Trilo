@@ -204,6 +204,9 @@ const TRADUCTIONS = {
   "prem.f6":         { fr: "Détails des séances", en: "Session details" },
   "prem.f6d":        { fr: "Programme jour par jour : séries, allures, récupération", en: "Day-by-day program: sets, paces, recovery" },
   "prem.btn":        { fr: "🚀 Passer à Premium", en: "🚀 Go Premium" },
+  "prem.permonth":   { fr: "/mois", en: "/month" },
+  "prem.offre.badge":{ fr: "🎁 OFFRE DE LANCEMENT", en: "🎁 LAUNCH OFFER" },
+  "prem.offre.txt":  { fr: "Premium GRATUIT À VIE pour les 5 premières personnes qui créent un compte ! Sois rapide, les places sont limitées.", en: "FREE Premium FOR LIFE for the first 5 people who create an account! Be quick, spots are limited." },
   "prem.price":      { fr: "Bientôt disponible · Sans engagement · Annulable à tout moment", en: "Coming soon · No commitment · Cancel anytime" },
 
   // Footer
