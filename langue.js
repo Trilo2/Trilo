@@ -205,6 +205,10 @@ const TRADUCTIONS = {
   "prem.f6d":        { fr: "Programme jour par jour : séries, allures, récupération", en: "Day-by-day program: sets, paces, recovery" },
   "prem.btn":        { fr: "🚀 Passer à Premium", en: "🚀 Go Premium" },
   "prem.permonth":   { fr: "/mois", en: "/month" },
+  "prem.f7":         { fr: "Prédicteur de temps", en: "Time predictor" },
+  "prem.f7d":        { fr: "Estime tes temps sur 5km, 10km, semi et marathon", en: "Estimate your times on 5km, 10km, half and marathon" },
+  "prem.f8":         { fr: "Export PDF", en: "PDF export" },
+  "prem.f8d":        { fr: "Génère un beau rapport de tes performances à partager", en: "Generate a nice report of your performances to share" },
   "prem.offre.badge":{ fr: "🎁 OFFRE DE LANCEMENT", en: "🎁 LAUNCH OFFER" },
   "prem.offre.txt":  { fr: "Premium GRATUIT À VIE pour les 5 premières personnes qui créent un compte ! Sois rapide, les places sont limitées.", en: "FREE Premium FOR LIFE for the first 5 people who create an account! Be quick, spots are limited." },
   "offre.banniere":     { fr: "Premium GRATUIT À VIE pour les 5 premiers inscrits ! Places limitées.", en: "FREE Premium FOR LIFE for the first 5 sign-ups! Limited spots." },
@@ -217,7 +221,11 @@ const TRADUCTIONS = {
 
   // Carte de progression
   "prog.title":      { fr: "Ma progression annuelle", en: "My yearly progress" },
-  "prog.sub":        { fr: "Chaque carré représente un jour. Plus tu t'entraînes, plus c'est vert !", en: "Each square is a day. The more you train, the greener it gets!" }
+  "prog.sub":        { fr: "Chaque carré représente un jour. Plus tu t'entraînes, plus c'est vert !", en: "Each square is a day. The more you train, the greener it gets!" },
+
+  // Export PDF
+  "dash.export.title": { fr: "Exporter mes performances", en: "Export my performances" },
+  "dash.export.sub":   { fr: "Génère un beau rapport PDF de tes statistiques Trilo.", en: "Generate a nice PDF report of your Trilo stats." }
 };
 
 function getLangue() {
@@ -260,6 +268,7 @@ function appliquerLangue() {
   if (typeof window.rafraichirProfil === "function") window.rafraichirProfil();
   if (typeof window.rafraichirAmis === "function") window.rafraichirAmis();
   if (typeof window.rafraichirProgression === "function") window.rafraichirProgression();
+  if (typeof window.rafraichirExport === "function") window.rafraichirExport();
 }
 
 // Appliquer la langue immédiatement et brancher le bouton

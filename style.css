@@ -5096,3 +5096,111 @@ body {
   .offre-banniere { padding: 12px 16px; }
   .offre-banniere > span:not(.offre-banniere-icon) { font-size: 13px; }
 }
+
+/* =========================
+   PRÉDICTEUR DE TEMPS (Premium)
+========================= */
+
+.predicteur-block {
+  margin-top: 16px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(139,92,246,0.04));
+  border: 1px solid rgba(139,92,246,0.3);
+  border-radius: var(--radius-sm);
+  line-height: 1.8;
+}
+
+.predicteur-block > strong {
+  color: #a78bfa;
+  font-size: 16px;
+}
+
+/* =========================
+   EXPORT PDF (Premium)
+========================= */
+
+.export-card {
+  max-width: 900px;
+  margin: 0 auto 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  backdrop-filter: blur(24px);
+  box-shadow: var(--shadow);
+}
+
+.export-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.export-head span {
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,212,255,0.05));
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.export-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  margin-bottom: 4px;
+}
+
+.export-head p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.export-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  color: #021018;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0,212,255,0.4);
+}
+
+.export-locked, .export-premium-lock {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-muted);
+}
+
+.export-premium-lock p { margin-bottom: 10px; }
+
+.export-premium-btn {
+  display: inline-block;
+  margin-top: 12px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #021018;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.export-premium-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245,158,11,0.4);
+}

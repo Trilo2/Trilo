@@ -353,11 +353,50 @@ function genererCoachPremium(result) {
   if (pointFaible && pointFaible.sport !== meilleur?.sport) html += `⚠️ ${L("À travailler", "To work on")} : <strong>${pointFaible.sport}</strong><br>`;
   html += `<br>` + genererRecuperation(result);
   html += `<br>` + genererProchaineSéance(result);
+  html += `<br>` + genererPredicteurTemps(result);
   html += `<br>` + genererModeRace(result);
 
   // Analyse IA locale intelligente
   html += `<br>` + genererAnalyseIA(result);
 
+  return html;
+}
+
+// PRÉDICTEUR DE TEMPS DE COURSE (Premium)
+function genererPredicteurTemps(result) {
+  const course = result.performances.find(p => p.sport === "course");
+  if (!course || !course.speed) return "";
+
+  // Vitesse en km/h → on prédit les temps sur distances standards
+  // Formule de Riegel : T2 = T1 × (D2/D1)^1.06
+  const vitesse = course.speed; // km/h
+  const allureMin = 60 / vitesse; // min/km
+
+  // Distance de référence de l'utilisateur (sa séance)
+  const distRef = course.dist || 5;
+  const tempsRef = (distRef / vitesse) * 60; // minutes
+
+  const distances = [
+    { nom: "5 km", km: 5 },
+    { nom: "10 km", km: 10 },
+    { nom: L("Semi (21,1 km)", "Half (21.1 km)"), km: 21.0975 },
+    { nom: L("Marathon (42,2 km)", "Marathon (42.2 km)"), km: 42.195 }
+  ];
+
+  let html = `<div class="predicteur-block"><strong>🔮 ${L("Prédicteur de temps de course", "Race time predictor")}</strong><br>`;
+  html += `<span style="font-size:13px;color:var(--text-muted);">${L("Basé sur ton allure actuelle", "Based on your current pace")} (${allureMin.toFixed(2).replace(".", ":")} min/km)</span><br><br>`;
+
+  distances.forEach(d => {
+    // Formule de Riegel pour prédire le temps
+    const tempsPredit = tempsRef * Math.pow(d.km / distRef, 1.06);
+    const h = Math.floor(tempsPredit / 60);
+    const m = Math.floor(tempsPredit % 60);
+    const s = Math.round((tempsPredit - Math.floor(tempsPredit)) * 60);
+    const tempsTxt = h > 0 ? `${h}h${m.toString().padStart(2,"0")}` : `${m}min${s.toString().padStart(2,"0")}`;
+    html += `🏃 <strong>${d.nom}</strong> : ~${tempsTxt}<br>`;
+  });
+
+  html += `<span style="font-size:12px;color:var(--text-muted);">* ${L("Estimations théoriques (formule de Riegel). L'entraînement spécifique peut améliorer ces temps.", "Theoretical estimates (Riegel formula). Specific training can improve these times.")}</span></div>`;
   return html;
 }
 
