@@ -207,6 +207,8 @@ const TRADUCTIONS = {
   "prem.permonth":   { fr: "/mois", en: "/month" },
   "prem.offre.badge":{ fr: "🎁 OFFRE DE LANCEMENT", en: "🎁 LAUNCH OFFER" },
   "prem.offre.txt":  { fr: "Premium GRATUIT À VIE pour les 5 premières personnes qui créent un compte ! Sois rapide, les places sont limitées.", en: "FREE Premium FOR LIFE for the first 5 people who create an account! Be quick, spots are limited." },
+  "offre.banniere":     { fr: "Premium GRATUIT À VIE pour les 5 premiers inscrits ! Places limitées.", en: "FREE Premium FOR LIFE for the first 5 sign-ups! Limited spots." },
+  "offre.banniere.btn": { fr: "J'en profite →", en: "Get it →" },
   "prem.price":      { fr: "Bientôt disponible · Sans engagement · Annulable à tout moment", en: "Coming soon · No commitment · Cancel anytime" },
 
   // Footer
