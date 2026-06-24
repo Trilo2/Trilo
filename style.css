@@ -5204,3 +5204,129 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(245,158,11,0.4);
 }
+
+/* =========================
+   TUTORIEL D'ACCUEIL
+========================= */
+
+.tuto-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 5, 16, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: tutoFadeIn 0.3s ease;
+}
+
+.tuto-overlay.tuto-ferme {
+  animation: tutoFadeOut 0.3s ease forwards;
+}
+
+@keyframes tutoFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tutoFadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+.tuto-box {
+  background: linear-gradient(135deg, #0d1428, #0a1020);
+  border: 1px solid var(--accent);
+  border-radius: 24px;
+  padding: 40px 32px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 212, 255, 0.25);
+  animation: tutoSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tutoSlideUp {
+  from { transform: translateY(30px) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.tuto-emoji {
+  font-size: 64px;
+  display: block;
+  margin-bottom: 16px;
+  animation: tutoEmojiPop 0.5s ease;
+}
+
+@keyframes tutoEmojiPop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.tuto-titre {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.tuto-texte {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.tuto-points {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tuto-point {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: var(--transition);
+}
+
+.tuto-point-actif {
+  background: var(--accent);
+  width: 24px;
+  border-radius: 4px;
+}
+
+.tuto-boutons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.tuto-skip {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 12px;
+  transition: var(--transition);
+}
+
+.tuto-skip:hover { color: var(--text); }
+
+.tuto-next {
+  flex: 1;
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  color: #021018;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.tuto-next:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 212, 255, 0.4);
+}
