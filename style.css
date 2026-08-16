@@ -5330,3 +5330,208 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(0, 212, 255, 0.4);
 }
+
+/* =========================
+   PAGE JEUX
+========================= */
+
+.jeu-selector {
+  display: flex;
+  gap: 10px;
+  max-width: 540px;
+  margin: 0 auto 24px;
+}
+
+.jeu-tab {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.jeu-tab.active {
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  color: #021018;
+  border-color: var(--accent);
+}
+
+#jeuQuiz, #jeuVF { max-width: 540px; margin: 0 auto; }
+
+/* Progress */
+.jeu-progress { display: flex; gap: 6px; margin-bottom: 24px; }
+.jeu-progress-dot {
+  flex: 1; height: 6px; border-radius: 3px;
+  background: var(--border); transition: background 0.3s;
+}
+.jeu-progress-dot.done { background: var(--accent); }
+.jeu-progress-dot.current { background: var(--gold, #f59e0b); }
+
+/* Chrono */
+.jeu-chrono-wrap { margin-bottom: 14px; }
+.jeu-chrono-track {
+  height: 10px; background: var(--border);
+  border-radius: 5px; overflow: hidden;
+}
+.jeu-chrono-fill {
+  height: 100%; width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--gold, #f59e0b));
+  border-radius: 5px; transition: width 0.1s linear;
+}
+.jeu-chrono-fill.warning { background: linear-gradient(90deg, var(--gold, #f59e0b), #ff4d6d); }
+.jeu-chrono-fill.danger { background: #ff4d6d; }
+.jeu-chrono-label {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--text-muted); margin-top: 6px;
+}
+.jeu-chrono-points { color: var(--gold, #f59e0b); font-weight: 700; }
+
+/* Points popup */
+.jeu-points-popup {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px; font-weight: 900; color: var(--accent);
+  pointer-events: none; z-index: 100000;
+  animation: jeuPointsFloat 1s ease forwards;
+}
+@keyframes jeuPointsFloat {
+  0% { opacity: 0; transform: translate(-50%, -30%) scale(0.5); }
+  30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+  100% { opacity: 0; transform: translate(-50%, -80%) scale(1); }
+}
+
+/* Card */
+.jeu-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  margin-bottom: 20px;
+}
+.jeu-q-number {
+  font-size: 13px; color: var(--accent); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+}
+.jeu-q-diff {
+  display: inline-block; font-size: 11px; padding: 2px 10px;
+  border-radius: 999px; margin-left: 8px; font-weight: 600;
+}
+.jeu-q-diff.diff-facile { background: rgba(0,212,255,0.15); color: var(--accent); }
+.jeu-q-diff.diff-moyen { background: rgba(245,158,11,0.15); color: var(--gold, #f59e0b); }
+.jeu-q-diff.diff-difficile { background: rgba(255,77,109,0.15); color: #ff4d6d; }
+.jeu-q-text { font-size: 20px; font-weight: 700; line-height: 1.4; margin-bottom: 24px; }
+
+/* Options */
+.jeu-options { display: flex; flex-direction: column; gap: 12px; }
+.jeu-option {
+  background: var(--bg-inner, #0a1020);
+  border: 2px solid var(--border);
+  border-radius: 12px; padding: 16px 18px;
+  font-size: 16px; color: var(--text);
+  text-align: left; cursor: pointer;
+  transition: all 0.2s; font-family: inherit;
+}
+.jeu-option:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-2px); }
+.jeu-option:disabled { cursor: default; }
+.jeu-option.correct { border-color: var(--accent); background: rgba(0,212,255,0.12); }
+.jeu-option.wrong { border-color: #ff4d6d; background: rgba(255,77,109,0.12); }
+.jeu-option-letter {
+  display: inline-block; width: 26px; height: 26px; line-height: 26px;
+  text-align: center; background: var(--border); border-radius: 6px;
+  margin-right: 12px; font-weight: 700; font-size: 14px;
+}
+
+/* Explanation */
+.jeu-explanation {
+  margin-top: 16px; padding: 14px 16px;
+  background: rgba(0,212,255,0.06);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px; font-size: 14px;
+  color: var(--text-muted); line-height: 1.5; display: none;
+}
+.jeu-explanation.show { display: block; }
+.jeu-explanation strong { color: var(--text); }
+
+/* Next button */
+.jeu-next-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  color: #021018; font-weight: 800; font-size: 16px;
+  padding: 16px; border: none; border-radius: 12px;
+  cursor: pointer; margin-top: 20px; display: none;
+  transition: transform 0.2s; font-family: inherit;
+}
+.jeu-next-btn:hover { transform: translateY(-2px); }
+.jeu-next-btn.show { display: block; }
+
+/* Vrai/Faux */
+.jeu-vf-progress {
+  text-align: center; font-size: 14px; color: var(--accent);
+  font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+.jeu-vf-text { font-size: 22px; font-weight: 700; line-height: 1.4; margin-bottom: 28px; text-align: center; }
+.jeu-vf-buttons { display: flex; gap: 14px; }
+.jeu-vf-btn {
+  flex: 1; padding: 22px; border-radius: 12px;
+  font-size: 18px; font-weight: 800; cursor: pointer;
+  border: 2px solid var(--border); background: var(--bg-inner, #0a1020);
+  color: var(--text); transition: all 0.2s; font-family: inherit;
+}
+.jeu-vf-btn:hover:not(:disabled) { transform: translateY(-3px); }
+.jeu-vf-btn:disabled { cursor: default; }
+.jeu-vf-btn.correct { border-color: var(--accent); background: rgba(0,212,255,0.15); }
+.jeu-vf-btn.wrong { border-color: #ff4d6d; background: rgba(255,77,109,0.15); }
+
+/* Results */
+.jeu-results { text-align: center; display: none; }
+.jeu-results.show { display: block; }
+.jeu-results-emoji { font-size: 56px; margin: 16px 0; }
+.jeu-results-score {
+  font-size: 64px; font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--gold, #f59e0b));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1; margin-bottom: 8px;
+}
+.jeu-results-total { font-size: 18px; color: var(--text-muted); }
+.jeu-results-sub { font-size: 17px; color: var(--accent); font-weight: 700; margin-top: 10px; }
+.jeu-results-msg { font-size: 17px; margin: 18px 0; line-height: 1.5; }
+
+.jeu-streak-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  margin: 20px 0; display: flex; justify-content: space-around;
+}
+.jeu-streak-item { text-align: center; }
+.jeu-streak-num { font-size: 32px; font-weight: 900; color: var(--gold, #f59e0b); }
+.jeu-streak-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+.jeu-share-btn {
+  width: 100%; background: var(--bg-card);
+  border: 2px solid var(--accent); color: var(--accent);
+  font-weight: 700; font-size: 16px; padding: 16px;
+  border-radius: 12px; cursor: pointer; margin-top: 12px;
+  font-family: inherit; transition: all 0.2s;
+}
+.jeu-share-btn:hover { background: rgba(0,212,255,0.1); }
+
+.jeu-countdown {
+  margin-top: 24px; padding: 16px;
+  background: var(--bg-card); border-radius: 12px;
+  font-size: 14px; color: var(--text-muted);
+}
+.jeu-countdown-time {
+  font-size: 24px; font-weight: 800; color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 600px) {
+  .jeu-vf-buttons { flex-direction: column; }
+  .jeu-q-text { font-size: 18px; }
+}

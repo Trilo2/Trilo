@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeux Trilo — Quiz triathlon du jour</title>
+  <meta name="description" content="Teste tes connaissances triathlon et endurance chaque jour ! Quiz quotidien avec mode chrono et jeu vrai/faux. Un nouveau défi chaque jour sur Trilo.">
+  <meta name="keywords" content="quiz triathlon, jeu triathlon, quiz endurance, culture triathlon, quiz sport quotidien">
+  <link rel="icon" type="image/png" href="logo-trilo.png">
+  <link rel="stylesheet" href="style.css">
+
+  <meta property="og:title" content="Jeux Trilo — Quiz triathlon du jour">
+  <meta property="og:description" content="Le quiz triathlon quotidien avec mode chrono !">
+  <meta property="og:url" content="https://trilo2.github.io/Trilo/jeux.html">
+  <meta property="og:type" content="website">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY73QCQGWZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZY73QCQGWZ');
+  </script>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="navbar-logo" style="text-decoration:none;">
+      <img src="logo-trilo.png" alt="Trilo" class="navbar-logo-img">
+      <span>TRILO</span>
+    </a>
+    <div class="navbar-links" id="navbar-links">
+      <a href="index.html" data-i18n="nav.accueil">🏠 Accueil</a>
+      <a href="analyser.html" data-i18n="nav.analyser">📊 Analyser</a>
+      <a href="calculateur.html" data-i18n="nav.calculateur">🧮 Calculateur</a>
+      <a href="jeux.html" class="active" data-i18n="nav.jeux">🎮 Jeux</a>
+      <a href="blog.html" data-i18n="nav.blog">📝 Blog</a>
+      <a href="premium.html" data-i18n="nav.premium">⭐ Premium</a>
+    </div>
+    <button class="langue-btn" id="langueBtn">EN</button>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-link">🏠 Accueil</a>
+    <a href="analyser.html" class="mobile-link">📊 Analyser</a>
+    <a href="calculateur.html" class="mobile-link">🧮 Calculateur</a>
+    <a href="jeux.html" class="mobile-link active">🎮 Jeux</a>
+    <a href="blog.html" class="mobile-link">📝 Blog</a>
+    <a href="premium.html" class="mobile-link">⭐ Premium</a>
+  </div>
+
+  <main class="app">
+
+    <div class="page-header">
+      <span class="page-header-icon">🎮</span>
+      <h1 data-i18n="jeux.title">Jeux Trilo</h1>
+      <p data-i18n="jeux.sub">Un nouveau défi chaque jour ! Reviens demain pour de nouvelles questions.</p>
+    </div>
+
+    <!-- Sélecteur de jeu -->
+    <div class="jeu-selector">
+      <button class="jeu-tab active" id="tabQuiz" onclick="changerJeu('quiz')" data-i18n="jeux.tab.quiz">❓ Quiz du jour</button>
+      <button class="jeu-tab" id="tabVF" onclick="changerJeu('vf')" data-i18n="jeux.tab.vf">✅ Vrai ou Faux</button>
+    </div>
+
+    <!-- ===== JEU 1 : QUIZ DU JOUR ===== -->
+    <section id="jeuQuiz">
+      <div class="jeu-progress" id="quizProgress"></div>
+      <div id="quizZone"></div>
+
+      <div class="jeu-results" id="quizResults">
+        <div class="jeu-results-emoji" id="quizEmoji"></div>
+        <div class="jeu-results-score" id="quizScore"></div>
+        <div class="jeu-results-total" data-i18n="jeux.points">points aujourd'hui</div>
+        <div class="jeu-results-sub" id="quizSub"></div>
+        <div class="jeu-results-msg" id="quizMsg"></div>
+
+        <div class="jeu-streak-box">
+          <div class="jeu-streak-item">
+            <div class="jeu-streak-num" id="quizStreak">0</div>
+            <div class="jeu-streak-label" data-i18n="jeux.streak">🔥 Jours de suite</div>
+          </div>
+          <div class="jeu-streak-item">
+            <div class="jeu-streak-num" id="quizBest">0</div>
+            <div class="jeu-streak-label" data-i18n="jeux.record">⭐ Record points</div>
+          </div>
+        </div>
+
+        <button class="jeu-share-btn" id="quizShareBtn" data-i18n="jeux.share">📋 Partager mon score</button>
+
+        <div class="jeu-countdown">
+          <span data-i18n="jeux.next">Prochain quiz dans</span><br>
+          <span class="jeu-countdown-time" id="quizCountdown">--:--:--</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== JEU 2 : VRAI OU FAUX ===== -->
+    <section id="jeuVF" style="display:none;">
+      <div id="vfZone"></div>
+
+      <div class="jeu-results" id="vfResults">
+        <div class="jeu-results-emoji" id="vfEmoji"></div>
+        <div class="jeu-results-score" id="vfScore"></div>
+        <div class="jeu-results-total" data-i18n="jeux.vf.total">bonnes réponses</div>
+        <div class="jeu-results-msg" id="vfMsg"></div>
+        <button class="jeu-share-btn" id="vfShareBtn" data-i18n="jeux.share">📋 Partager mon score</button>
+        <div class="jeu-countdown">
+          <span data-i18n="jeux.next.vf">Nouveau défi demain</span><br>
+          <span class="jeu-countdown-time" id="vfCountdown">--:--:--</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <button id="scrollTopBtn" type="button" aria-label="Retour en haut" style="display:none;">↑</button>
+
+  <script src="jeux.js"></script>
+  <script src="langue.js"></script>
+  <script>
+    const hamBtn = document.getElementById("hamburgerBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    if (hamBtn && mobileMenu) {
+      hamBtn.addEventListener("click", () => {
+        hamBtn.classList.toggle("active");
+        mobileMenu.classList.toggle("open");
+      });
+    }
+  </script>
+</body>
+</html>
