@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* =========================
    JEUX TRILO — Quiz + Vrai/Faux
    Thème : triathlon et endurance
@@ -494,6 +493,3 @@ if (document.readyState === "loading") {
 } else {
   initJeux();
 }
-=======
-
->>>>>>> 6c80b822183f16d4558ca2114880acf7e523d792
