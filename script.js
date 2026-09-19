@@ -45,6 +45,24 @@ window.sessions = sessions;
 function scLang() { return localStorage.getItem("triloLangue") || "fr"; }
 function L(fr, en) { return scLang() === "en" ? en : fr; }
 
+// Traduit les erreurs Firebase en messages clairs et bilingues
+function messageErreur(e) {
+  const code = e?.code || "";
+  const erreurs = {
+    "auth/invalid-email": L("L'adresse email n'est pas valide.", "The email address is not valid."),
+    "auth/user-disabled": L("Ce compte a été désactivé.", "This account has been disabled."),
+    "auth/user-not-found": L("Aucun compte avec cet email.", "No account with this email."),
+    "auth/wrong-password": L("Mot de passe incorrect.", "Incorrect password."),
+    "auth/invalid-credential": L("Email ou mot de passe incorrect.", "Incorrect email or password."),
+    "auth/email-already-in-use": L("Cet email est déjà utilisé. Connecte-toi !", "This email is already in use. Log in!"),
+    "auth/weak-password": L("Le mot de passe est trop court (6 caractères minimum).", "Password is too short (6 characters minimum)."),
+    "auth/network-request-failed": L("Problème de connexion internet. Réessaie.", "Internet connection problem. Try again."),
+    "auth/too-many-requests": L("Trop de tentatives. Attends un moment.", "Too many attempts. Please wait a moment."),
+    "auth/missing-password": L("Entre un mot de passe.", "Enter a password.")
+  };
+  return erreurs[code] || (L("Une erreur est survenue : ", "An error occurred: ") + (e?.message || ""));
+}
+
 function el(id) { return document.getElementById(id); }
 
 function convertirTempsEnMinutes(temps) {
@@ -994,16 +1012,16 @@ window.addEventListener("DOMContentLoaded", () => {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await creerProfil(cred.user, pseudo, age);
-    } catch(e) { alert("Erreur inscription : " + e.message); }
+    } catch(e) { alert("⚠️ " + messageErreur(e)); }
   });
 
   el("loginBtn")?.addEventListener("click", async () => {
     const email    = el("email")?.value?.trim();
     const password = el("password")?.value?.trim();
-    if (!email || !password) return alert("Email et mot de passe requis.");
+    if (!email || !password) return alert(L("Email et mot de passe requis.", "Email and password required."));
     try {
       await signInWithEmailAndPassword(auth, email, password);
-    } catch(e) { alert("Erreur connexion : " + e.message); }
+    } catch(e) { alert("⚠️ " + messageErreur(e)); }
   });
 
   el("logoutBtn")?.addEventListener("click", async () => {
