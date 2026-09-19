@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trilo - Analyse tes performances de triathlon</title>
+  <meta name="description" content="Trilo analyse gratuitement tes performances de triathlon : natation, vélo, course à pied. Coach IA, badges, classement mondial et parcours GPS.">
+  <meta name="keywords" content="triathlon, analyse triathlon, coach triathlon gratuit, performance triathlon, natation vélo course, ironman, triathlon sprint, triathlon olympique, trilo, application triathlon">
+  <meta name="author" content="Trilo">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="French">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Trilo — Analyse tes performances de triathlon">
+  <meta property="og:description" content="Coach IA gratuit pour triathlètes. Analyse natation, vélo et course. Badges, classement mondial et parcours GPS.">
+  <meta property="og:image" content="https://trilo2.github.io/Trilo/logo-trilo.png">
+  <meta property="og:url" content="https://trilo2.github.io/Trilo/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Trilo — Analyse tes performances de triathlon">
+  <meta name="twitter:description" content="Coach IA gratuit pour triathlètes. Analyse natation, vélo et course à pied.">
+  <meta name="twitter:image" content="https://trilo2.github.io/Trilo/logo-trilo.png">
+  <link rel="icon" type="image/png" href="logo-trilo.png">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY73QCQGWZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZY73QCQGWZ');
+  </script>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00d4ff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Trilo">
+  <link rel="apple-touch-icon" href="logo-trilo.png">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Données structurées (SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Trilo",
+    "description": "Coach IA gratuit pour triathlètes. Analyse tes performances en natation, vélo et course à pied, suis ta progression et compare-toi aux meilleurs.",
+    "url": "https://trilo2.github.io/Trilo/",
+    "applicationCategory": "SportsApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    },
+    "inLanguage": ["fr", "en"]
+  }
+  </script>
+
+  <!-- FAQ structurée (SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Trilo est-il vraiment gratuit ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui ! Toutes les fonctionnalités principales sont gratuites : analyse des perfs, score sur 100, Coach IA basique, badges, streak, parcours GPS, calendrier d'entraînement et historique."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Comment fonctionne le score sur 100 ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Le score Trilo compare ta vitesse à des références : 45 m/min pour la natation, 22 km/h pour le vélo, 12 km/h pour la course. Au-dessus de 80, tu es Élite !"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Puis-je utiliser Trilo sur mon téléphone ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui ! Trilo est une application web (PWA) que tu peux installer sur ton téléphone comme une vraie app."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+
+  <!-- NAVBAR FIXE -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="logo-trilo.png" alt="Trilo" class="navbar-logo-img">
+      <span>TRILO</span>
+    </div>
+    <div class="navbar-links" id="navbar-links">
+      <a href="index.html" class="active" data-i18n="nav.accueil">🏠 Accueil</a>
+      <a href="analyser.html" data-i18n="nav.analyser">📊 Analyser</a>
+      <a href="calculateur.html" data-i18n="nav.calculateur">🧮 Calculateur</a>
+      <a href="jeux.html" data-i18n="nav.jeux">🎮 Jeux</a>
+      <a href="blog.html" data-i18n="nav.blog">📝 Blog</a>
+      <a href="objectifs.html" data-i18n="nav.objectifs">🎯 Objectifs</a>
+      <a href="dashboard.html" data-i18n="nav.dashboard">📈 Dashboard</a>
+      <a href="profil.html" data-i18n="nav.profil">👤 Profil</a>
+      <a href="premium.html" data-i18n="nav.premium">⭐ Premium</a>
+    </div>
+    <div id="navbar-user"></div>
+    <button class="langue-btn" id="langueBtn">EN</button>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- MENU MOBILE -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-link active" data-i18n="nav.accueil">🏠 Accueil</a>
+    <a href="analyser.html" class="mobile-link" data-i18n="nav.analyser">📊 Analyser</a>
+    <a href="calculateur.html" class="mobile-link" data-i18n="nav.calculateur">🧮 Calculateur</a>
+    <a href="jeux.html" class="mobile-link" data-i18n="nav.jeux">🎮 Jeux</a>
+    <a href="blog.html" class="mobile-link" data-i18n="nav.blog">📝 Blog</a>
+    <a href="objectifs.html" class="mobile-link" data-i18n="nav.objectifs">🎯 Objectifs</a>
+    <a href="dashboard.html" class="mobile-link" data-i18n="nav.dashboard">📈 Dashboard</a>
+    <a href="profil.html" class="mobile-link" data-i18n="nav.profil">👤 Profil</a>
+    <a href="premium.html" class="mobile-link" data-i18n="nav.premium">⭐ Premium</a>
+  </div>
+
+  <main class="app">
+
+    <!-- BANNIÈRE OFFRE DE LANCEMENT -->
+    <div class="offre-banniere">
+      <span class="offre-banniere-icon">🎁</span>
+      <span data-i18n="offre.banniere">Premium GRATUIT À VIE pour les 5 premiers inscrits ! Places limitées.</span>
+      <a href="analyser.html" class="offre-banniere-btn" data-i18n="offre.banniere.btn">J'en profite →</a>
+    </div>
+
+    <!-- 0. LANDING PAGE -->
+    <section class="landing" id="landing">
+      <div class="landing-content">
+        <img src="logo-trilo.png" alt="Logo Trilo" class="logo-trilo">
+        <h1>TRILO</h1>
+        <p class="subtitle" data-i18n="landing.subtitle">Analyse. Progresse. Domine.</p>
+        <p class="landing-desc" data-i18n="landing.desc">
+          Le premier coach IA gratuit pour triathlètes. Analyse tes performances en natation, vélo et course à pied. Obtiens des conseils personnalisés, suis ta progression et compare-toi aux meilleurs.
+        </p>
+        <div class="landing-features">
+          <div class="landing-feature">
+            <div class="feature-badge feature-badge-free">GRATUIT</div>
+            <span>📊</span>
+            <strong data-i18n="feat.analyse">Analyse des perfs</strong>
+            <p data-i18n="feat.analyse.d">Score détaillé sur 100 pour chaque discipline</p>
+          </div>
+          <div class="landing-feature">
+            <div class="feature-badge feature-badge-free">GRATUIT</div>
+            <span>🔥</span>
+            <strong data-i18n="feat.streaks">Streaks</strong>
+            <p data-i18n="feat.streaks.d">Garde ta motivation chaque jour</p>
+          </div>
+          <div class="landing-feature">
+            <div class="feature-badge feature-badge-free">GRATUIT</div>
+            <span>🗺️</span>
+            <strong data-i18n="feat.gps">Parcours GPS</strong>
+            <p data-i18n="feat.gps.d">Trouve des itinéraires près de chez toi</p>
+          </div>
+          <div class="landing-feature">
+            <div class="feature-badge feature-badge-free">GRATUIT</div>
+            <span>🤖</span>
+            <strong data-i18n="feat.coach">Coach IA</strong>
+            <p data-i18n="feat.coach.d">Analyse intelligente et conseils personnalisés</p>
+          </div>
+          <div class="landing-feature">
+            <div class="feature-badge feature-badge-premium">PREMIUM</div>
+            <span>🏁</span>
+            <strong data-i18n="feat.race">Mode Race</strong>
+            <p data-i18n="feat.race.d">Compare-toi aux courses officielles</p>
+          </div>
+          <div class="landing-feature">
+            <div class="feature-badge feature-badge-premium">PREMIUM</div>
+            <span>📊</span>
+            <strong data-i18n="feat.dash">Dashboard avancé</strong>
+            <p data-i18n="feat.dash.d">Stats complètes et graphique d'évolution</p>
+          </div>
+          <div class="landing-feature">
+            <div class="feature-badge feature-badge-premium">PREMIUM</div>
+            <span>🏆</span>
+            <strong data-i18n="feat.rank">Classement mondial</strong>
+            <p data-i18n="feat.rank.d">Compare-toi aux meilleurs triathlètes Trilo</p>
+          </div>
+        </div>
+        <div class="landing-ctas">
+          <a href="analyser.html" class="landing-cta landing-cta-free" data-i18n="landing.cta.free">🚀 Commencer gratuitement</a>
+          <a href="premium.html" class="landing-cta landing-cta-premium" data-i18n="landing.cta.premium">⭐ Passer Premium</a>
+        </div>
+
+        <!-- GRAND SOMMAIRE DE NAVIGATION -->
+        <div class="nav-sommaire">
+          <h3 class="nav-sommaire-titre" data-i18n="landing.explore">🧭 Explore Trilo</h3>
+          <div class="nav-sommaire-grid">
+            <a href="analyser.html" class="nav-card nav-card-analyser">
+              <span class="nav-card-icon">📊</span>
+              <strong data-i18n="card.analyser.title">Analyser</strong>
+              <p data-i18n="card.analyser.desc">Calcule ton score sur 100 et reçois des conseils IA</p>
+              <span class="nav-card-arrow">→</span>
+            </a>
+            <a href="objectifs.html" class="nav-card nav-card-objectifs">
+              <span class="nav-card-icon">🎯</span>
+              <strong data-i18n="card.objectifs.title">Objectifs</strong>
+              <p data-i18n="card.objectifs.desc">Fixe un objectif et obtiens ton plan d'entraînement</p>
+              <span class="nav-card-arrow">→</span>
+            </a>
+            <a href="dashboard.html" class="nav-card nav-card-dashboard">
+              <span class="nav-card-icon">📈</span>
+              <strong data-i18n="card.dashboard.title">Dashboard</strong>
+              <p data-i18n="card.dashboard.desc">Suis ta progression, tes stats et tes badges</p>
+              <span class="nav-card-arrow">→</span>
+            </a>
+            <a href="premium.html" class="nav-card nav-card-premium">
+              <span class="nav-card-icon">⭐</span>
+              <strong data-i18n="card.premium.title">Premium</strong>
+              <p data-i18n="card.premium.desc">Débloque le classement et les fonctions avancées</p>
+              <span class="nav-card-arrow">→</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- COMMENT ÇA MARCHE -->
+        <div class="how-it-works">
+          <h3 data-i18n="how.title">📖 Comment ça marche ?</h3>
+          <div class="how-steps">
+            <div class="how-step">
+              <div class="how-num">1</div>
+              <strong data-i18n="how.step1">Crée ton compte</strong>
+              <p data-i18n="how.step1d">Inscris-toi en 30 secondes avec un email et un pseudo</p>
+            </div>
+            <div class="how-step">
+              <div class="how-num">2</div>
+              <strong data-i18n="how.step2">Entre tes performances</strong>
+              <p data-i18n="how.step2d">Renseigne distance et temps pour natation, vélo et course</p>
+            </div>
+            <div class="how-step">
+              <div class="how-num">3</div>
+              <strong data-i18n="how.step3">Analyse et progresse</strong>
+              <p data-i18n="how.step3d">Reçois ton score sur 100, des conseils IA et des badges</p>
+            </div>
+            <div class="how-step">
+              <div class="how-num">4</div>
+              <strong data-i18n="how.step4">Navigue avec le menu</strong>
+              <p data-i18n="how.step4d">Utilise les onglets en haut pour accéder à toutes les fonctionnalités</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. CONNEXION -->
+    <section class="login-card">
+      <h2>Connexion Trilo</h2>
+      <div id="user-status" style="margin-bottom:12px;"></div>
+      <div id="auth-form">
+        <div class="login-grid">
+          <input id="email" type="email" placeholder="Email">
+          <input id="password" type="password" placeholder="Mot de passe">
+        </div>
+        <div id="pseudo-zone" style="margin-top:12px;display:none;">
+          <input id="pseudo" type="text" placeholder="Ton pseudo (ex: IronBenoît)" maxlength="20" style="width:100%;margin-bottom:10px;">
+          <input id="age" type="number" placeholder="Ton âge" min="5" max="100" style="width:100%;">
+          <p style="font-size:11px;color:#4a6080;margin-top:6px;">L'âge permet de te comparer à ta catégorie (Junior, Senior, Master...)</p>
+        </div>
+        <div class="login-actions">
+          <button id="signupBtn" type="button">Créer un compte</button>
+          <button id="loginBtn" type="button">Connexion</button>
+        </div>
+        <div style="margin-top:10px;text-align:center;">
+          <button id="forgotBtn" type="button" style="background:none;border:none;color:#4a6080;font-size:12px;cursor:pointer;text-decoration:underline;padding:0;">Mot de passe oublié ?</button>
+        </div>
+      </div>
+      <button id="logoutBtn" type="button" style="display:none;">Se déconnecter</button>
+    </section>
+
+  </main>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <div class="faq-container">
+      <h2 class="faq-title" data-i18n="faq.title">❓ Questions fréquentes</h2>
+
+      <details class="faq-item">
+        <summary data-i18n="faq.q1">Trilo est-il vraiment gratuit ?</summary>
+        <p data-i18n="faq.a1">Oui ! Toutes les fonctionnalités principales sont gratuites : analyse des perfs, score sur 100, Coach IA basique, badges, streak, parcours GPS, calendrier d'entraînement, historique. Seules quelques fonctionnalités avancées (Mode Race, comparaison utilisateurs, Coach IA premium, détails des séances) nécessitent l'abonnement Premium.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary data-i18n="faq.q2">Comment fonctionne le score sur 100 ?</summary>
+        <p data-i18n="faq.a2">Le score Trilo est calculé en comparant ta vitesse à des références : 45 m/min pour la natation, 22 km/h pour le vélo, 12 km/h pour la course. Plus tu es proche ou au-dessus, plus ton score est élevé. Au-dessus de 80, tu es considéré comme Élite !</p>
+      </details>
+
+      <details class="faq-item">
+        <summary data-i18n="faq.q3">Mes données sont-elles en sécurité ?</summary>
+        <p data-i18n="faq.a3">Oui. Tes données sont stockées chez Google Firebase (serveurs sécurisés conformes RGPD). Trilo ne vend jamais tes données à des tiers. Tu peux demander leur suppression à tout moment en supprimant ton compte.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary data-i18n="faq.q4">Le coach IA est-il vraiment intelligent ?</summary>
+        <p data-i18n="faq.a4">Le Coach IA analyse tes performances et te donne des conseils adaptés à ton niveau (débutant, intermédiaire, élite) et à tes points forts/faibles. Le mode Premium offre une analyse encore plus détaillée avec le Mode Race qui te compare aux courses officielles.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary data-i18n="faq.q5">Puis-je utiliser Trilo sur mon téléphone ?</summary>
+        <p data-i18n="faq.a5">Oui ! Trilo est une PWA (Progressive Web App), ce qui veut dire que tu peux l'installer sur ton téléphone comme une vraie app. Va sur trilo2.github.io/Trilo depuis ton mobile, et clique sur "Ajouter à l'écran d'accueil".</p>
+      </details>
+
+      <details class="faq-item">
+        <summary data-i18n="faq.q6">Comment fonctionne le classement mondial ?</summary>
+        <p data-i18n="faq.a6">Le classement mondial compare ton meilleur score Trilo à celui de tous les autres utilisateurs. Tu peux voir ton rang, et avec Premium, te comparer à ta catégorie d'âge (Junior, Senior, Master...).</p>
+      </details>
+
+      <details class="faq-item">
+        <summary data-i18n="faq.q7">Quelle est la différence entre les programmes d'entraînement ?</summary>
+        <p data-i18n="faq.a7">Trilo propose 7 programmes adaptés à différentes courses : Triathlon XS/S/M (Sprint, Olympique), Half Ironman 70.3, Ironman, Marathon et Semi-Marathon. Chaque programme a son propre planning hebdomadaire avec natation, vélo, course et jours de repos adaptés.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary data-i18n="faq.q8">Qui a créé Trilo ?</summary>
+        <p data-i18n="faq.a8">Trilo a été créé par Eliott, 13 ans, passionné de triathlon, pour aider les triathlètes de tous niveaux à progresser. L'objectif : démocratiser l'analyse de performance sportive et la rendre accessible à tous.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Footer pro -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+
+      <div class="footer-col">
+        <img src="logo-trilo.png" alt="Trilo" class="footer-logo">
+        <p class="footer-tagline">Analyse. Progresse. Domine.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Aide</h4>
+        <ul>
+          <li><a href="analyser.html">Comment ça marche</a></li>
+          <li><a href="blog.html">Blog triathlon</a></li>
+          <li><a href="premium.html">Trilo Premium</a></li>
+          <li><a href="legal.html">Mentions légales</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Informations légales</h4>
+        <ul>
+          <li><a href="legal.html#cgv">Conditions générales de vente</a></li>
+          <li><a href="legal.html#cgu">Conditions d'utilisation</a></li>
+          <li><a href="legal.html#mentions">Mentions légales</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Confidentialité</h4>
+        <ul>
+          <li><a href="legal.html#rgpd">Politique de confidentialité</a></li>
+          <li><a href="legal.html#cookies">Cookies</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 data-i18n="footer.soon">Bientôt</h4>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.6;" data-i18n="footer.soon.txt">Nos réseaux sociaux arrivent bientôt ! Reste connecté pour suivre l'aventure Trilo.</p>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Trilo — Tous droits réservés</p>
+    </div>
+  </footer>
+
+  <!-- Bouton retour en haut -->
+  <button id="scrollTopBtn" type="button" aria-label="Retour en haut" style="display:none;">↑</button>
+
+  <script type="module" src="script.js"></script>
+
+  <!-- Enregistrement PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/Trilo/sw.js')
+          .then(() => console.log('✅ Trilo PWA prête !'))
+          .catch(err => console.log('SW erreur :', err));
+      });
+    }
+  </script>
+
+  <script src="langue.js" defer></script>
+  <script src="tutoriel.js" defer></script>
+</body>
+</html>

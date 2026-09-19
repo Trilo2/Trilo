@@ -1,33 +1,29 @@
 /* =========================
    SERVICE WORKER — TRILO PWA
+   Optimisé pour la vitesse (v2)
 ========================= */
 
-const CACHE_NAME = "trilo-v1";
+const CACHE_NAME = "trilo-v2";
 
 const ASSETS = [
   "/Trilo/",
   "/Trilo/index.html",
   "/Trilo/style.css",
   "/Trilo/script.js",
-  "/Trilo/parcours.js",
-  "/Trilo/historique.js",
+  "/Trilo/langue.js",
   "/Trilo/logo-trilo.png",
-  "/Trilo/manifest.json",
-  "https://cdn.jsdelivr.net/npm/chart.js",
-  "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+  "/Trilo/manifest.json"
 ];
 
-// Installation : mise en cache des assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
+      return Promise.allSettled(ASSETS.map(url => cache.add(url)));
     })
   );
   self.skipWaiting();
 });
 
-// Activation : suppression des anciens caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -39,33 +35,48 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch : réseau d'abord, cache en fallback
 self.addEventListener("fetch", (event) => {
-  // Ne pas intercepter les requêtes Firebase
-  if (event.request.url.includes("firebase") ||
-      event.request.url.includes("googleapis.com/identitytoolkit") ||
-      event.request.url.includes("firestore")) {
+  const url = event.request.url;
+
+  if (url.includes("firebase") ||
+      url.includes("googleapis.com/identitytoolkit") ||
+      url.includes("firestore") ||
+      url.includes("google-analytics") ||
+      url.includes("googletagmanager")) {
     return;
   }
 
-  // Ne mettre en cache que les requêtes GET (POST/PUT non supportés par le cache)
   if (event.request.method !== "GET") {
+    return;
+  }
+
+  const estFichierSite = url.includes("/Trilo/") &&
+    (url.endsWith(".css") || url.endsWith(".js") || url.endsWith(".html") ||
+     url.endsWith(".png") || url.endsWith(".json") || url.endsWith("/"));
+
+  if (estFichierSite) {
+    event.respondWith(
+      caches.match(event.request).then((cached) => {
+        const fetchPromise = fetch(event.request).then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        }).catch(() => cached);
+        return cached || fetchPromise;
+      })
+    );
     return;
   }
 
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Mettre en cache la réponse fraîche
         const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, clone);
-        });
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return response;
       })
-      .catch(() => {
-        // Si pas de réseau, utiliser le cache
-        return caches.match(event.request);
-      })
+      .catch(() => caches.match(event.request))
   );
 });
