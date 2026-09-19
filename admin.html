@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Trilo</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="logo-trilo.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="navbar-logo" style="text-decoration:none;">
+      <img src="logo-trilo.png" alt="Trilo" class="navbar-logo-img">
+      <span>TRILO</span>
+    </a>
+    <div class="navbar-links" id="navbar-links">
+      <a href="index.html">🏠 Accueil</a>
+      <a href="dashboard.html">📈 Dashboard</a>
+    </div>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <main class="app">
+
+    <div class="page-header">
+      <span class="page-header-icon">🔐</span>
+      <h1>Tableau de bord Admin</h1>
+      <p>Statistiques privées de Trilo</p>
+    </div>
+
+    <div id="adminZone">
+      <div style="text-align:center;padding:40px;color:var(--text-muted);">
+        ⏳ Vérification...
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBTv3F1ukSvaoD340ABx6CLjjQ0pHBs7q8",
+      authDomain: "trilo-88a88.firebaseapp.com",
+      projectId: "trilo-88a88",
+      storageBucket: "trilo-88a88.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:abcdef"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // EMAIL ADMIN autorisé
+    const ADMIN_EMAIL = "benoitmetais@yahoo.com";
+
+    const zone = document.getElementById("adminZone");
+
+    onAuthStateChanged(auth, async (user) => {
+      // Vérifier que c'est bien l'admin
+      if (!user) {
+        zone.innerHTML = `
+          <div class="admin-locked">
+            🔒 <strong>Accès réservé</strong>
+            <p>Cette page est réservée à l'administrateur. Connecte-toi d'abord sur la page Analyser.</p>
+            <a href="analyser.html" class="admin-btn">Se connecter</a>
+          </div>`;
+        return;
+      }
+
+      if (user.email !== ADMIN_EMAIL) {
+        zone.innerHTML = `
+          <div class="admin-locked">
+            🚫 <strong>Accès refusé</strong>
+            <p>Tu n'as pas les droits pour voir cette page.</p>
+            <a href="index.html" class="admin-btn">Retour à l'accueil</a>
+          </div>`;
+        return;
+      }
+
+      // C'est l'admin ! On charge les stats
+      zone.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted);">⏳ Chargement des statistiques...</div>`;
+
+      try {
+        // Charger les utilisateurs
+        const usersSnap = await getDocs(collection(db, "users"));
+        const scoresSnap = await getDocs(collection(db, "scores"));
+
+        const nbUsers = usersSnap.size;
+        const nbScores = scoresSnap.size;
+
+        // Compter les premium et analyser
+        let nbPremium = 0;
+        let nbLegendes = 0;
+        const users = [];
+        usersSnap.forEach(doc => {
+          const d = doc.data();
+          if (d.premium === true) nbPremium++;
+          users.push({
+            pseudo: d.pseudo || "?",
+            age: d.age || "?",
+            premium: d.premium === true,
+            createdAt: d.createdAt
+          });
+        });
+
+        // Meilleurs scores
+        const scores = [];
+        scoresSnap.forEach(doc => {
+          const d = doc.data();
+          if (d.estLegende) nbLegendes++;
+          scores.push({
+            pseudo: d.pseudo || "?",
+            globalScore: parseFloat(d.globalScore) || 0,
+            nbBadges: d.nbBadges || 0
+          });
+        });
+        scores.sort((a, b) => b.globalScore - a.globalScore);
+
+        // Trier les users par date de création (les plus récents en premier)
+        users.sort((a, b) => {
+          const ta = a.createdAt?.seconds || 0;
+          const tb = b.createdAt?.seconds || 0;
+          return tb - ta;
+        });
+
+        // Construire l'affichage
+        let html = `
+          <div class="admin-stats">
+            <div class="admin-stat">
+              <span class="admin-stat-num">${nbUsers}</span>
+              <span class="admin-stat-label">👥 Comptes créés</span>
+            </div>
+            <div class="admin-stat">
+              <span class="admin-stat-num">${nbScores}</span>
+              <span class="admin-stat-label">📊 Scores enregistrés</span>
+            </div>
+            <div class="admin-stat">
+              <span class="admin-stat-num">${nbPremium}</span>
+              <span class="admin-stat-label">⭐ Premium</span>
+            </div>
+            <div class="admin-stat">
+              <span class="admin-stat-num">${nbLegendes}</span>
+              <span class="admin-stat-label">🏆 Légendes Trilo</span>
+            </div>
+          </div>
+
+          <h3 class="admin-section">🏅 Top 10 des scores</h3>
+          <div class="admin-table">
+        `;
+
+        scores.slice(0, 10).forEach((s, i) => {
+          html += `
+            <div class="admin-row">
+              <span class="admin-rank">${i + 1}</span>
+              <span class="admin-name">${s.pseudo}</span>
+              <span class="admin-value">${s.globalScore.toFixed(0)}/100</span>
+              <span class="admin-badges">${s.nbBadges} 🏅</span>
+            </div>`;
+        });
+
+        html += `</div>
+
+          <h3 class="admin-section">🆕 Derniers inscrits</h3>
+          <div class="admin-table">
+        `;
+
+        users.slice(0, 10).forEach((u) => {
+          const date = u.createdAt?.seconds
+            ? new Date(u.createdAt.seconds * 1000).toLocaleDateString("fr-FR")
+            : "?";
+          html += `
+            <div class="admin-row">
+              <span class="admin-name">${u.pseudo} ${u.premium ? "⭐" : ""}</span>
+              <span class="admin-value">${u.age} ans</span>
+              <span class="admin-date">${date}</span>
+            </div>`;
+        });
+
+        html += `</div>
+
+          <div class="admin-refresh">
+            <button onclick="location.reload()" class="admin-btn">🔄 Rafraîchir les stats</button>
+          </div>
+        `;
+
+        zone.innerHTML = html;
+
+      } catch (e) {
+        zone.innerHTML = `
+          <div class="admin-locked">
+            ⚠️ <strong>Erreur</strong>
+            <p>Impossible de charger les statistiques : ${e.message}</p>
+          </div>`;
+      }
+    });
+  </script>
+
+  <script>
+    const hamBtn = document.getElementById("hamburgerBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    if (hamBtn && mobileMenu) {
+      hamBtn.addEventListener("click", () => {
+        hamBtn.classList.toggle("active");
+        mobileMenu.classList.toggle("open");
+      });
+    }
+  </script>
+</body>
+</html>
