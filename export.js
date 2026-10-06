@@ -50,8 +50,9 @@ function genererPDF() {
   let distanceTotale = 0;
   sessions.forEach(s => {
     s.performances?.forEach(p => {
-      if (p.sport === "natation") distanceTotale += (p.distance || 0) / 1000;
-      else distanceTotale += (p.distance || 0);
+      const d = p.distance ?? p.dist ?? 0;
+      if (p.sport === "natation") distanceTotale += d / 1000;
+      else distanceTotale += d;
     });
   });
 

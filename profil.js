@@ -7,6 +7,26 @@
 function prLang() { return localStorage.getItem("triloLangue") || "fr"; }
 function L(fr, en) { return prLang() === "en" ? en : fr; }
 
+// Options de personnalisation de l'avatar
+const AVATAR_COULEURS = [
+  "#00d4ff", "#10b981", "#f59e0b", "#8b5cf6", "#ef4444", "#ec4899", "#3b82f6", "#14b8a6"
+];
+const AVATAR_EMOJIS = ["", "🏊", "🚴", "🏃", "🔥", "⚡", "💪", "🏆", "🌟", "🚀", "🦈", "🐬"];
+
+function getAvatarConfig() {
+  return {
+    couleur: localStorage.getItem("triloAvatarColor") || "#00d4ff",
+    emoji: localStorage.getItem("triloAvatarEmoji") || ""
+  };
+}
+function setAvatarConfig(couleur, emoji) {
+  if (couleur !== null) localStorage.setItem("triloAvatarColor", couleur);
+  if (emoji !== null) localStorage.setItem("triloAvatarEmoji", emoji);
+  afficherProfil();
+}
+window._triloSetAvatarColor = function(c) { setAvatarConfig(c, null); };
+window._triloSetAvatarEmoji = function(e) { setAvatarConfig(null, e); };
+
 const BADGES_PROFIL = [
   // — Assiduité —
   { id: "first",     emoji: "🎯", label: "Première séance", labelEn: "First session", desc: "Ta première analyse", descEn: "Your first analysis", check: s => s.length >= 1 },
@@ -60,8 +80,63 @@ function calculerBadges(sessions) {
   return obtenus;
 }
 
+// Détecte les nouveaux badges depuis la dernière visite et lance l'animation
+function detecterNouveauxBadges(badgesObtenus) {
+  const idsObtenus = badgesObtenus.map(b => b.id);
+  let idsConnus = [];
+  try {
+    idsConnus = JSON.parse(localStorage.getItem("triloBadgesConnus")) || [];
+  } catch(e) { idsConnus = []; }
+
+  // Premier passage : on enregistre sans animer (évite de tout animer au début)
+  if (idsConnus.length === 0 && idsObtenus.length > 0) {
+    localStorage.setItem("triloBadgesConnus", JSON.stringify(idsObtenus));
+    return;
+  }
+
+  // Trouver les nouveaux
+  const nouveaux = badgesObtenus.filter(b => !idsConnus.includes(b.id));
+  if (nouveaux.length > 0) {
+    // Animer le premier nouveau badge
+    setTimeout(() => animerNouveauBadge(nouveaux[0]), 600);
+    localStorage.setItem("triloBadgesConnus", JSON.stringify(idsObtenus));
+  }
+}
+
+// Animation popup quand on débloque un badge
+function animerNouveauBadge(badge) {
+  const popup = document.createElement("div");
+  popup.className = "badge-unlock-popup";
+  popup.innerHTML = `
+    <div class="badge-unlock-content">
+      <div class="badge-unlock-glow"></div>
+      <span class="badge-unlock-emoji">${badge.emoji}</span>
+      <strong class="badge-unlock-title">${L("BADGE DÉBLOQUÉ !", "BADGE UNLOCKED!")}</strong>
+      <span class="badge-unlock-name">${badgeLabel(badge)}</span>
+      <span class="badge-unlock-desc">${badgeDesc(badge)}</span>
+    </div>
+  `;
+  document.body.appendChild(popup);
+
+  // Vibration
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+  // Petits confettis si dispo
+  if (typeof window.lancerConfettis === "function") {
+    setTimeout(() => window.lancerConfettis(), 200);
+  }
+
+  // Retirer après l'animation
+  setTimeout(() => popup.remove(), 3500);
+}
+
 function getSessions() {
-  return JSON.parse(localStorage.getItem("triloSessions")) || [];
+  const s = JSON.parse(localStorage.getItem("triloSessions")) || [];
+  // Anciennes séances : la distance était enregistrée sous "dist" (et non "distance")
+  s.forEach(x => x.performances?.forEach(p => {
+    if (p.distance === undefined && p.dist !== undefined) p.distance = p.dist;
+  }));
+  return s;
 }
 
 function formaterVitesse(speed, sport) {
@@ -128,6 +203,7 @@ function afficherProfil() {
 
   // Badges
   const badgesObtenus = calculerBadges(sessions);
+  detecterNouveauxBadges(badgesObtenus);
 
   // Niveau basé sur le meilleur score
   let niveau = L("Débutant", "Beginner"), niveauEmoji = "🌱";
@@ -159,7 +235,7 @@ function afficherProfil() {
     ${banniereComplete}
     <!-- Carte profil principale -->
     <div class="profil-hero">
-      <div class="profil-avatar">${pseudo.charAt(0).toUpperCase()}</div>
+      <div class="profil-avatar" style="background: linear-gradient(135deg, ${getAvatarConfig().couleur}, ${getAvatarConfig().couleur}cc); box-shadow: 0 0 24px ${getAvatarConfig().couleur}66;">${getAvatarConfig().emoji || pseudo.charAt(0).toUpperCase()}</div>
       <div class="profil-info">
         <h2>${pseudo} ${tousLesBadges ? "🏆" : ""}</h2>
         <div class="profil-niveau">${niveauEmoji} ${niveau}</div>
@@ -169,6 +245,25 @@ function afficherProfil() {
         <span class="profil-score-label">${L("meilleur score", "best score")}</span>
       </div>
     </div>
+
+    <!-- Personnalisation avatar -->
+    <details class="profil-perso">
+      <summary>🎨 ${L("Personnaliser mon avatar", "Customize my avatar")}</summary>
+      <div class="profil-perso-content">
+        <div class="profil-perso-label">${L("Couleur", "Color")}</div>
+        <div class="profil-perso-colors">
+          ${AVATAR_COULEURS.map(c => `
+            <button class="profil-color-btn ${getAvatarConfig().couleur === c ? "actif" : ""}" style="background:${c};" onclick="window._triloSetAvatarColor('${c}')"></button>
+          `).join("")}
+        </div>
+        <div class="profil-perso-label">${L("Emoji", "Emoji")}</div>
+        <div class="profil-perso-emojis">
+          ${AVATAR_EMOJIS.map(e => `
+            <button class="profil-emoji-btn ${getAvatarConfig().emoji === e ? "actif" : ""}" onclick="window._triloSetAvatarEmoji('${e}')">${e || (prLang() === "en" ? "Aa" : "Aa")}</button>
+          `).join("")}
+        </div>
+      </div>
+    </details>
 
     <!-- Stats rapides -->
     <div class="profil-stats">

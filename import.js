@@ -50,6 +50,23 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ============================================
+// DÉNIVELÉ POSITIF (D+) à partir d'une liste d'altitudes
+// On ignore les variations < 2 m (bruit du GPS)
+// ============================================
+function calculerDenivele(altitudes) {
+  const valides = altitudes.filter(a => Number.isFinite(a));
+  if (valides.length < 2) return 0;
+  const SEUIL = 2;
+  let ref = valides[0], gain = 0;
+  for (let i = 1; i < valides.length; i++) {
+    const diff = valides[i] - ref;
+    if (diff >= SEUIL) { gain += diff; ref = valides[i]; }
+    else if (diff <= -SEUIL) { ref = valides[i]; }
+  }
+  return Math.round(gain);
+}
+
+// ============================================
 // LIRE UN FICHIER GPX
 // ============================================
 function lireGPX(contenu) {
@@ -70,10 +87,15 @@ function lireGPX(contenu) {
   let distance = 0;
   let premierTemps = null;
   let dernierTemps = null;
+  const altitudes = [];
 
   for (let i = 0; i < points.length; i++) {
     const lat = parseFloat(points[i].getAttribute("lat"));
     const lon = parseFloat(points[i].getAttribute("lon"));
+
+    // Altitude
+    const eleEl = points[i].getElementsByTagName("ele")[0];
+    if (eleEl) altitudes.push(parseFloat(eleEl.textContent));
 
     // Temps
     const timeEl = points[i].getElementsByTagName("time")[0];
@@ -100,7 +122,7 @@ function lireGPX(contenu) {
   // Détecter le sport depuis le type de trace
   const type = detecterSportGPX(xml);
 
-  return { distance, duree, sport: type };
+  return { distance, duree, sport: type, denivele: calculerDenivele(altitudes) };
 }
 
 // ============================================
@@ -131,10 +153,15 @@ function lireTCX(contenu) {
     distance = parseFloat(distanceEls[distanceEls.length - 1].textContent);
   }
 
+  // Altitudes (D+)
+  const altEls = xml.getElementsByTagName("AltitudeMeters");
+  const altitudes = [];
+  for (let i = 0; i < altEls.length; i++) altitudes.push(parseFloat(altEls[i].textContent));
+
   // Détecter le sport
   const sport = detecterSportTCX(xml);
 
-  return { distance, duree, sport };
+  return { distance, duree, sport, denivele: calculerDenivele(altitudes) };
 }
 
 // ============================================
@@ -185,7 +212,7 @@ function haversine(lat1, lon1, lat2, lon2) {
 // ============================================
 function remplirChamps(donnees) {
   const resultZone = document.getElementById("importResult");
-  const { distance, duree, sport } = donnees;
+  const { distance, duree, sport, denivele = 0 } = donnees;
 
   // Convertir la durée en format mm:ss ou h:mm:ss
   const h = Math.floor(duree / 3600);
@@ -211,11 +238,13 @@ function remplirChamps(donnees) {
     // Vélo : distance en km
     document.getElementById("bikeDist").value = (distance / 1000).toFixed(2);
     document.getElementById("bikeTime").value = tempsStr;
+    if (document.getElementById("bikeElev")) document.getElementById("bikeElev").value = denivele > 0 ? denivele : "";
     sportNom = IL("Vélo", "Cycling");
   } else if (sport === "course") {
     // Course : distance en km
     document.getElementById("runDist").value = (distance / 1000).toFixed(2);
     document.getElementById("runTime").value = tempsStr;
+    if (document.getElementById("runElev")) document.getElementById("runElev").value = denivele > 0 ? denivele : "";
     sportNom = IL("Course", "Running");
   } else {
     // Sport inconnu : on demande à l'utilisateur de choisir
@@ -226,8 +255,8 @@ function remplirChamps(donnees) {
         <p style="margin-top:10px;font-size:13px;">${IL("Quel sport est-ce ?", "Which sport is it?")}</p>
         <div class="import-sport-choix">
           <button onclick="window._triloRemplirSport('natation', ${Math.round(distance)}, '${tempsStr}')">🏊 ${IL("Natation", "Swim")}</button>
-          <button onclick="window._triloRemplirSport('velo', ${distKm}, '${tempsStr}')">🚴 ${IL("Vélo", "Bike")}</button>
-          <button onclick="window._triloRemplirSport('course', ${distKm}, '${tempsStr}')">🏃 ${IL("Course", "Run")}</button>
+          <button onclick="window._triloRemplirSport('velo', ${distKm}, '${tempsStr}', ${denivele})">🚴 ${IL("Vélo", "Bike")}</button>
+          <button onclick="window._triloRemplirSport('course', ${distKm}, '${tempsStr}', ${denivele})">🏃 ${IL("Course", "Run")}</button>
         </div>
       </div>`;
     return;
@@ -238,22 +267,24 @@ function remplirChamps(donnees) {
   resultZone.innerHTML = `
     <div class="import-success">
       ✅ ${IL("Activité importée !", "Activity imported!")}<br>
-      <strong>${sportNom}</strong> · ${distAffiche} · ${tempsStr}
+      <strong>${sportNom}</strong> · ${distAffiche} · ${tempsStr}${denivele > 0 && sport !== "natation" ? ` · ${IL("D+", "Elev.")} ${denivele} m` : ""}
       <p style="margin-top:8px;font-size:13px;color:var(--text-muted);">${IL("Les champs sont remplis. Clique sur Analyser !", "Fields are filled. Click Analyze!")}</p>
     </div>`;
 }
 
 // Pour le choix manuel du sport
-window._triloRemplirSport = function(sport, dist, temps) {
+window._triloRemplirSport = function(sport, dist, temps, denivele = 0) {
   if (sport === "natation") {
     document.getElementById("swimDist").value = Math.round(dist);
     document.getElementById("swimTime").value = temps;
   } else if (sport === "velo") {
     document.getElementById("bikeDist").value = dist;
     document.getElementById("bikeTime").value = temps;
+    if (document.getElementById("bikeElev")) document.getElementById("bikeElev").value = denivele > 0 ? denivele : "";
   } else if (sport === "course") {
     document.getElementById("runDist").value = dist;
     document.getElementById("runTime").value = temps;
+    if (document.getElementById("runElev")) document.getElementById("runElev").value = denivele > 0 ? denivele : "";
   }
   const resultZone = document.getElementById("importResult");
   resultZone.innerHTML = `<div class="import-success">✅ ${IL("Champs remplis ! Clique sur Analyser.", "Fields filled! Click Analyze.")}</div>`;

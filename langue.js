@@ -16,6 +16,18 @@ const TRADUCTIONS = {
   "import.sub":      { fr: "Garmin, Polar, Suunto, Strava... Importe ton activité (.gpx ou .tcx) et les champs se remplissent tout seuls !", en: "Garmin, Polar, Suunto, Strava... Import your activity (.gpx or .tcx) and the fields fill in automatically!" },
   "import.btn":      { fr: "📂 Choisir un fichier (.gpx / .tcx)", en: "📂 Choose a file (.gpx / .tcx)" },
 
+  // Dénivelé + conditions
+  "sport.elev":      { fr: "Dénivelé positif (m) · optionnel", en: "Elevation gain (m) · optional" },
+  "an.ph.elev":      { fr: "Ex : 150", en: "Ex: 150" },
+  "meteo.title":     { fr: "CONDITIONS", en: "CONDITIONS" },
+  "meteo.label":     { fr: "Météo pendant l'effort · optionnel", en: "Weather during the effort · optional" },
+  "meteo.normal":    { fr: "Conditions normales", en: "Normal conditions" },
+  "meteo.chaleur":   { fr: "Forte chaleur (plus de 28°C)", en: "Hot (over 28°C / 82°F)" },
+  "meteo.vent":      { fr: "Vent fort", en: "Strong wind" },
+  "meteo.pluie":     { fr: "Pluie", en: "Rain" },
+  "meteo.froid":     { fr: "Froid (moins de 5°C)", en: "Cold (under 5°C / 41°F)" },
+  "meteo.help":      { fr: "Ces conditions rendent l'effort plus difficile : Trilo ajuste légèrement ton score pour être plus juste.", en: "These conditions make the effort harder: Trilo slightly adjusts your score to be fairer." },
+
   // Page Jeux
   "jeux.title":      { fr: "Jeux Trilo", en: "Trilo Games" },
   "jeux.sub":        { fr: "Un nouveau défi chaque jour ! Reviens demain pour de nouvelles questions.", en: "A new challenge every day! Come back tomorrow for new questions." },

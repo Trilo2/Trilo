@@ -141,6 +141,10 @@
             <label for="bikeTime" data-i18n="sport.temps">Temps</label>
             <input id="bikeTime" type="text" placeholder="Ex : 20:00" data-i18n-ph="an.ph.time2">
           </div>
+          <div class="field">
+            <label for="bikeElev" data-i18n="sport.elev">Dénivelé positif (m) · optionnel</label>
+            <input id="bikeElev" type="number" min="0" placeholder="Ex : 150" data-i18n-ph="an.ph.elev">
+          </div>
         </div>
       </div>
 
@@ -158,7 +162,30 @@
             <label for="runTime" data-i18n="sport.temps">Temps</label>
             <input id="runTime" type="text" placeholder="Ex : 20:00" data-i18n-ph="an.ph.time2">
           </div>
+          <div class="field">
+            <label for="runElev" data-i18n="sport.elev">Dénivelé positif (m) · optionnel</label>
+            <input id="runElev" type="number" min="0" placeholder="Ex : 80" data-i18n-ph="an.ph.elev">
+          </div>
         </div>
+      </div>
+
+      <!-- CONDITIONS (météo) -->
+      <div class="sport-block conditions-block">
+        <div class="sport-head">
+          <div class="sport-badge">🌦️</div>
+          <h2 data-i18n="meteo.title">CONDITIONS</h2>
+        </div>
+        <div class="field">
+          <label for="meteo" data-i18n="meteo.label">Météo pendant l'effort · optionnel</label>
+          <select id="meteo">
+            <option value="normal" data-i18n="meteo.normal">Conditions normales</option>
+            <option value="chaleur" data-i18n="meteo.chaleur">Forte chaleur (plus de 28°C)</option>
+            <option value="vent" data-i18n="meteo.vent">Vent fort</option>
+            <option value="pluie" data-i18n="meteo.pluie">Pluie</option>
+            <option value="froid" data-i18n="meteo.froid">Froid (moins de 5°C)</option>
+          </select>
+        </div>
+        <p class="help" data-i18n="meteo.help">Ces conditions rendent l'effort plus difficile : Trilo ajuste légèrement ton score pour être plus juste.</p>
       </div>
 
       <p class="help" data-i18n="an.format">Format conseillé : 4:30, 20:00 ou 1:15:00</p>

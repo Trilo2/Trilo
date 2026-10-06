@@ -138,7 +138,7 @@ function genererModeRace(result) {
 
 function genererRecuperation(result) {
   let charge = 0;
-  result.performances.forEach(p => { charge += p.dist * (100 - p.score) / 50; });
+  result.performances.forEach(p => { const dKm = p.sport === "natation" ? p.dist / 1000 : p.dist; charge += dKm * (100 - p.score) / 50; });
   const jours = charge < 5 ? 1 : charge < 30 ? 2 : 3;
   const texte = charge < 5  ? L("Séance légère — tu peux t'entraîner demain.", "Light session — you can train tomorrow.")
     : charge < 15 ? L("Séance modérée — 1 à 2 jours de récupération active.", "Moderate session — 1 to 2 days of active recovery.")
@@ -245,6 +245,49 @@ function afficherNotifBadge(badge) {
   }, 4000);
 }
 
+// ===== AJUSTEMENTS DU SCORE (approximations simples) =====
+// Dénivelé : chaque 100 m de D+ équivaut à des km "à plat" en plus
+// (course : ~1 km, vélo : ~2 km, valeur prudente car on récupère en descente)
+const COEF_DENIVELE = { velo: 2, course: 1 };
+// Météo : léger bonus quand les conditions rendent l'effort plus dur
+const AJUST_METEO = {
+  normal:  { velo: 0,    course: 0 },
+  chaleur: { velo: 0.03, course: 0.04 },
+  vent:    { velo: 0.06, course: 0.02 },
+  pluie:   { velo: 0.03, course: 0.02 },
+  froid:   { velo: 0.02, course: 0.02 }
+};
+const FACTEUR_MAX = 1.5; // l'ajustement ne dépasse jamais +50 %
+
+function facteurAjustement(sport, distKm, elevM, meteo) {
+  let fElev = 1;
+  if (elevM > 0 && distKm > 0) {
+    fElev = 1 + (COEF_DENIVELE[sport] * elevM / 100) / distKm;
+  }
+  const fMeteo = 1 + (AJUST_METEO[meteo]?.[sport] || 0);
+  return Math.min(fElev * fMeteo, FACTEUR_MAX);
+}
+
+// Petit texte qui explique l'ajustement appliqué (affiché sous le score)
+function texteAjustements(result) {
+  const nomMeteo = {
+    chaleur: L("chaleur", "heat"), vent: L("vent", "wind"),
+    pluie: L("pluie", "rain"), froid: L("froid", "cold")
+  };
+  const lignes = [];
+  result.performances.forEach(p => {
+    if (!p.ajust || p.ajust <= 1.001) return;
+    const nomSport = p.sport === "vélo" ? L("Vélo", "Bike") : L("Course", "Run");
+    const causes = [];
+    if (p.elev > 0) causes.push(L(`dénivelé +${p.elev} m`, `elevation +${p.elev} m`));
+    if (p.meteo && p.meteo !== "normal") causes.push(nomMeteo[p.meteo]);
+    const plafond = p.ajust >= FACTEUR_MAX ? L(" (plafonné)", " (capped)") : "";
+    lignes.push(`${nomSport} : ${causes.join(" + ")} → ${L("vitesse ajustée de", "speed adjusted by")} +${Math.round((p.ajust - 1) * 100)} %${plafond}`);
+  });
+  if (!lignes.length) return "";
+  return `<br><small style="color:var(--text-muted);">⚙️ ${lignes.join(" · ")}</small>`;
+}
+
 function calculerScores() {
   let swimDist = Number(el("swimDist")?.value || 0);
   const swimTime = convertirTempsEnMinutes(el("swimTime")?.value || "");
@@ -252,11 +295,16 @@ function calculerScores() {
   const bikeTime = convertirTempsEnMinutes(el("bikeTime")?.value || "");
   let runDist  = Number(el("runDist")?.value  || 0);
   const runTime  = convertirTempsEnMinutes(el("runTime")?.value  || "");
+  const bikeElev = Math.max(0, Number(el("bikeElev")?.value || 0));
+  const runElev  = Math.max(0, Number(el("runElev")?.value  || 0));
+  const meteo    = el("meteo")?.value || "normal";
 
   // Validation des valeurs max réalistes
   if (swimDist > 10000) { alert("⚠️ Distance natation trop élevée (max 10 000m)"); return null; }
   if (bikeDist > 300)   { alert("⚠️ Distance vélo trop élevée (max 300km)"); return null; }
   if (runDist > 100)    { alert("⚠️ Distance course trop élevée (max 100km)"); return null; }
+  if (bikeElev > 10000) { alert(L("⚠️ Dénivelé vélo trop élevé (max 10 000 m)", "⚠️ Bike elevation too high (max 10,000 m)")); return null; }
+  if (runElev > 5000)   { alert(L("⚠️ Dénivelé course trop élevé (max 5 000 m)", "⚠️ Run elevation too high (max 5,000 m)")); return null; }
   if (swimTime > 600)   { alert("⚠️ Temps natation trop élevé (max 10h)"); return null; }
   if (bikeTime > 600)   { alert("⚠️ Temps vélo trop élevé (max 10h)"); return null; }
   if (runTime > 600)    { alert("⚠️ Temps course trop élevé (max 10h)"); return null; }
@@ -281,19 +329,21 @@ function calculerScores() {
     const speed = swimDist / swimTime;
     const score = Math.min((speed / 45) * 50, 100);
     total += score; count++;
-    performances.push({ sport: "natation", score, speed, dist: swimDist, time: swimTime });
+    performances.push({ sport: "natation", score, speed, dist: swimDist, distance: swimDist, time: swimTime });
   }
   if (bikeDist > 0 && bikeTime > 0) {
     const speed = bikeDist / (bikeTime / 60);
-    const score = Math.min((speed / 22) * 50, 100);
+    const ajust = facteurAjustement("velo", bikeDist, bikeElev, meteo);
+    const score = Math.min(((speed * ajust) / 22) * 50, 100);
     total += score; count++;
-    performances.push({ sport: "vélo", score, speed, dist: bikeDist, time: bikeTime });
+    performances.push({ sport: "vélo", score, speed, speedAdj: speed * ajust, ajust, elev: bikeElev, meteo, dist: bikeDist, distance: bikeDist, time: bikeTime });
   }
   if (runDist > 0 && runTime > 0) {
     const speed = runDist / (runTime / 60);
-    const score = Math.min((speed / 12) * 50, 100);
+    const ajust = facteurAjustement("course", runDist, runElev, meteo);
+    const score = Math.min(((speed * ajust) / 12) * 50, 100);
     total += score; count++;
-    performances.push({ sport: "course", score, speed, dist: runDist, time: runTime });
+    performances.push({ sport: "course", score, speed, speedAdj: speed * ajust, ajust, elev: runElev, meteo, dist: runDist, distance: runDist, time: runTime });
   }
   if (count === 0) return null;
   return { globalScore: total / count, performances, swimDist, swimTime, bikeDist, bikeTime, runDist, runTime };
@@ -830,7 +880,7 @@ async function analyser() {
   }
   const { globalScore } = result;
   el("score").textContent = obtenirNiveau(globalScore).level;
-  el("message").innerHTML = `Score global : <strong>${globalScore.toFixed(0)} / 100</strong>`;
+  el("message").innerHTML = `Score global : <strong>${globalScore.toFixed(0)} / 100</strong>` + texteAjustements(result);
   const zoneCoach = el("aiAnalysis");
   if (zoneCoach) {
     if (!currentUser) {
@@ -892,7 +942,8 @@ async function analyser() {
 }
 
 function reinitialiser() {
-  ["swimDist","swimTime","bikeDist","bikeTime","runDist","runTime"].forEach(id => { if (el(id)) el(id).value = ""; });
+  ["swimDist","swimTime","bikeDist","bikeTime","runDist","runTime","bikeElev","runElev"].forEach(id => { if (el(id)) el(id).value = ""; });
+  if (el("meteo")) el("meteo").value = "normal";
   el("score").textContent   = "Aucun score";
   el("message").textContent = "Entre tes performances puis clique sur analyser.";
   if (el("aiAnalysis")) el("aiAnalysis").innerHTML = "Fais une analyse pour recevoir ton coaching IA.";
