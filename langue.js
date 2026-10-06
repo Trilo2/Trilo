@@ -11,6 +11,11 @@ const TRADUCTIONS = {
   "nav.blog":        { fr: "📝 Blog",        en: "📝 Blog" },
   "nav.jeux":        { fr: "🎮 Jeux",        en: "🎮 Games" },
 
+  // Import GPX/TCX
+  "import.title":    { fr: "Importer depuis ta montre ou Strava", en: "Import from your watch or Strava" },
+  "import.sub":      { fr: "Garmin, Polar, Suunto, Strava... Importe ton activité (.gpx ou .tcx) et les champs se remplissent tout seuls !", en: "Garmin, Polar, Suunto, Strava... Import your activity (.gpx or .tcx) and the fields fill in automatically!" },
+  "import.btn":      { fr: "📂 Choisir un fichier (.gpx / .tcx)", en: "📂 Choose a file (.gpx / .tcx)" },
+
   // Page Jeux
   "jeux.title":      { fr: "Jeux Trilo", en: "Trilo Games" },
   "jeux.sub":        { fr: "Un nouveau défi chaque jour ! Reviens demain pour de nouvelles questions.", en: "A new challenge every day! Come back tomorrow for new questions." },

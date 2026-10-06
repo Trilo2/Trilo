@@ -93,6 +93,23 @@
 
     <!-- SPORTS -->
     <section class="panel">
+
+      <!-- IMPORT GPX/TCX -->
+      <div class="import-zone">
+        <div class="import-head">
+          <span class="import-icon">⌚</span>
+          <div>
+            <strong data-i18n="import.title">Importer depuis ta montre ou Strava</strong>
+            <p data-i18n="import.sub">Garmin, Polar, Suunto, Strava... Importe ton activité (.gpx ou .tcx) et les champs se remplissent tout seuls !</p>
+          </div>
+        </div>
+        <label class="import-btn">
+          <span data-i18n="import.btn">📂 Choisir un fichier (.gpx / .tcx)</span>
+          <input type="file" id="importFile" accept=".gpx,.tcx" style="display:none;">
+        </label>
+        <div id="importResult" class="import-result"></div>
+      </div>
+
       <div class="sport-block">
         <div class="sport-head">
           <div class="sport-badge">🏊</div>
@@ -223,6 +240,7 @@
   <script type="module" src="script.js"></script>
   <script type="module" src="historique.js"></script>
   <script type="module" src="share.js"></script>
+  <script src="import.js" defer></script>
   <script src="langue.js" defer></script>
 </body>
 </html>
