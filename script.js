@@ -377,17 +377,173 @@ function genererCoachApercu(result) {
   return html;
 }
 
+// ===== COACH : outils visuels et conseils (bilingues) =====
+function nomSport(sport) {
+  return sport === "natation" ? L("Natation", "Swimming")
+       : sport === "vélo"     ? L("Vélo", "Cycling")
+       :                        L("Course", "Running");
+}
+function emojiSport(sport) {
+  return sport === "natation" ? "🏊" : sport === "vélo" ? "🚴" : "🏃";
+}
+
+const CONSEILS_COACH = {
+  fr: {
+    natation: [
+      "Respire tous les 3 mouvements (des deux côtés) pour équilibrer ta nage.",
+      "Allonge ton geste : essaie de faire 2 à 3 coups de bras de moins par longueur.",
+      "Fais tourner tes hanches avec chaque bras : la puissance vient aussi du dos et du bassin.",
+      "Expire bien dans l'eau, par le nez et la bouche, plutôt que de retenir ton souffle."
+    ],
+    "vélo": [
+      "Garde une cadence régulière entre 80 et 100 tours/min plutôt que de forcer sur un gros braquet.",
+      "Bois une gorgée toutes les 15 à 20 minutes, même sans soif.",
+      "Reste relâché : épaules basses, mains souples, regard loin devant toi.",
+      "Mange un peu (barre, banane) dès que tu roules plus d'1 heure."
+    ],
+    course: [
+      "Vise environ 170 à 180 pas par minute, avec une foulée courte et légère.",
+      "Pars un peu plus lentement que ton envie : la 2e moitié doit être aussi rapide que la 1re.",
+      "Fais la majorité de tes sorties à une allure où tu peux encore parler.",
+      "Ajoute 2 séances de gainage par semaine : ça stabilise ta foulée et limite les blessures."
+    ]
+  },
+  en: {
+    natation: [
+      "Breathe every 3 strokes (both sides) to balance your swim.",
+      "Lengthen your stroke: try to take 2 to 3 fewer strokes per length.",
+      "Rotate your hips with each arm: power also comes from your back and core.",
+      "Exhale fully underwater, through nose and mouth, instead of holding your breath."
+    ],
+    "vélo": [
+      "Keep a steady cadence between 80 and 100 rpm rather than grinding a big gear.",
+      "Take a sip every 15 to 20 minutes, even if you're not thirsty.",
+      "Stay relaxed: shoulders down, soft hands, eyes far ahead.",
+      "Eat a little (bar, banana) as soon as you ride for more than 1 hour."
+    ],
+    course: [
+      "Aim for about 170 to 180 steps per minute, with a short and light stride.",
+      "Start a bit slower than you feel like: the 2nd half should be as fast as the 1st.",
+      "Do most of your runs at a pace where you can still talk.",
+      "Add 2 core sessions per week: it steadies your stride and reduces injuries."
+    ]
+  }
+};
+
+const SEANCES_EXEMPLE = {
+  fr: {
+    natation: [
+      "Échauffement 100 m souple · 6 × 50 m (15 s de repos) en gardant le même rythme · 100 m souple",
+      "Échauffement 100 m · 4 × 100 m (20 s de repos) en respirant tous les 3 mouvements · 100 m retour au calme"
+    ],
+    "vélo": [
+      "10 min facile · 5 × 3 min à allure soutenue (2 min facile entre chaque) · 10 min facile",
+      "15 min facile · 20 min à un rythme où tu peux dire une phrase courte · 10 min retour au calme"
+    ],
+    course: [
+      "10 min de footing lent · 6 × 1 min rapide (1 min 30 de trot entre chaque) · 10 min de footing lent",
+      "10 min lent · 20 min à allure confortable (tu peux parler) · 5 min de marche"
+    ]
+  },
+  en: {
+    natation: [
+      "100 m easy warm-up · 6 × 50 m (15 s rest) keeping the same pace · 100 m easy",
+      "100 m warm-up · 4 × 100 m (20 s rest) breathing every 3 strokes · 100 m cool-down"
+    ],
+    "vélo": [
+      "10 min easy · 5 × 3 min at a steady hard pace (2 min easy between) · 10 min easy",
+      "15 min easy · 20 min at a pace where you can say a short sentence · 10 min cool-down"
+    ],
+    course: [
+      "10 min easy jog · 6 × 1 min fast (1 min 30 jog between) · 10 min easy jog",
+      "10 min easy · 20 min at a comfortable pace (you can talk) · 5 min walk"
+    ]
+  }
+};
+
+// Barres de score par discipline (la barre verticale = niveau de référence 50/100)
+function genererBarresSports(performances) {
+  if (!performances.length) return "";
+  const tri = [...performances].sort((a, b) => b.score - a.score);
+  const best = tri[0], worst = tri[tri.length - 1];
+  const comparer = tri.length > 1 && best.score !== worst.score;
+
+  let html = `<div class="coach-bars">`;
+  performances.forEach(p => {
+    const niveau = p.score >= 65 ? "top" : p.score >= 50 ? "good" : p.score >= 35 ? "mid" : "low";
+    const marque = !comparer ? "" : p === best ? " 💚" : p === worst ? " ⚠️" : "";
+    html += `
+      <div class="coach-bar-row">
+        <span class="coach-bar-label">${emojiSport(p.sport)} ${nomSport(p.sport)}${marque}</span>
+        <div class="coach-bar-track">
+          <div class="coach-bar-fill ${niveau}" style="width:${Math.max(2, Math.min(100, p.score))}%"></div>
+          <span class="coach-bar-marker"></span>
+        </div>
+        <span class="coach-bar-val">${p.score.toFixed(0)}</span>
+      </div>`;
+  });
+  html += `</div><div class="coach-bars-legend">${L("La barre verticale marque le niveau de référence (50/100).", "The vertical line marks the reference level (50/100).")}</div>`;
+  return html;
+}
+
+// Évolution entre les séances (réservé Premium) : utilise l'historique du navigateur
+function genererEvolution(result) {
+  const prev = sessions.filter(s => s && typeof s.globalScore === "number");
+  let html = `<div class="coach-evo"><strong>📈 ${L("Ton évolution", "Your progress")}</strong><br>`;
+  if (!prev.length) {
+    return html + L("C'est ta première séance analysée. Reviens après la prochaine pour voir si tu progresses !",
+                    "This is your first analyzed session. Come back after the next one to see if you're improving!") + `</div>`;
+  }
+  const last = prev[prev.length - 1];
+  const d = result.globalScore - last.globalScore;
+  const fleche = d > 0.5 ? "▲" : d < -0.5 ? "▼" : "＝";
+  html += `${fleche} ${L("Score global", "Global score")} : ${d >= 0 ? "+" : ""}${d.toFixed(1)} ${L("pts par rapport à ta dernière séance", "pts vs your last session")}<br>`;
+
+  const derniers = prev.slice(-5);
+  const moy = derniers.reduce((a, s) => a + s.globalScore, 0) / derniers.length;
+  html += `${L(`Moyenne de tes ${derniers.length} dernières séances`, `Average of your last ${derniers.length} sessions`)} : ${moy.toFixed(0)}/100<br>`;
+
+  result.performances.forEach(p => {
+    const avant = [...prev].reverse().map(s => s.performances?.find(q => q.sport === p.sport)).find(Boolean);
+    if (!avant) return;
+    const v1 = p.speedAdj ?? p.speed;
+    const v0 = avant.speedAdj ?? avant.speed;
+    if (!v0) return;
+    const pct = (v1 / v0 - 1) * 100;
+    html += `${emojiSport(p.sport)} ${nomSport(p.sport)} : ${pct >= 0 ? "+" : ""}${pct.toFixed(1)} % ${L("de vitesse vs ta dernière séance dans ce sport", "speed vs your last session in this sport")}<br>`;
+  });
+  return html + `</div>`;
+}
+
 function genererCoachGratuit(result) {
   const { globalScore, performances } = result;
   const { level, intro } = obtenirNiveau(globalScore);
-  const meilleur = [...performances].sort((a, b) => b.score - a.score)[0];
+  const sorted = [...performances].sort((a, b) => b.score - a.score);
+  const meilleur = sorted[0];
+  const faible = sorted[sorted.length - 1];
+  const comparer = sorted.length > 1 && meilleur.score !== faible.score;
+  const cible = comparer ? faible : meilleur; // le sport sur lequel on donne des conseils
+  const lang = scLang() === "en" ? "en" : "fr";
+
   let html = `<strong>${level}</strong><br>${intro}<br><br>`;
-  html += `<strong>${L("Score global", "Global score")} : ${globalScore.toFixed(0)} / 100</strong><br><br>`;
-  if (meilleur) html += `💚 ${L("Sport dominant", "Top sport")} : <strong>${meilleur.sport}</strong><br><br>`;
-  html += `<strong>${L("Conseils généraux", "General tips")} :</strong><br>`;
-  performances.forEach(p => { html += `${randElement(conseilsGeneraux[p.sport] || [])}<br>`; });
-  html += `<br>` + genererRecuperation(result);
-  html += `<br><div class="premium-teaser">🔒 <strong>Premium</strong> : ${L("vitesses km/h, conseils personnalisés, prochaine séance, Mode Race", "km/h speeds, personalized tips, next session, Race Mode")}</div>`;
+  html += `<strong>${L("Score global", "Global score")} : ${globalScore.toFixed(0)} / 100</strong>`;
+  html += genererBarresSports(performances);
+
+  if (comparer) {
+    html += `<br>💚 ${L("Point fort", "Strength")} : <strong>${nomSport(meilleur.sport)}</strong><br>`;
+    html += `⚠️ ${L("À travailler en priorité", "Priority to work on")} : <strong>${nomSport(faible.sport)}</strong><br>`;
+  }
+
+  // 2 conseils ciblés sur la discipline à améliorer
+  const conseils = [...CONSEILS_COACH[lang][cible.sport]].sort(() => Math.random() - 0.5).slice(0, 2);
+  html += `<br><strong>${emojiSport(cible.sport)} ${L("Conseils", "Tips")} · ${nomSport(cible.sport)} :</strong><br>`;
+  conseils.forEach(t => { html += `• ${t}<br>`; });
+
+  // Une séance d'exemple concrète
+  html += `<div class="coach-seance"><strong>📋 ${L("Séance d'exemple", "Example session")} · ${nomSport(cible.sport)}</strong><br>${randElement(SEANCES_EXEMPLE[lang][cible.sport])}</div>`;
+
+  html += genererRecuperation(result);
+  html += `<br><div class="premium-teaser">🔒 <strong>Premium</strong> : ${L("ton évolution séance après séance, vitesses détaillées, prochaine séance, prédicteur de temps, Mode Race, export PDF", "your progress session after session, detailed speeds, next session, time predictor, Race Mode, PDF export")}</div>`;
   return html;
 }
 
@@ -419,6 +575,7 @@ function genererCoachPremium(result) {
   html += `<br>`;
   if (meilleur) html += `💚 ${L("Point fort", "Strength")} : <strong>${meilleur.sport}</strong><br>`;
   if (pointFaible && pointFaible.sport !== meilleur?.sport) html += `⚠️ ${L("À travailler", "To work on")} : <strong>${pointFaible.sport}</strong><br>`;
+  html += `<br>` + genererEvolution(result);
   html += `<br>` + genererRecuperation(result);
   html += `<br>` + genererProchaineSéance(result);
   html += `<br>` + genererPredicteurTemps(result);
