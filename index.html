@@ -6,8 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trilo - Analyse tes performances de triathlon</title>
   <meta name="description" content="Trilo analyse gratuitement tes performances de triathlon : natation, vélo, course à pied. Coach IA, badges, classement mondial et parcours GPS.">
-  <meta name="keywords" content="triathlon, analyse triathlon, coach triathlon gratuit, performance triathlon, natation vélo course, ironman, triathlon sprint, triathlon olympique, trilo, application triathlon">
-  <meta name="author" content="Trilo">
+  <meta name="keywords" content="triathlon, analyse triathlon, coach triathlon gratuit, performance triathlon, natation vélo course, ironman, triathlon sprint, triathlon olympique, trilo, application triathlon, Eliott Metais, créateur de Trilo">
+  <meta name="author" content="Eliott Metais">
+  <link rel="author" href="https://trilo2.github.io/Trilo/apropos.html">
+  <link rel="canonical" href="https://trilo2.github.io/Trilo/">
   <meta name="robots" content="index, follow">
   <meta name="language" content="French">
 
@@ -60,7 +62,45 @@
       "price": "0",
       "priceCurrency": "EUR"
     },
-    "inLanguage": ["fr", "en"]
+    "inLanguage": ["fr", "en"],
+    "author": { "@id": "https://trilo2.github.io/Trilo/apropos.html#eliott-metais" },
+    "creator": { "@id": "https://trilo2.github.io/Trilo/apropos.html#eliott-metais" }
+  }
+  </script>
+
+  <!-- Site + créateur (SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://trilo2.github.io/Trilo/#website",
+        "name": "Trilo",
+        "url": "https://trilo2.github.io/Trilo/",
+        "inLanguage": ["fr", "en"],
+        "publisher": { "@id": "https://trilo2.github.io/Trilo/#organisation" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://trilo2.github.io/Trilo/#organisation",
+        "name": "Trilo",
+        "url": "https://trilo2.github.io/Trilo/",
+        "logo": "https://trilo2.github.io/Trilo/logo-trilo.png",
+        "founder": { "@id": "https://trilo2.github.io/Trilo/apropos.html#eliott-metais" }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://trilo2.github.io/Trilo/apropos.html#eliott-metais",
+        "name": "Eliott Metais",
+        "givenName": "Eliott",
+        "familyName": "Metais",
+        "jobTitle": "Créateur de Trilo",
+        "url": "https://trilo2.github.io/Trilo/apropos.html",
+        "sameAs": [],
+        "worksFor": { "@id": "https://trilo2.github.io/Trilo/#organisation" }
+      }
+    ]
   }
   </script>
 
@@ -92,6 +132,14 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Oui ! Trilo est une application web (PWA) que tu peux installer sur ton téléphone comme une vraie app."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qui a créé Trilo ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Trilo a été créé par Eliott Metais, passionné de triathlon, pour aider les triathlètes de tous niveaux à progresser."
         }
       }
     ]
@@ -330,7 +378,8 @@
 
       <details class="faq-item">
         <summary data-i18n="faq.q8">Qui a créé Trilo ?</summary>
-        <p data-i18n="faq.a8">Trilo a été créé par Eliott, 13 ans, passionné de triathlon, pour aider les triathlètes de tous niveaux à progresser. L'objectif : démocratiser l'analyse de performance sportive et la rendre accessible à tous.</p>
+        <p data-i18n="faq.a8">Trilo a été créé par Eliott Metais, 13 ans, passionné de triathlon, pour aider les triathlètes de tous niveaux à progresser. L'objectif : démocratiser l'analyse de performance sportive et la rendre accessible à tous.</p>
+        <p><a href="apropos.html" data-i18n="faq.a8.more">En savoir plus sur Trilo →</a></p>
       </details>
     </div>
   </section>
@@ -350,6 +399,7 @@
           <li><a href="analyser.html">Comment ça marche</a></li>
           <li><a href="blog.html">Blog triathlon</a></li>
           <li><a href="premium.html">Trilo Premium</a></li>
+          <li><a href="apropos.html">À propos</a></li>
           <li><a href="legal.html">Mentions légales</a></li>
         </ul>
       </div>

@@ -177,7 +177,8 @@ const TRADUCTIONS = {
   "faq.q7":   { fr: "Quelle est la différence entre les programmes d'entraînement ?", en: "What's the difference between training programs?" },
   "faq.a7":   { fr: "Trilo propose 7 programmes : Triathlon XS/S/M, Half Ironman, Ironman, Marathon et Semi. Chacun a son planning hebdomadaire avec natation, vélo, course et repos adaptés.", en: "Trilo offers 7 programs: Triathlon XS/S/M, Half Ironman, Ironman, Marathon and Half-Marathon. Each has its weekly schedule with adapted swim, bike, run and rest days." },
   "faq.q8":   { fr: "Qui a créé Trilo ?", en: "Who created Trilo?" },
-  "faq.a8":   { fr: "Trilo a été créé par Eliott, 13 ans, passionné de triathlon, pour aider les triathlètes de tous niveaux à progresser.", en: "Trilo was created by Eliott, 13 years old, a triathlon enthusiast, to help triathletes of all levels progress." },
+  "faq.a8":   { fr: "Trilo a été créé par Eliott Metais, 13 ans, passionné de triathlon, pour aider les triathlètes de tous niveaux à progresser. L'objectif : démocratiser l'analyse de performance sportive et la rendre accessible à tous.", en: "Trilo was created by Eliott Metais, 13 years old, a triathlon enthusiast, to help triathletes of all levels progress. The goal: make sports performance analysis accessible to everyone." },
+  "faq.a8.more": { fr: "En savoir plus sur Trilo →", en: "Learn more about Trilo →" },
   "faq.title":{ fr: "❓ Questions fréquentes", en: "❓ Frequently asked questions" },
 
   // Calculateur — complet
