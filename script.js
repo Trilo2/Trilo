@@ -288,6 +288,81 @@ function texteAjustements(result) {
   return `<br><small style="color:var(--text-muted);">⚙️ ${lignes.join(" · ")}</small>`;
 }
 
+// ===== SCORE AJUSTÉ À TON PROFIL (âge / sexe) =====
+// Le score principal (et le classement) reste identique pour tout le monde.
+// Le score ajusté compare ta vitesse à une référence adaptée à ton profil.
+// ⚠️ Ce sont des ESTIMATIONS (ordres de grandeur inspirés des tables d'âge de l'athlétisme
+// et des écarts moyens entre records hommes/femmes), pas des valeurs officielles.
+// Ces infos restent dans le navigateur (localStorage) : rien n'est envoyé à Firebase.
+const PROFIL_KEY = "triloProfilPerf";
+const PROFIL_SEXE = {
+  homme: { natation: 1,    velo: 1,    course: 1 },
+  femme: { natation: 0.92, velo: 0.89, course: 0.90 }
+};
+
+function ageValide(a) {
+  a = Number(a);
+  return Number.isFinite(a) && a >= 5 && a <= 100 ? Math.round(a) : 0;
+}
+
+function lireProfilPerf() {
+  try {
+    const p = JSON.parse(localStorage.getItem(PROFIL_KEY) || "{}");
+    return { age: ageValide(p.age), sexe: PROFIL_SEXE[p.sexe] ? p.sexe : "" };
+  } catch (e) {
+    return { age: 0, sexe: "" };
+  }
+}
+
+function sauverProfilPerf(profil) {
+  try { localStorage.setItem(PROFIL_KEY, JSON.stringify(profil)); } catch (e) { /* stockage indisponible */ }
+}
+
+// Profil du moment : champs de la page s'ils existent, sinon valeurs mémorisées
+function profilActuel() {
+  const ageEl = el("perfAge"), sexeEl = el("perfSexe");
+  if (ageEl || sexeEl) {
+    const sexe = sexeEl?.value || "";
+    return { age: ageValide(ageEl?.value), sexe: PROFIL_SEXE[sexe] ? sexe : "" };
+  }
+  return lireProfilPerf();
+}
+
+// Capacité moyenne selon l'âge (1 = référence adulte 18-34 ans)
+//  - jeunes : ils progressent encore (13 ans ≈ 0,85 ; 18 ans = 1)
+//  - après 34 ans : baisse d'environ 0,6 %/an jusqu'à 49 ans, 1 %/an jusqu'à 69 ans, puis 1,5 %/an
+function facteurAge(age) {
+  if (!age) return 1;
+  if (age < 18)  return Math.max(0.6, Math.min(1, 0.85 + 0.03 * (age - 13)));
+  if (age <= 34) return 1;
+  if (age <= 49) return 1 - 0.006 * (age - 34);
+  if (age <= 69) return 0.91 - 0.010 * (age - 49);
+  return Math.max(0.5, 0.71 - 0.015 * (age - 69));
+}
+
+// sport : "natation" | "velo" | "course"
+function facteurProfil(sport, profil) {
+  const fSexe = PROFIL_SEXE[profil.sexe]?.[sport] ?? 1;
+  return facteurAge(profil.age) * fSexe;
+}
+
+// Texte affiché sous le score : le score ajusté, ou une invitation à renseigner son profil
+function texteScoreProfil(result) {
+  if (!result.profilActif) {
+    return `<br><small style="color:var(--text-muted);">💡 ${L(
+      "Renseigne ton âge et ton sexe (section « Ton profil ») pour voir ton score ajusté.",
+      "Enter your age and sex (\"Your profile\" section) to see your adjusted score.")}</small>`;
+  }
+  const p = result.profil;
+  const parties = [];
+  if (p.age) parties.push(`${obtenirCategorie(p.age)} · ${p.age} ${L("ans", "y/o")}`);
+  if (p.sexe) parties.push(p.sexe === "femme" ? L("Femme", "Female") : L("Homme", "Male"));
+  return `<br><span style="display:inline-block;margin-top:6px;">🎯 ${L("Score ajusté à ton profil", "Profile-adjusted score")} : <strong>${result.globalScoreProfil.toFixed(0)} / 100</strong></span>` +
+         `<br><small style="color:var(--text-muted);">${parties.join(" · ")} — ${L(
+           "vitesses de référence adaptées (estimation). Le classement utilise le score principal.",
+           "adapted reference speeds (estimate). The leaderboard uses the main score.")}</small>`;
+}
+
 function calculerScores() {
   let swimDist = Number(el("swimDist")?.value || 0);
   const swimTime = convertirTempsEnMinutes(el("swimTime")?.value || "");
@@ -323,30 +398,40 @@ function calculerScores() {
     if (speed > 35) { alert("⚠️ Vitesse course irréaliste. Vérifie tes données."); return null; }
   }
 
-  let total = 0, count = 0;
+  // Profil (âge / sexe) pour le score ajusté
+  const profil = profilActuel();
+  const profilActif = profil.age > 0 || profil.sexe !== "";
+
+  let total = 0, totalProfil = 0, count = 0;
   const performances = [];
   if (swimDist > 0 && swimTime > 0) {
     const speed = swimDist / swimTime;
     const score = Math.min((speed / 45) * 50, 100);
-    total += score; count++;
-    performances.push({ sport: "natation", score, speed, dist: swimDist, distance: swimDist, time: swimTime });
+    const scoreProfil = Math.min((speed / (45 * facteurProfil("natation", profil))) * 50, 100);
+    total += score; totalProfil += scoreProfil; count++;
+    performances.push({ sport: "natation", score, scoreProfil, speed, dist: swimDist, distance: swimDist, time: swimTime });
   }
   if (bikeDist > 0 && bikeTime > 0) {
     const speed = bikeDist / (bikeTime / 60);
     const ajust = facteurAjustement("velo", bikeDist, bikeElev, meteo);
     const score = Math.min(((speed * ajust) / 22) * 50, 100);
-    total += score; count++;
-    performances.push({ sport: "vélo", score, speed, speedAdj: speed * ajust, ajust, elev: bikeElev, meteo, dist: bikeDist, distance: bikeDist, time: bikeTime });
+    const scoreProfil = Math.min(((speed * ajust) / (22 * facteurProfil("velo", profil))) * 50, 100);
+    total += score; totalProfil += scoreProfil; count++;
+    performances.push({ sport: "vélo", score, scoreProfil, speed, speedAdj: speed * ajust, ajust, elev: bikeElev, meteo, dist: bikeDist, distance: bikeDist, time: bikeTime });
   }
   if (runDist > 0 && runTime > 0) {
     const speed = runDist / (runTime / 60);
     const ajust = facteurAjustement("course", runDist, runElev, meteo);
     const score = Math.min(((speed * ajust) / 12) * 50, 100);
-    total += score; count++;
-    performances.push({ sport: "course", score, speed, speedAdj: speed * ajust, ajust, elev: runElev, meteo, dist: runDist, distance: runDist, time: runTime });
+    const scoreProfil = Math.min(((speed * ajust) / (12 * facteurProfil("course", profil))) * 50, 100);
+    total += score; totalProfil += scoreProfil; count++;
+    performances.push({ sport: "course", score, scoreProfil, speed, speedAdj: speed * ajust, ajust, elev: runElev, meteo, dist: runDist, distance: runDist, time: runTime });
   }
   if (count === 0) return null;
-  return { globalScore: total / count, performances, swimDist, swimTime, bikeDist, bikeTime, runDist, runTime };
+  return {
+    globalScore: total / count, globalScoreProfil: totalProfil / count, profil, profilActif,
+    performances, swimDist, swimTime, bikeDist, bikeTime, runDist, runTime
+  };
 }
 
 function obtenirCategorie(age) {
@@ -1037,7 +1122,7 @@ async function analyser() {
   }
   const { globalScore } = result;
   el("score").textContent = obtenirNiveau(globalScore).level;
-  el("message").innerHTML = `Score global : <strong>${globalScore.toFixed(0)} / 100</strong>` + texteAjustements(result);
+  el("message").innerHTML = `Score global : <strong>${globalScore.toFixed(0)} / 100</strong>` + texteAjustements(result) + texteScoreProfil(result);
   const zoneCoach = el("aiAnalysis");
   if (zoneCoach) {
     if (!currentUser) {
@@ -1066,7 +1151,8 @@ async function analyser() {
   const estNouveauRecord = sessions.length > 0 && globalScore > ancienMeilleur;
 
   sessions.push({
-    globalScore, performances: result.performances,
+    globalScore, globalScoreProfil: result.profilActif ? result.globalScoreProfil : null,
+    performances: result.performances,
     swimDist: result.swimDist, bikeDist: result.bikeDist, runDist: result.runDist,
     date: new Date().toISOString()
   });
@@ -1156,10 +1242,24 @@ async function afficherEtatAuth() {
   }
 }
 
+// Si l'âge a été donné à l'inscription, on le propose dans "Ton profil" (modifiable)
+async function preremplirAgeProfil(user) {
+  try {
+    if (!el("perfAge") || el("perfAge").value) return;
+    const snap = await getDoc(doc(db, "users", user.uid));
+    const age = snap.exists() ? ageValide(snap.data().age) : 0;
+    if (age) {
+      el("perfAge").value = age;
+      sauverProfilPerf(profilActuel());
+    }
+  } catch (e) { /* l'âge reste facultatif */ }
+}
+
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
   if (user) {
     await creerProfil(user);
+    await preremplirAgeProfil(user);
     await verifierPremium(user);
     await chargerClassement();
     mettreAJourDashboard(); // Après vérification Premium
@@ -1198,6 +1298,16 @@ function mettreAJourNavbar() {
 window.addEventListener("DOMContentLoaded", () => {
   el("analyzeBtn")?.addEventListener("click", analyser);
   el("resetBtn")?.addEventListener("click", reinitialiser);
+
+  // Profil (âge / sexe) : on remet les valeurs mémorisées et on les garde à jour
+  if (el("perfAge") || el("perfSexe")) {
+    const mem = lireProfilPerf();
+    if (el("perfAge") && mem.age)   el("perfAge").value  = mem.age;
+    if (el("perfSexe") && mem.sexe) el("perfSexe").value = mem.sexe;
+    const memoriser = () => sauverProfilPerf(profilActuel());
+    el("perfAge")?.addEventListener("input", memoriser);
+    el("perfSexe")?.addEventListener("change", memoriser);
+  }
 
   // Afficher le champ pseudo seulement quand on clique sur "Créer un compte"
   el("signupBtn")?.addEventListener("click", async () => {

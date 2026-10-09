@@ -13,8 +13,8 @@ const TRADUCTIONS = {
 
   // Import GPX/TCX
   "import.title":    { fr: "Importer depuis ta montre ou Strava", en: "Import from your watch or Strava" },
-  "import.sub":      { fr: "Garmin, Polar, Suunto, Strava... Importe ton activité (.gpx ou .tcx) et les champs se remplissent tout seuls !", en: "Garmin, Polar, Suunto, Strava... Import your activity (.gpx or .tcx) and the fields fill in automatically!" },
-  "import.btn":      { fr: "📂 Choisir un fichier (.gpx / .tcx)", en: "📂 Choose a file (.gpx / .tcx)" },
+  "import.sub":      { fr: "Garmin, Polar, Suunto, Strava... Importe ton activité (.fit, .gpx ou .tcx) et les champs se remplissent tout seuls !", en: "Garmin, Polar, Suunto, Strava... Import your activity (.fit, .gpx or .tcx) and the fields fill in automatically!" },
+  "import.btn":      { fr: "📂 Choisir un fichier (.fit / .gpx / .tcx)", en: "📂 Choose a file (.fit / .gpx / .tcx)" },
 
   // Dénivelé + conditions
   "sport.elev":      { fr: "Dénivelé positif (m) · optionnel", en: "Elevation gain (m) · optional" },
@@ -27,6 +27,14 @@ const TRADUCTIONS = {
   "meteo.pluie":     { fr: "Pluie", en: "Rain" },
   "meteo.froid":     { fr: "Froid (moins de 5°C)", en: "Cold (under 5°C / 41°F)" },
   "meteo.help":      { fr: "Ces conditions rendent l'effort plus difficile : Trilo ajuste légèrement ton score pour être plus juste.", en: "These conditions make the effort harder: Trilo slightly adjusts your score to be fairer." },
+  "perf.title":      { fr: "TON PROFIL", en: "YOUR PROFILE" },
+  "perf.age":        { fr: "Ton âge · optionnel", en: "Your age · optional" },
+  "perf.ph.age":     { fr: "Ex : 35", en: "Ex: 35" },
+  "perf.sexe":       { fr: "Sexe · optionnel", en: "Sex · optional" },
+  "perf.nd":         { fr: "Je ne précise pas", en: "Prefer not to say" },
+  "perf.homme":      { fr: "Homme", en: "Male" },
+  "perf.femme":      { fr: "Femme", en: "Female" },
+  "perf.help":       { fr: "Trilo calcule en plus un score ajusté à ton profil (estimation). Ton score principal et le classement ne changent pas. Ces infos restent sur ton appareil.", en: "Trilo also calculates a profile-adjusted score (estimate). Your main score and the leaderboard don't change. This info stays on your device." },
 
   // Page Jeux
   "jeux.title":      { fr: "Jeux Trilo", en: "Trilo Games" },
@@ -165,7 +173,7 @@ const TRADUCTIONS = {
   "faq.q1":   { fr: "Trilo est-il vraiment gratuit ?", en: "Is Trilo really free?" },
   "faq.a1":   { fr: "Oui ! Toutes les fonctionnalités principales sont gratuites : analyse des perfs, score sur 100, Coach IA basique, badges, streak, parcours GPS, calendrier d'entraînement, historique. Seules quelques fonctionnalités avancées nécessitent l'abonnement Premium.", en: "Yes! All main features are free: performance analysis, score out of 100, basic AI Coach, badges, streak, GPS routes, training calendar, history. Only a few advanced features require the Premium subscription." },
   "faq.q2":   { fr: "Comment fonctionne le score sur 100 ?", en: "How does the score out of 100 work?" },
-  "faq.a2":   { fr: "Le score Trilo est calculé en comparant ta vitesse à des références : 45 m/min pour la natation, 22 km/h pour le vélo, 12 km/h pour la course. Plus tu es proche ou au-dessus, plus ton score est élevé. Au-dessus de 80, tu es Élite !", en: "The Trilo score compares your speed to references: 45 m/min for swimming, 22 km/h for cycling, 12 km/h for running. The closer or higher you are, the higher your score. Above 80, you're Elite!" },
+  "faq.a2":   { fr: "Le score Trilo est calculé en comparant ta vitesse à des références : 45 m/min pour la natation, 22 km/h pour le vélo, 12 km/h pour la course. Plus tu es proche ou au-dessus, plus ton score est élevé. Au-dessus de 80, tu es Élite ! Tu peux aussi renseigner ton âge et ton sexe pour obtenir un score ajusté à ton profil (estimation) ; le classement garde le score principal.", en: "The Trilo score compares your speed to references: 45 m/min for swimming, 22 km/h for cycling, 12 km/h for running. The closer or higher you are, the higher your score. Above 80, you're Elite! You can also enter your age and sex to get a profile-adjusted score (estimate); the leaderboard keeps the main score." },
   "faq.q3":   { fr: "Mes données sont-elles en sécurité ?", en: "Is my data safe?" },
   "faq.a3":   { fr: "Oui. Tes données sont stockées chez Google Firebase (serveurs sécurisés conformes RGPD). Trilo ne vend jamais tes données. Tu peux demander leur suppression à tout moment.", en: "Yes. Your data is stored on Google Firebase (secure GDPR-compliant servers). Trilo never sells your data. You can request deletion at any time." },
   "faq.q4":   { fr: "Le coach IA est-il vraiment intelligent ?", en: "Is the AI coach really smart?" },

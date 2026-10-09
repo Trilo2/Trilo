@@ -100,12 +100,12 @@
           <span class="import-icon">⌚</span>
           <div>
             <strong data-i18n="import.title">Importer depuis ta montre ou Strava</strong>
-            <p data-i18n="import.sub">Garmin, Polar, Suunto, Strava... Importe ton activité (.gpx ou .tcx) et les champs se remplissent tout seuls !</p>
+            <p data-i18n="import.sub">Garmin, Polar, Suunto, Strava... Importe ton activité (.fit, .gpx ou .tcx) et les champs se remplissent tout seuls !</p>
           </div>
         </div>
         <label class="import-btn">
-          <span data-i18n="import.btn">📂 Choisir un fichier (.gpx / .tcx)</span>
-          <input type="file" id="importFile" accept=".gpx,.tcx" style="display:none;">
+          <span data-i18n="import.btn">📂 Choisir un fichier (.fit / .gpx / .tcx)</span>
+          <input type="file" id="importFile" accept=".gpx,.tcx,.fit" style="display:none;">
         </label>
         <div id="importResult" class="import-result"></div>
       </div>
@@ -186,6 +186,27 @@
           </select>
         </div>
         <p class="help" data-i18n="meteo.help">Ces conditions rendent l'effort plus difficile : Trilo ajuste légèrement ton score pour être plus juste.</p>
+      </div>
+
+      <!-- PROFIL (âge / sexe) pour le score ajusté -->
+      <div class="sport-block conditions-block">
+        <div class="sport-head">
+          <div class="sport-badge">🧑</div>
+          <h2 data-i18n="perf.title">TON PROFIL</h2>
+        </div>
+        <div class="field">
+          <label for="perfAge" data-i18n="perf.age">Ton âge · optionnel</label>
+          <input id="perfAge" type="number" min="5" max="100" placeholder="Ex : 35" data-i18n-ph="perf.ph.age">
+        </div>
+        <div class="field">
+          <label for="perfSexe" data-i18n="perf.sexe">Sexe · optionnel</label>
+          <select id="perfSexe">
+            <option value="" data-i18n="perf.nd">Je ne précise pas</option>
+            <option value="homme" data-i18n="perf.homme">Homme</option>
+            <option value="femme" data-i18n="perf.femme">Femme</option>
+          </select>
+        </div>
+        <p class="help" data-i18n="perf.help">Trilo calcule en plus un score ajusté à ton profil (estimation). Ton score principal et le classement ne changent pas. Ces infos restent sur ton appareil.</p>
       </div>
 
       <p class="help" data-i18n="an.format">Format conseillé : 4:30, 20:00 ou 1:15:00</p>
